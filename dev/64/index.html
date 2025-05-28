@@ -6,7 +6,13 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <title>Estimating Marginal Effects with Prognostic Covariate Adjustment • postcard</title>
-<script src="deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<!-- mathjax math --><script src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js" integrity="sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI=" crossorigin="anonymous"></script><script>
+  window.MathJax = {
+    chtml: {
+      fontURL: "https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/output/chtml/fonts/woff-v2"
+    }
+  };
+</script><script src="deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
 <script src="deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
@@ -68,7 +74,7 @@
 <h3 id="estimating-marginal-effects">Estimating marginal effects<a class="anchor" aria-label="anchor" href="#estimating-marginal-effects"></a>
 </h3>
 <p><code><a href="reference/rctglm.html">rctglm()</a></code> is used to estimate marginal effects. See introductory examples of its usage in <code><a href="articles/postcard.html">vignette("postcard")</a></code> and more details in <code><a href="articles/model-fit.html">vignette("model-fit")</a></code>.</p>
-<p><strong>Marginal effects</strong> are causal effects of the form <span class="math inline">$`r(\Psi_1, \Psi_0)`$</span>, where <span class="math inline">$`\Psi_a=\mathbb{E}[Y(a)]`$</span> are population mean outcomes under exposure <span class="math inline">$`a=0, 1`$</span>, respectively, and <span class="math inline">$`r`$</span> is the <em>estimand</em> (function). <span class="math inline">$`\Psi_a`$</span> are sometimes referred to as <em>counterfactual means</em>. The package uses <strong>plug-in estimation</strong> for robust estimation of any marginal effect estimand as well as <strong>influence functions</strong> for robust estimation of the variance of the estimand (Rosenblum, M. and M. J. van der Laan, 2010: Simple, efficient estimators of treatment effects in randomized trials using generalized linear models to leverage baseline variables. The International Journal of Biostatistics, 6, no. 1).</p>
+<p><strong>Marginal effects</strong> are causal effects of the form <span class="math inline">\(`r(\Psi_1, \Psi_0)`\)</span>, where <span class="math inline">\(`\Psi_a=\mathbb{E}[Y(a)]`\)</span> are population mean outcomes under exposure <span class="math inline">\(`a=0, 1`\)</span>, respectively, and <span class="math inline">\(`r`\)</span> is the <em>estimand</em> (function). <span class="math inline">\(`\Psi_a`\)</span> are sometimes referred to as <em>counterfactual means</em>. The package uses <strong>plug-in estimation</strong> for robust estimation of any marginal effect estimand as well as <strong>influence functions</strong> for robust estimation of the variance of the estimand (Rosenblum, M. and M. J. van der Laan, 2010: Simple, efficient estimators of treatment effects in randomized trials using generalized linear models to leverage baseline variables. The International Journal of Biostatistics, 6, no. 1).</p>
 </div>
 <div class="section level3">
 <h3 id="prognostic-covariate-adjustment">Prognostic covariate adjustment<a class="anchor" aria-label="anchor" href="#prognostic-covariate-adjustment"></a>
@@ -155,7 +161,7 @@
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.2.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.3.</p>
 </div>
 
     </footer>
