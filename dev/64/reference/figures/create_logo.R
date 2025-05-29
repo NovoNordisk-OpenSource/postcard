@@ -339,21 +339,21 @@ create_hex_logo <- function(height = "278", width = "240",
                             border.cols = c("red", "blue"),
                             rlogo.fill = "white", stamp.fill = "#C1C7C9",
                             topman.fill = "gray", botman.fill = "rgb(79, 183, 227)") {
-  svg <- xml_new_root("svg",
+  res <- xml_new_root("svg",
                       version="1.1",
                       width=width, height=height,
                       xmlns="http://www.w3.org/2000/svg")
 
-  # svg <- xml_add_child(
-  #   res, "svg",
-  #   height=height, width=width,
-  #   viewBox="0 0 100 100",
-  #   preserveAspectRatio="none"
-  # )
+  # Create viewbox with proper dimensions
+  svg <- xml_add_child(
+    res, "svg",
+    height=height, width=width,
+    viewBox="0 0 240 278"
+  )
 
   add_striped_hexagon(
     svg,
-    width = width, height = height,
+    width = "240", height = "278",
     fill = background.fill,
     border.line.width = border.line.width, border.width = border.width, border.opacity = border.opacity,
     border.cols = border.cols
@@ -396,7 +396,7 @@ create_hex_logo <- function(height = "278", width = "240",
   add_man(svg, cx.head = "63.75", cy.head = "185", fill = botman.fill, r.head = "8")
   add_man(svg, cx.head = "93.75", cy.head = "185", fill = botman.fill, r.head = "8")
 
-  return(svg)
+  return(res)
 }
 
 svg_logo <- create_hex_logo(
