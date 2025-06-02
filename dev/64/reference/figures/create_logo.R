@@ -338,7 +338,7 @@ create_hex_logo <- function(height = "278", width = "240",
                             border.line.width = "10", border.width = NULL, border.opacity = "0.2",
                             border.cols = c("red", "blue"),
                             rlogo.fill = "white", stamp.fill = "#C1C7C9",
-                            topman.fill = "gray", botman.fill = "rgb(79, 183, 227)") {
+                            topman.fill = "gray", botman.fill = "#659ec7") {
   res <- xml_new_root("svg",
                       version="1.1",
                       width=width, height=height,
@@ -384,27 +384,27 @@ create_hex_logo <- function(height = "278", width = "240",
     text_cols = c("New RCT" = botman.fill),
     x="130", y="190", y.offset = "4", line.length = "100", font.size = "11")
 
-  add_man(svg, cx.head = "30", cy.head = "150", r.head="6", fill = topman.fill)
-  add_man(svg, cx.head = "52.5", cy.head = "150", r.head="6", fill = topman.fill)
-  add_man(svg, cx.head = "75", cy.head = "150", r.head="6", fill = topman.fill)
-  add_man(svg, cx.head = "97.5", cy.head = "150", r.head="6", fill = topman.fill)
-  add_man(svg, cx.head = "41.25", cy.head = "125", r.head="6", fill = topman.fill)
-  add_man(svg, cx.head = "63.75", cy.head = "125", r.head="6", fill = topman.fill)
-  add_man(svg, cx.head = "87.25", cy.head = "125", r.head="6", fill = topman.fill)
+  add_man(svg, cx.head = "37.5", cy.head = "160", r.head="4", fill = topman.fill)
+  add_man(svg, cx.head = "55", cy.head = "160", r.head="4", fill = topman.fill)
+  add_man(svg, cx.head = "72.5", cy.head = "160", r.head="4", fill = topman.fill)
+  add_man(svg, cx.head = "90", cy.head = "160", r.head="4", fill = topman.fill)
+  add_man(svg, cx.head = "46.25", cy.head = "140", r.head="4", fill = topman.fill)
+  add_man(svg, cx.head = "63.75", cy.head = "140", r.head="4", fill = topman.fill)
+  add_man(svg, cx.head = "81.25", cy.head = "140", r.head="4", fill = topman.fill)
 
-  add_man(svg, cx.head = "33.75", cy.head = "185", fill = botman.fill, r.head = "8")
-  add_man(svg, cx.head = "63.75", cy.head = "185", fill = botman.fill, r.head = "8")
-  add_man(svg, cx.head = "93.75", cy.head = "185", fill = botman.fill, r.head = "8")
+  add_man(svg, cx.head = "38.75", cy.head = "190", fill = botman.fill, r.head = "6")
+  add_man(svg, cx.head = "63.75", cy.head = "190", fill = botman.fill, r.head = "6")
+  add_man(svg, cx.head = "88.75", cy.head = "190", fill = botman.fill, r.head = "6")
 
   return(res)
 }
 
 svg_logo <- create_hex_logo(
-  background.fill = "#f1f2ec",
-  border.opacity = "0.5",
-  border.line.width = "5",
-  border.cols = c("blue", "yellow", "red"),
-  stamp.fill = "green")
+  background.fill = "#ede3d5",
+  border.opacity = "0.8",
+  border.line.width = "10",
+  border.cols = c("#28547e", "#e8dcca", "#d0312d"),
+  stamp.fill = "#28547e")
 
 write_xml(svg_logo, "man/figures/logo.svg")
 rsvg::rsvg_png("man/figures/logo.svg", "man/figures/logo.png")
