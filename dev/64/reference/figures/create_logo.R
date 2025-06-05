@@ -20,7 +20,7 @@ hex_points <- function(hex_points = hex_corners()) {
   paste(points, collapse = " ")
 }
 
-create_stripes <- function(.x, angle = "45", line.width = "10", cols = c("red", "blue")) {
+create_stripes <- function(.x, angle = "45", x.translate.mult = 0, line.width = "10", cols = c("red", "blue")) {
   n_cols <- length(cols)
   pattern <- xml_add_child(
     .x, "pattern",
@@ -28,7 +28,13 @@ create_stripes <- function(.x, angle = "45", line.width = "10", cols = c("red", 
     patternUnits="userSpaceOnUse",
     width=as.character(as.numeric(line.width) * n_cols),
     height="200",
-    patternTransform=paste0("rotate(", angle, ")")
+    patternTransform=paste0(
+      "rotate(",
+      angle,
+      ") translate(-",
+      x.translate.mult * as.numeric(line.width),
+      ")"
+      )
   )
   lapply(1:n_cols, \(i) {
     xml_add_child(
@@ -42,6 +48,12 @@ create_stripes <- function(.x, angle = "45", line.width = "10", cols = c("red", 
   return(invisible())
 }
 
+pythagoras <- function(p1, p2) {
+  xdist <- as.numeric(abs(p1[1] - p2[1]))
+  ydist <- as.numeric(abs(p1[2] - p2[2]))
+  sqrt(xdist^2 + ydist^2)
+}
+
 add_striped_hexagon <- function(.x, height = "384", width = "332.16",
                                 fill = "#ccc", border.line.width = "10",
                                 border.width = NULL, border.opacity = "0.2",
@@ -49,26 +61,27 @@ add_striped_hexagon <- function(.x, height = "384", width = "332.16",
 
   if (is.null(border.width)) border.width = as.character(as.numeric(height) / 40)
 
-  defs <- xml_add_child(.x, "defs")
-  create_stripes(defs, angle = 30, line.width = border.line.width, cols = border.cols)
-  create_stripes(defs, angle = 90, line.width = border.line.width, cols = border.cols)
-  create_stripes(defs, angle = 150, line.width = border.line.width, cols = border.cols)
-  create_stripes(defs, angle = 210, line.width = border.line.width, cols = border.cols)
-  create_stripes(defs, angle = 270, line.width = border.line.width, cols = border.cols)
-  create_stripes(defs, angle = 330, line.width = border.line.width, cols = border.cols)
-
   hexc <- hex_corners(height = as.numeric(height), width = as.numeric(width))
   pts <- lapply(hexc, \(pt) paste(pt, collapse = ","))
   pts$mid <- paste0(as.numeric(width) / 2, ",", as.numeric(height) / 2)
+
+  defs <- xml_add_child(.x, "defs")
+
+  shortside.length <- pythagoras(hexc[["top"]], hexc[["ur"]])
+  shortside.lines <- round(shortside.length / as.numeric(border.line.width))
+  shortside.segment.length <- shortside.length / shortside.lines
+  create_stripes(defs, angle = 30, cols = border.cols,
+                 line.width = shortside.segment.length, x.translate.mult = 1/2)
+  create_stripes(defs, angle = 150, cols = border.cols,
+                 line.width = shortside.segment.length, x.translate.mult = 3/2)
+  create_stripes(defs, angle = 210, cols = border.cols,
+                 line.width = shortside.segment.length, x.translate.mult = 5/2)
+  create_stripes(defs, angle = 330, cols = border.cols,
+                 line.width = shortside.segment.length, x.translate.mult = 1/2)
   xml_add_child(
     .x, "polygon",
     points = paste(pts[c("top", "ur", "mid")], collapse = " "),
     fill = "url(#stripes30)", opacity = border.opacity
-  )
-  xml_add_child(
-    .x, "polygon",
-    points = paste(pts[c("ur", "br", "mid")], collapse = " "),
-    fill = "url(#stripes90)", opacity = border.opacity
   )
   xml_add_child(
     .x, "polygon",
@@ -82,13 +95,26 @@ add_striped_hexagon <- function(.x, height = "384", width = "332.16",
   )
   xml_add_child(
     .x, "polygon",
-    points = paste(pts[c("bl", "ul", "mid")], collapse = " "),
-    fill = "url(#stripes270)", opacity = border.opacity
+    points = paste(pts[c("ul", "top", "mid")], collapse = " "),
+    fill = "url(#stripes330)", opacity = border.opacity
+  )
+
+  longside.length <- pythagoras(hexc[["ur"]], hexc[["br"]])
+  longside.lines <- round(longside.length / as.numeric(border.line.width))
+  longside.segment.length <- longside.length / longside.lines
+  create_stripes(defs, angle = 90, cols = border.cols,
+                 line.width = longside.segment.length)
+  create_stripes(defs, angle = 270, cols = border.cols,
+                 line.width = longside.segment.length, x.translate.mult = 1)
+  xml_add_child(
+    .x, "polygon",
+    points = paste(pts[c("ur", "br", "mid")], collapse = " "),
+    fill = "url(#stripes90)", opacity = border.opacity
   )
   xml_add_child(
     .x, "polygon",
-    points = paste(pts[c("ul", "top", "mid")], collapse = " "),
-    fill = "url(#stripes330)", opacity = border.opacity
+    points = paste(pts[c("bl", "ul", "mid")], collapse = " "),
+    fill = "url(#stripes270)", opacity = border.opacity
   )
 
   num_bor <- as.numeric(border.width)
