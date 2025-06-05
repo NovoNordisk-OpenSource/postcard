@@ -2,35 +2,35 @@
 <svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="240" height="278">
   <svg height="278" width="240" viewBox="0 0 240 278">
     <defs>
-      <pattern id="stripes30" patternUnits="userSpaceOnUse" width="29.7156807708232" height="200" patternTransform="rotate(30) translate(-4.95261346180386)">
-        <rect x="0" width="9.90522692360772" height="200" fill="#28547e"/>
-        <rect x="9.90522692360772" width="9.90522692360772" height="200" fill="#e8dcca"/>
-        <rect x="19.8104538472154" width="9.90522692360772" height="200" fill="#d0312d"/>
+      <pattern id="stripes30" patternUnits="userSpaceOnUse" width="34.668294232627" height="100" patternTransform="rotate(30)">
+        <rect x="0" width="11.5560980775423" height="200" fill="#28547e"/>
+        <rect x="11.5560980775423" width="11.5560980775423" height="200" fill="#e8dcca"/>
+        <rect x="23.1121961550847" width="11.5560980775423" height="200" fill="#d0312d"/>
       </pattern>
-      <pattern id="stripes150" patternUnits="userSpaceOnUse" width="29.7156807708232" height="200" patternTransform="rotate(150) translate(-14.8578403854116)">
-        <rect x="0" width="9.90522692360772" height="200" fill="#28547e"/>
-        <rect x="9.90522692360772" width="9.90522692360772" height="200" fill="#e8dcca"/>
-        <rect x="19.8104538472154" width="9.90522692360772" height="200" fill="#d0312d"/>
+      <pattern id="stripes150" patternUnits="userSpaceOnUse" width="34.668294232627" height="100" patternTransform="rotate(150)">
+        <rect x="0" width="11.5560980775423" height="200" fill="#28547e"/>
+        <rect x="11.5560980775423" width="11.5560980775423" height="200" fill="#e8dcca"/>
+        <rect x="23.1121961550847" width="11.5560980775423" height="200" fill="#d0312d"/>
       </pattern>
-      <pattern id="stripes210" patternUnits="userSpaceOnUse" width="29.7156807708232" height="200" patternTransform="rotate(210) translate(-24.7630673090193)">
-        <rect x="0" width="9.90522692360772" height="200" fill="#28547e"/>
-        <rect x="9.90522692360772" width="9.90522692360772" height="200" fill="#e8dcca"/>
-        <rect x="19.8104538472154" width="9.90522692360772" height="200" fill="#d0312d"/>
+      <pattern id="stripes210" patternUnits="userSpaceOnUse" width="34.668294232627" height="100" patternTransform="rotate(210)">
+        <rect x="0" width="11.5560980775423" height="200" fill="#28547e"/>
+        <rect x="11.5560980775423" width="11.5560980775423" height="200" fill="#e8dcca"/>
+        <rect x="23.1121961550847" width="11.5560980775423" height="200" fill="#d0312d"/>
       </pattern>
-      <pattern id="stripes330" patternUnits="userSpaceOnUse" width="29.7156807708232" height="200" patternTransform="rotate(330) translate(-4.95261346180386)">
-        <rect x="0" width="9.90522692360772" height="200" fill="#28547e"/>
-        <rect x="9.90522692360772" width="9.90522692360772" height="200" fill="#e8dcca"/>
-        <rect x="19.8104538472154" width="9.90522692360772" height="200" fill="#d0312d"/>
+      <pattern id="stripes330" patternUnits="userSpaceOnUse" width="34.668294232627" height="100" patternTransform="rotate(330)">
+        <rect x="0" width="11.5560980775423" height="200" fill="#28547e"/>
+        <rect x="11.5560980775423" width="11.5560980775423" height="200" fill="#e8dcca"/>
+        <rect x="23.1121961550847" width="11.5560980775423" height="200" fill="#d0312d"/>
       </pattern>
-      <pattern id="stripes90" patternUnits="userSpaceOnUse" width="29.7857142857143" height="200" patternTransform="rotate(90) translate(-0)">
-        <rect x="0" width="9.92857142857143" height="200" fill="#28547e"/>
-        <rect x="9.92857142857143" width="9.92857142857143" height="200" fill="#e8dcca"/>
-        <rect x="19.8571428571429" width="9.92857142857143" height="200" fill="#d0312d"/>
+      <pattern id="stripes90" patternUnits="userSpaceOnUse" width="34.75" height="100" patternTransform="rotate(90)">
+        <rect x="0" width="11.5833333333333" height="200" fill="#28547e"/>
+        <rect x="11.5833333333333" width="11.5833333333333" height="200" fill="#e8dcca"/>
+        <rect x="23.1666666666667" width="11.5833333333333" height="200" fill="#d0312d"/>
       </pattern>
-      <pattern id="stripes270" patternUnits="userSpaceOnUse" width="29.7857142857143" height="200" patternTransform="rotate(270) translate(-9.92857142857143)">
-        <rect x="0" width="9.92857142857143" height="200" fill="#28547e"/>
-        <rect x="9.92857142857143" width="9.92857142857143" height="200" fill="#e8dcca"/>
-        <rect x="19.8571428571429" width="9.92857142857143" height="200" fill="#d0312d"/>
+      <pattern id="stripes270" patternUnits="userSpaceOnUse" width="34.75" height="100" patternTransform="rotate(270)">
+        <rect x="0" width="11.5833333333333" height="200" fill="#28547e"/>
+        <rect x="11.5833333333333" width="11.5833333333333" height="200" fill="#e8dcca"/>
+        <rect x="23.1666666666667" width="11.5833333333333" height="200" fill="#d0312d"/>
       </pattern>
     </defs>
     <polygon points="120,0 240,69.5 120,139" fill="url(#stripes30)" opacity="0.8"/>

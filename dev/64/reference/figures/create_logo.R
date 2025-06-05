@@ -20,21 +20,19 @@ hex_points <- function(hex_points = hex_corners()) {
   paste(points, collapse = " ")
 }
 
-create_stripes <- function(.x, angle = "45", x.translate.mult = 0, line.width = "10", cols = c("red", "blue")) {
+create_stripes <- function(.x, angle = "45", line.width = "10", cols = c("red", "blue")) {
   n_cols <- length(cols)
   pattern <- xml_add_child(
     .x, "pattern",
     id=paste0("stripes", angle),
     patternUnits="userSpaceOnUse",
     width=as.character(as.numeric(line.width) * n_cols),
-    height="200",
+    height="100",
     patternTransform=paste0(
       "rotate(",
       angle,
-      ") translate(-",
-      x.translate.mult * as.numeric(line.width),
       ")"
-      )
+    )
   )
   lapply(1:n_cols, \(i) {
     xml_add_child(
@@ -55,7 +53,7 @@ pythagoras <- function(p1, p2) {
 }
 
 add_striped_hexagon <- function(.x, height = "384", width = "332.16",
-                                fill = "#ccc", border.line.width = "10",
+                                fill = "#ccc", n.repeat.pattern = 4,
                                 border.width = NULL, border.opacity = "0.2",
                                 border.cols = c("red", "blue")) {
 
@@ -67,17 +65,18 @@ add_striped_hexagon <- function(.x, height = "384", width = "332.16",
 
   defs <- xml_add_child(.x, "defs")
 
+  n.lines <- n.repeat.pattern * length(border.cols)
+
   shortside.length <- pythagoras(hexc[["top"]], hexc[["ur"]])
-  shortside.lines <- round(shortside.length / as.numeric(border.line.width))
-  shortside.segment.length <- shortside.length / shortside.lines
+  shortside.segment.length <- shortside.length / n.lines
   create_stripes(defs, angle = 30, cols = border.cols,
-                 line.width = shortside.segment.length, x.translate.mult = 1/2)
+                 line.width = shortside.segment.length)
   create_stripes(defs, angle = 150, cols = border.cols,
-                 line.width = shortside.segment.length, x.translate.mult = 3/2)
+                 line.width = shortside.segment.length)
   create_stripes(defs, angle = 210, cols = border.cols,
-                 line.width = shortside.segment.length, x.translate.mult = 5/2)
+                 line.width = shortside.segment.length)
   create_stripes(defs, angle = 330, cols = border.cols,
-                 line.width = shortside.segment.length, x.translate.mult = 1/2)
+                 line.width = shortside.segment.length)
   xml_add_child(
     .x, "polygon",
     points = paste(pts[c("top", "ur", "mid")], collapse = " "),
@@ -100,12 +99,11 @@ add_striped_hexagon <- function(.x, height = "384", width = "332.16",
   )
 
   longside.length <- pythagoras(hexc[["ur"]], hexc[["br"]])
-  longside.lines <- round(longside.length / as.numeric(border.line.width))
-  longside.segment.length <- longside.length / longside.lines
+  longside.segment.length <- longside.length / n.lines
   create_stripes(defs, angle = 90, cols = border.cols,
                  line.width = longside.segment.length)
   create_stripes(defs, angle = 270, cols = border.cols,
-                 line.width = longside.segment.length, x.translate.mult = 1)
+                 line.width = longside.segment.length)
   xml_add_child(
     .x, "polygon",
     points = paste(pts[c("ur", "br", "mid")], collapse = " "),
@@ -117,6 +115,7 @@ add_striped_hexagon <- function(.x, height = "384", width = "332.16",
     fill = "url(#stripes270)", opacity = border.opacity
   )
 
+  # Hexagon on top of striped triangles
   num_bor <- as.numeric(border.width)
   small_hex <- hex_corners(height = as.numeric(height) - num_bor, width = as.numeric(width) - num_bor)
   inside_hex <- lapply(small_hex, \(pt) pt + num_bor / 2)
@@ -361,7 +360,7 @@ add_man <- function(
 
 create_hex_logo <- function(height = "278", width = "240",
                             background.fill = "#ccc",
-                            border.line.width = "10", border.width = NULL, border.opacity = "0.2",
+                            border.n.repeat.pattern = 4, border.width = NULL, border.opacity = "0.2",
                             border.cols = c("red", "blue"),
                             rlogo.fill = "white", stamp.fill = "#C1C7C9",
                             topman.fill = "gray", botman.fill = "#659ec7") {
@@ -381,9 +380,10 @@ create_hex_logo <- function(height = "278", width = "240",
     svg,
     width = "240", height = "278",
     fill = background.fill,
-    border.line.width = border.line.width, border.width = border.width, border.opacity = border.opacity,
+    n.repeat.pattern = border.n.repeat.pattern, border.width = border.width,
+    border.opacity = border.opacity,
     border.cols = border.cols
-    )
+  )
   # Add line in the middle
   xml_add_child(
     svg, "line",
@@ -428,7 +428,6 @@ create_hex_logo <- function(height = "278", width = "240",
 svg_logo <- create_hex_logo(
   background.fill = "#ede3d5",
   border.opacity = "0.8",
-  border.line.width = "10",
   border.cols = c("#28547e", "#e8dcca", "#d0312d"),
   stamp.fill = "#28547e")
 
