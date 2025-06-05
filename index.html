@@ -19,6 +19,7 @@
 <script src="deps/headroom-0.11.0/headroom.min.js"></script><script src="deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="deps/search-1.0.0/fuse.min.js"></script><script src="deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="pkgdown.js"></script><meta property="og:title" content="Estimating Marginal Effects with Prognostic Covariate Adjustment">
 <meta name="description" content="Conduct power analyses and inference of marginal effects. Uses plug-in estimation and influence functions to perform robust inference, optionally leveraging historical data to increase precision with prognostic covariate adjustment. The methods are described in Højbjerre-Frandsen et al. (2025) &lt;doi:10.48550/arXiv.2503.22284&gt;.">
 <meta property="og:description" content="Conduct power analyses and inference of marginal effects. Uses plug-in estimation and influence functions to perform robust inference, optionally leveraging historical data to increase precision with prognostic covariate adjustment. The methods are described in Højbjerre-Frandsen et al. (2025) &lt;doi:10.48550/arXiv.2503.22284&gt;.">
+<meta property="og:image" content="https://novonordisk-opensource.github.io/postcard/logo.svg">
 </head>
 <body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
@@ -61,8 +62,11 @@
 </nav><div class="container template-home">
 <div class="row">
   <main id="main" class="col-md-9"><div class="section level1">
-<div class="page-header"><h1 id="postcard">postcard<a class="anchor" aria-label="anchor" href="#postcard"></a>
-</h1></div>
+<div class="page-header">
+<img src="logo.svg" class="logo" alt=""><h1 id="postcard-">postcard 
+<a class="anchor" aria-label="anchor" href="#postcard-"></a>
+</h1>
+</div>
 <!-- badges: start -->
 
 <p>postcard provides tools for accurately estimating marginal effects using plug-in estimation with GLMs, including increasing precision using prognostic covariate adjustment. See <a href="https://arxiv.org/abs/2503.22284" class="external-link">Powering RCTs for marginal effects with GLMs using prognostic score adjustment</a> by Højbjerre-Frandsen et. al (2025).</p>
@@ -70,7 +74,7 @@
 <h3 id="estimating-marginal-effects">Estimating marginal effects<a class="anchor" aria-label="anchor" href="#estimating-marginal-effects"></a>
 </h3>
 <p><code><a href="reference/rctglm.html">rctglm()</a></code> is used to estimate marginal effects. See introductory examples of its usage in <code><a href="articles/postcard.html">vignette("postcard")</a></code> and more details in <code><a href="articles/model-fit.html">vignette("model-fit")</a></code>.</p>
-<p><strong>Marginal effects</strong> are causal effects of the form <span class="math inline">\(r(\Psi_1, \Psi_0)\)</span>, where <span class="math inline">\(\Psi_a=\mathbb{E}[Y(a)]\)</span> are population mean outcomes under exposure <span class="math inline">\(a=0, 1\)</span>, respectively, and <span class="math inline">\(r\)</span> is the <em>estimand</em> (function). <span class="math inline">\(\Psi_a\)</span> are sometimes referred to as <em>counterfactual means</em>. The package uses <strong>plug-in estimation</strong> for robust estimation of any marginal effect estimand as well as <strong>influence functions</strong> for robust estimation of the variance of the estimand (Rosenblum, M. and M. J. van der Laan, 2010: Simple, efficient estimators of treatment effects in randomized trials using generalized linear models to leverage baseline variables. The International Journal of Biostatistics, 6, no. 1).</p>
+<p><strong>Marginal effects</strong> are causal effects of the form <span class="math inline">\(`r(\Psi_1, \Psi_0)`\)</span>, where <span class="math inline">\(`\Psi_a=\mathbb{E}[Y(a)]`\)</span> are population mean outcomes under exposure <span class="math inline">\(`a=0, 1`\)</span>, respectively, and <span class="math inline">\(`r`\)</span> is the <em>estimand</em> (function). <span class="math inline">\(`\Psi_a`\)</span> are sometimes referred to as <em>counterfactual means</em>. The package uses <strong>plug-in estimation</strong> for robust estimation of any marginal effect estimand as well as <strong>influence functions</strong> for robust estimation of the variance of the estimand (Rosenblum, M. and M. J. van der Laan, 2010: Simple, efficient estimators of treatment effects in randomized trials using generalized linear models to leverage baseline variables. The International Journal of Biostatistics, 6, no. 1).</p>
 </div>
 <div class="section level3">
 <h3 id="prognostic-covariate-adjustment">Prognostic covariate adjustment<a class="anchor" aria-label="anchor" href="#prognostic-covariate-adjustment"></a>
