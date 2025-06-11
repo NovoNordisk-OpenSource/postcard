@@ -83,11 +83,12 @@ all details in reference.</p>
 
 
 <dl><dt id="arg-response">response<a class="anchor" aria-label="anchor" href="#arg-response"></a></dt>
-<dd><p>the response variable from comparator participants</p></dd>
+<dd><p>a vector of mode <code>numeric</code> with the response variable from
+comparator participants</p></dd>
 
 
 <dt id="arg-predictions">predictions<a class="anchor" aria-label="anchor" href="#arg-predictions"></a></dt>
-<dd><p>predictions of the response</p></dd>
+<dd><p>a vector of mode <code>numeric</code> with predictions of the response</p></dd>
 
 
 <dt id="arg-target-effect">target_effect<a class="anchor" aria-label="anchor" href="#arg-target-effect"></a></dt>
@@ -102,7 +103,7 @@ See more in details.</p></dd>
 
 <dt id="arg-var-">var1<a class="anchor" aria-label="anchor" href="#arg-var-"></a></dt>
 <dd><p>a <code>numeric</code> variance of the potential outcome corresponding to group 1,
-or a <code>function</code> with a single argument meant to obtain <code>var1</code> as a tranformation
+or a <code>function</code> with a single argument meant to obtain <code>var1</code> as a transformation
 of the variance of the potential outcome corresponding to group 0.
 See more in details.</p></dd>
 
@@ -135,7 +136,7 @@ the algorithm will use symbolic differentiation to automatically find the deriva
 <dd><p>(optional) a <code>function</code> with arguments <code>psi0</code> and
 <code>target_effect</code>, so <code>estimand_fun(psi1 = y, psi0 = x) = z</code> and
 <code>inv_estimand_fun(psi0 = x, target_effect = z) = y</code> for all x, y, z.
-If left as <code>NULL</code>, the inverse will be found automatically</p></dd>
+If left as <code>NULL</code>, the inverse will be found numerically.</p></dd>
 
 
 <dt id="arg-margin">margin<a class="anchor" aria-label="anchor" href="#arg-margin"></a></dt>
@@ -152,7 +153,8 @@ we use the quantile \(1-\alpha/2\) of the null distribution as the critical valu
 
 <dt id="arg-tolerance">tolerance<a class="anchor" aria-label="anchor" href="#arg-tolerance"></a></dt>
 <dd><p>passed to <a href="https://rdrr.io/r/base/all.equal.html" class="external-link">all.equal</a> when comparing calculated <code>target_effect</code>
-from derivations and given <code>target_effect</code>.</p></dd>
+from derivations and given <code>target_effect</code> during numeric derivation of
+<code>inv_estimand_fun</code>. Thus only relevant when <code>inv_estimand_fun</code> is <code>NULL</code>.</p></dd>
 
 
 <dt id="arg-verbose">verbose<a class="anchor" aria-label="anchor" href="#arg-verbose"></a></dt>
@@ -162,7 +164,7 @@ execution (Defaults to <code>2</code>, overwritable using option 'postcard.verbo
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
-<dd><p>arguments passed to <code>[stats::uniroot]</code>, which is used to find the
+<dd><p>arguments passed to <a href="https://rdrr.io/r/stats/uniroot.html" class="external-link">stats::uniroot</a>, which is used to find the
 inverse of <code>estimand_fun</code>, when <code>inv_estimand_fun</code> is <code>NULL</code>.</p></dd>
 
 </dl></div>
@@ -286,10 +288,10 @@ relevant.</p></li>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> • mod_lm</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB;">i</span>	<span style="color: #000000;">No tuning parameters. `fit_resamples()` will be attempted</span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB;">i</span> <span style="color: #000000;">1 of 2 resampling: mod_mars</span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> <span style="color: #000000;">1 of 2 resampling: mod_mars (133ms)</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> <span style="color: #000000;">1 of 2 resampling: mod_mars (135ms)</span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB;">i</span>	<span style="color: #000000;">No tuning parameters. `fit_resamples()` will be attempted</span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB;">i</span> <span style="color: #000000;">2 of 2 resampling: mod_lm</span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> <span style="color: #000000;">2 of 2 resampling: mod_lm (99ms)</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> <span style="color: #000000;">2 of 2 resampling: mod_lm (100ms)</span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Model with lowest RMSE: mod_mars</span>
 <span class="r-in"><span><span class="va">lrnr2</span> <span class="op">&lt;-</span> <span class="fu"><a href="fit_best_learner.html">fit_best_learner</a></span><span class="op">(</span>preproc <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mod <span class="op">=</span> <span class="va">Y</span> <span class="op">~</span> <span class="va">X1</span> <span class="op">+</span> <span class="va">X2</span> <span class="op">+</span> <span class="va">A</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>                          data <span class="op">=</span> <span class="va">gaus2</span>,</span></span>
@@ -299,10 +301,10 @@ relevant.</p></li>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> • mod_lm</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB;">i</span>	<span style="color: #000000;">No tuning parameters. `fit_resamples()` will be attempted</span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB;">i</span> <span style="color: #000000;">1 of 2 resampling: mod_mars</span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> <span style="color: #000000;">1 of 2 resampling: mod_mars (129ms)</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> <span style="color: #000000;">1 of 2 resampling: mod_mars (131ms)</span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB;">i</span>	<span style="color: #000000;">No tuning parameters. `fit_resamples()` will be attempted</span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB;">i</span> <span style="color: #000000;">2 of 2 resampling: mod_lm</span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> <span style="color: #000000;">2 of 2 resampling: mod_lm (96ms)</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> <span style="color: #000000;">2 of 2 resampling: mod_lm (97ms)</span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Model with lowest RMSE: mod_lm</span>
 <span class="r-in"><span><span class="va">preds_lrnr1</span> <span class="op">&lt;-</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/pull.html" class="external-link">pull</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">lrnr2</span>, new_data <span class="op">=</span> <span class="va">gaus1</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">preds_lrnr2</span> <span class="op">&lt;-</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/pull.html" class="external-link">pull</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">lrnr1</span>, new_data <span class="op">=</span> <span class="va">gaus2</span><span class="op">)</span><span class="op">)</span></span></span>
