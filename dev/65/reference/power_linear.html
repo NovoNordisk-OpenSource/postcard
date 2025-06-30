@@ -33,7 +33,7 @@ See more details about each function in Details and in sections after Value."><m
 
     <a class="navbar-brand me-2" href="../index.html">postcard</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.0.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -244,7 +244,7 @@ the non-centrality parameter as in the univariate case where \(\rho^2\) is repla
 <span class="r-in"><span><span class="co"># Approximate the power using no adjustment covariates</span></span></span>
 <span class="r-in"><span><span class="va">va_nocov</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/cor.html" class="external-link">var</a></span><span class="op">(</span><span class="va">dat_gaus</span><span class="op">$</span><span class="va">Y</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">power_gs</span><span class="op">(</span>n <span class="op">=</span> <span class="fl">200</span>, variance <span class="op">=</span> <span class="va">va_nocov</span>, ate <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.6059117</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.6532264</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Approximate the power with a model adjusting for both variables in the</span></span></span>
 <span class="r-in"><span><span class="co"># data generating process</span></span></span>
@@ -253,21 +253,21 @@ the non-centrality parameter as in the univariate case where \(\rho^2\) is repla
 <span class="r-in"><span><span class="va">va_cov</span> <span class="op">&lt;-</span> <span class="fu">variance_ancova</span><span class="op">(</span><span class="va">Y</span> <span class="op">~</span> <span class="va">X1</span> <span class="op">+</span> <span class="va">X2</span> <span class="op">+</span> <span class="va">A</span>, <span class="va">dat_gaus</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="co">## Then estimate the power using this variance</span></span></span>
 <span class="r-in"><span><span class="fu">power_gs</span><span class="op">(</span>n <span class="op">=</span> <span class="fl">100</span>, variance <span class="op">=</span> <span class="va">va_cov</span>, ate <span class="op">=</span> <span class="fl">1.8</span>, margin <span class="op">=</span> <span class="fl">1</span>, r <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.9592429</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.9818013</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Approximate the sample size needed to obtain 90% power with same model as</span></span></span>
 <span class="r-in"><span><span class="co"># above</span></span></span>
 <span class="r-in"><span><span class="fu">samplesize_gs</span><span class="op">(</span></span></span>
 <span class="r-in"><span>  variance <span class="op">=</span> <span class="va">va_cov</span>, ate <span class="op">=</span> <span class="fl">1.8</span>, power <span class="op">=</span> <span class="fl">0.9</span>, margin <span class="op">=</span> <span class="fl">1</span>, r <span class="op">=</span> <span class="fl">2</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 77.12053</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 64.67507</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># No adjustment covariates</span></span></span>
 <span class="r-in"><span><span class="fu">power_nc</span><span class="op">(</span>n <span class="op">=</span> <span class="fl">200</span>, variance <span class="op">=</span> <span class="va">va_nocov</span>, df <span class="op">=</span> <span class="fl">199</span>, ate <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.6058972</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.6532108</span>
 <span class="r-in"><span><span class="co"># Adjusting for all covariates in data generating process</span></span></span>
 <span class="r-in"><span><span class="fu">power_nc</span><span class="op">(</span>n <span class="op">=</span> <span class="fl">200</span>, variance <span class="op">=</span> <span class="va">va_cov</span>, df <span class="op">=</span> <span class="fl">196</span>, ate <span class="op">=</span> <span class="fl">1.8</span>, margin <span class="op">=</span> <span class="fl">1</span>, r <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.9995171</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.9999272</span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
