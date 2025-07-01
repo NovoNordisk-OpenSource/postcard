@@ -33,7 +33,7 @@ See more details about each function in Details and in sections after Value."><m
 
     <a class="navbar-brand me-2" href="../index.html">postcard</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.0.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -82,11 +82,11 @@ non-centrality parameter and the exact t-distributions.</p>
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">variance_ancova</span><span class="op">(</span><span class="va">formula</span>, <span class="va">data</span>, inflation <span class="op">=</span> <span class="fl">1</span>, deflation <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu">power_gs</span><span class="op">(</span><span class="va">variance</span>, <span class="va">ate</span>, <span class="va">n</span>, r <span class="op">=</span> <span class="fl">1</span>, margin <span class="op">=</span> <span class="fl">0</span>, alpha <span class="op">=</span> <span class="fl">0.025</span><span class="op">)</span></span>
+<span><span class="fu">power_gs</span><span class="op">(</span><span class="va">variance</span>, <span class="va">ate</span>, <span class="va">n</span>, r <span class="op">=</span> <span class="fl">1</span>, margin <span class="op">=</span> <span class="fl">0</span>, alpha <span class="op">=</span> <span class="fl">0.05</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu">samplesize_gs</span><span class="op">(</span><span class="va">variance</span>, <span class="va">ate</span>, r <span class="op">=</span> <span class="fl">1</span>, margin <span class="op">=</span> <span class="fl">0</span>, power <span class="op">=</span> <span class="fl">0.9</span>, alpha <span class="op">=</span> <span class="fl">0.025</span><span class="op">)</span></span>
+<span><span class="fu">samplesize_gs</span><span class="op">(</span><span class="va">variance</span>, <span class="va">ate</span>, r <span class="op">=</span> <span class="fl">1</span>, margin <span class="op">=</span> <span class="fl">0</span>, power <span class="op">=</span> <span class="fl">0.9</span>, alpha <span class="op">=</span> <span class="fl">0.05</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu">power_nc</span><span class="op">(</span><span class="va">variance</span>, <span class="va">df</span>, <span class="va">ate</span>, <span class="va">n</span>, r <span class="op">=</span> <span class="fl">1</span>, margin <span class="op">=</span> <span class="fl">0</span>, alpha <span class="op">=</span> <span class="fl">0.025</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu">power_nc</span><span class="op">(</span><span class="va">variance</span>, <span class="va">df</span>, <span class="va">ate</span>, <span class="va">n</span>, r <span class="op">=</span> <span class="fl">1</span>, margin <span class="op">=</span> <span class="fl">0</span>, alpha <span class="op">=</span> <span class="fl">0.05</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -145,9 +145,9 @@ and the control group is \(n1=(1/(1+r))n\).</p></dd>
 
 
 <dt id="arg-alpha">alpha<a class="anchor" aria-label="anchor" href="#arg-alpha"></a></dt>
-<dd><p>a <code>numeric</code> significance level. Due to regulatory guidelines when
-using a one-sided test, half the specified significance level is used.
-Thus, for standard significance level of 5%, the default is <code>alpha = 0.025</code>.</p></dd>
+<dd><p>a <code>numeric</code> significance level. The critical value used for
+testing corresponds to using the significance level for a two-sided test. I.e.
+we use the quantile \(1-\alpha/2\) of the null distribution as the critical value.</p></dd>
 
 
 <dt id="arg-power">power<a class="anchor" aria-label="anchor" href="#arg-power"></a></dt>
@@ -192,7 +192,7 @@ the same <code>formula</code> as specified in <code>variance_ancova</code>.</p>
 
 <p>The estimation formula in the case of an ANCOVA model with multiple covariate adjustment is (see description for reference):</p>
 <p>$$
-n=\frac{(1+r)^2}{r}\frac{(z_{1-\alpha}+z_{1-\beta})^2\widehat{\sigma}^2(1-\widehat{R}^2)}{(\beta_1-\beta_0-\Delta_s)^2}+\frac{(z_{1-\alpha})^2}{2}
+n=\frac{(1+r)^2}{r}\frac{(z_{1-\alpha/2}+z_{1-\beta})^2\widehat{\sigma}^2(1-\widehat{R}^2)}{(\beta_1-\beta_0-\Delta_s)^2}+\frac{(z_{1-\alpha/2})^2}{2}
 $$</p>
 <p>where \(\widehat{R}^2= \frac{\widehat{\sigma}_{XY}^\top \widehat{\Sigma}_X^{-1}\widehat{\sigma}_{XY}}{\widehat{\sigma}^2}\),
 we denote by \(\widehat{\sigma^2}\) an estimate of the variance of the outcome,
@@ -210,11 +210,11 @@ In the univariate case \(R^2\) is replaced by \(\rho^2\)</p>
 The ANOVA power is calculated based on the non-centrality parameter given as</p>
 <p>$$nc =\sqrt{\frac{r}{(1+r)^2}\cdot n}\cdot\frac{\beta_1-\beta_0-\Delta_s}{\sigma},$$</p>
 <p>where we denote by \(\sigma^2\) the variance of the outcome, such that the power can be estimated as</p>
-<p>$$1-\beta = 1 - F_{t,n-2,nc}\left(F_{t, n-2, 0}^{-1}(1-\alpha)\right).$$</p>
+<p>$$1-\beta = 1 - F_{t,n-2,nc}\left(F_{t, n-2, 0}^{-1}(1-\alpha/2)\right).$$</p>
 <p>The power of ANCOVA with univariate covariate adjustment and no interaction is calculated based on the non-centrality parameter given as</p>
 <p>$$nc =\sqrt{\frac{rn}{(1+r)^2}}\frac{\beta_1-\beta_0-\Delta_s}{\sigma\sqrt{1-\rho^2}},$$</p>
 <p>such that the power can be estimated as</p>
-<p>$$1-\beta = 1 - F_{t,n-3,nc}\left(F_{t, n-3, 0}^{-1}(1-\alpha)\right).$$</p>
+<p>$$1-\beta = 1 - F_{t,n-3,nc}\left(F_{t, n-3, 0}^{-1}(1-\alpha/2)\right).$$</p>
 <p>The power of ANCOVA with either univariate covariate adjustment and interaction or multiple covariate adjustement with or without interaction is calculated based on the non-centrality parameter given as</p>
 <p>$$nc =\frac{\beta_1-\beta_0-\Delta_s}{\sqrt{\left(\frac{1}{n_1}+\frac{1}{n_0} + X_d^\top\left((n-2)\Sigma_X\right)^{-1}X_d \right)\sigma^2\left(1-\widehat{R}^2\right)}}.$$</p>
 <p>where \(X_d = \left(\overline{X}_1^1-\overline{X}_0^1, \ldots, \overline{X}_1^p-\overline{X}_0^p\right)^\top\), \(\widehat{R}^2= \frac{\widehat{\sigma}_{XY}^\top \widehat{\Sigma}_X^{-1}\widehat{\sigma}_{XY}}{\widehat{\sigma}^2}\),
@@ -229,7 +229,7 @@ These scenarios are excluded since they could lead to potentially serious proble
 (Zimmermann G, Kieser M, Bathke AC. Sample Size Calculation and Blinded Recalculation for Analysis of Covariance Models with Multiple Random Covariates. Journal of Biopharmaceutical Statistics. 2020;30(1):143–159.) to approximate
 the non-centrality parameter as in the univariate case where \(\rho^2\) is replaced by \(R^2\).</p>
 <p>Then the power for ANCOVA with <code>d</code> degrees of freedom can be estimated as</p>
-<p>$$1-\beta = 1 - F_{t,d,nc}\left(F_{t, d,0), 0}^{-1}(1-\alpha)\right).$$</p>
+<p>$$1-\beta = 1 - F_{t,d,nc}\left(F_{t, d,0), 0}^{-1}(1-\alpha/2)\right).$$</p>
     </div>
 
     <div class="section level2">
@@ -244,7 +244,7 @@ the non-centrality parameter as in the univariate case where \(\rho^2\) is repla
 <span class="r-in"><span><span class="co"># Approximate the power using no adjustment covariates</span></span></span>
 <span class="r-in"><span><span class="va">va_nocov</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/cor.html" class="external-link">var</a></span><span class="op">(</span><span class="va">dat_gaus</span><span class="op">$</span><span class="va">Y</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">power_gs</span><span class="op">(</span>n <span class="op">=</span> <span class="fl">200</span>, variance <span class="op">=</span> <span class="va">va_nocov</span>, ate <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.6059117</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.6532264</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Approximate the power with a model adjusting for both variables in the</span></span></span>
 <span class="r-in"><span><span class="co"># data generating process</span></span></span>
@@ -253,21 +253,21 @@ the non-centrality parameter as in the univariate case where \(\rho^2\) is repla
 <span class="r-in"><span><span class="va">va_cov</span> <span class="op">&lt;-</span> <span class="fu">variance_ancova</span><span class="op">(</span><span class="va">Y</span> <span class="op">~</span> <span class="va">X1</span> <span class="op">+</span> <span class="va">X2</span> <span class="op">+</span> <span class="va">A</span>, <span class="va">dat_gaus</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="co">## Then estimate the power using this variance</span></span></span>
 <span class="r-in"><span><span class="fu">power_gs</span><span class="op">(</span>n <span class="op">=</span> <span class="fl">100</span>, variance <span class="op">=</span> <span class="va">va_cov</span>, ate <span class="op">=</span> <span class="fl">1.8</span>, margin <span class="op">=</span> <span class="fl">1</span>, r <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.9592429</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.9818013</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Approximate the sample size needed to obtain 90% power with same model as</span></span></span>
 <span class="r-in"><span><span class="co"># above</span></span></span>
 <span class="r-in"><span><span class="fu">samplesize_gs</span><span class="op">(</span></span></span>
 <span class="r-in"><span>  variance <span class="op">=</span> <span class="va">va_cov</span>, ate <span class="op">=</span> <span class="fl">1.8</span>, power <span class="op">=</span> <span class="fl">0.9</span>, margin <span class="op">=</span> <span class="fl">1</span>, r <span class="op">=</span> <span class="fl">2</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 77.12053</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 64.67507</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># No adjustment covariates</span></span></span>
 <span class="r-in"><span><span class="fu">power_nc</span><span class="op">(</span>n <span class="op">=</span> <span class="fl">200</span>, variance <span class="op">=</span> <span class="va">va_nocov</span>, df <span class="op">=</span> <span class="fl">199</span>, ate <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.6058972</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.6532108</span>
 <span class="r-in"><span><span class="co"># Adjusting for all covariates in data generating process</span></span></span>
 <span class="r-in"><span><span class="fu">power_nc</span><span class="op">(</span>n <span class="op">=</span> <span class="fl">200</span>, variance <span class="op">=</span> <span class="va">va_cov</span>, df <span class="op">=</span> <span class="fl">196</span>, ate <span class="op">=</span> <span class="fl">1.8</span>, margin <span class="op">=</span> <span class="fl">1</span>, r <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.9995171</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.9999272</span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>

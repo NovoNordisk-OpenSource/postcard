@@ -19,7 +19,7 @@ all details in reference."><meta property="og:image" content="https://novonordis
 
     <a class="navbar-brand me-2" href="../index.html">postcard</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.0.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -71,7 +71,7 @@ all details in reference.</p>
 <span>  estimand_fun_deriv1 <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  inv_estimand_fun <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  margin <span class="op">=</span> <span class="fu">estimand_fun</span><span class="op">(</span><span class="fl">1</span>, <span class="fl">1</span><span class="op">)</span>,</span>
-<span>  alpha <span class="op">=</span> <span class="fl">0.025</span>,</span>
+<span>  alpha <span class="op">=</span> <span class="fl">0.05</span>,</span>
 <span>  tolerance <span class="op">=</span> <span class="fl">0.001</span>,</span>
 <span>  verbose <span class="op">=</span> <span class="fu">options</span><span class="fu">::</span><span class="fu"><a href="https://dgkf.github.io/options/reference/opt.html" class="external-link">opt</a></span><span class="op">(</span><span class="st">"verbose"</span><span class="op">)</span>,</span>
 <span>  <span class="va">...</span></span>
@@ -83,11 +83,12 @@ all details in reference.</p>
 
 
 <dl><dt id="arg-response">response<a class="anchor" aria-label="anchor" href="#arg-response"></a></dt>
-<dd><p>the response variable from comparator participants</p></dd>
+<dd><p>a vector of mode <code>numeric</code> with the response variable from
+comparator participants</p></dd>
 
 
 <dt id="arg-predictions">predictions<a class="anchor" aria-label="anchor" href="#arg-predictions"></a></dt>
-<dd><p>predictions of the response</p></dd>
+<dd><p>a vector of mode <code>numeric</code> with predictions of the response</p></dd>
 
 
 <dt id="arg-target-effect">target_effect<a class="anchor" aria-label="anchor" href="#arg-target-effect"></a></dt>
@@ -102,7 +103,7 @@ See more in details.</p></dd>
 
 <dt id="arg-var-">var1<a class="anchor" aria-label="anchor" href="#arg-var-"></a></dt>
 <dd><p>a <code>numeric</code> variance of the potential outcome corresponding to group 1,
-or a <code>function</code> with a single argument meant to obtain <code>var1</code> as a tranformation
+or a <code>function</code> with a single argument meant to obtain <code>var1</code> as a transformation
 of the variance of the potential outcome corresponding to group 0.
 See more in details.</p></dd>
 
@@ -135,7 +136,7 @@ the algorithm will use symbolic differentiation to automatically find the deriva
 <dd><p>(optional) a <code>function</code> with arguments <code>psi0</code> and
 <code>target_effect</code>, so <code>estimand_fun(psi1 = y, psi0 = x) = z</code> and
 <code>inv_estimand_fun(psi0 = x, target_effect = z) = y</code> for all x, y, z.
-If left as <code>NULL</code>, the inverse will be found automatically</p></dd>
+If left as <code>NULL</code>, the inverse will be found numerically.</p></dd>
 
 
 <dt id="arg-margin">margin<a class="anchor" aria-label="anchor" href="#arg-margin"></a></dt>
@@ -145,14 +146,15 @@ to a superiority margin assuming no difference (fx. 0 for ATE and 1 for rate rat
 
 
 <dt id="arg-alpha">alpha<a class="anchor" aria-label="anchor" href="#arg-alpha"></a></dt>
-<dd><p>a <code>numeric</code> significance level. Due to regulatory guidelines when
-using a one-sided test, half the specified significance level is used.
-Thus, for standard significance level of 5%, the default is <code>alpha = 0.025</code>.</p></dd>
+<dd><p>a <code>numeric</code> significance level. The critical value used for
+testing corresponds to using the significance level for a two-sided test. I.e.
+we use the quantile \(1-\alpha/2\) of the null distribution as the critical value.</p></dd>
 
 
 <dt id="arg-tolerance">tolerance<a class="anchor" aria-label="anchor" href="#arg-tolerance"></a></dt>
 <dd><p>passed to <a href="https://rdrr.io/r/base/all.equal.html" class="external-link">all.equal</a> when comparing calculated <code>target_effect</code>
-from derivations and given <code>target_effect</code>.</p></dd>
+from derivations and given <code>target_effect</code> during numeric derivation of
+<code>inv_estimand_fun</code>. Thus only relevant when <code>inv_estimand_fun</code> is <code>NULL</code>.</p></dd>
 
 
 <dt id="arg-verbose">verbose<a class="anchor" aria-label="anchor" href="#arg-verbose"></a></dt>
@@ -162,7 +164,7 @@ execution (Defaults to <code>2</code>, overwritable using option 'postcard.verbo
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
-<dd><p>arguments passed to <code>[stats::uniroot]</code>, which is used to find the
+<dd><p>arguments passed to <a href="https://rdrr.io/r/stats/uniroot.html" class="external-link">stats::uniroot</a>, which is used to find the
 inverse of <code>estimand_fun</code>, when <code>inv_estimand_fun</code> is <code>NULL</code>.</p></dd>
 
 </dl></div>
@@ -257,7 +259,7 @@ relevant.</p></li>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Symbolically deriving partial derivative of the function 'psi1 - psi0' with respect to 'psi1' as: '1'.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> • Alternatively, specify the derivative through the argument</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> `estimand_fun_deriv1`</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.9151848</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.8851028</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># ---------------------------------------------------------------------------</span></span></span>
 <span class="r-in"><span><span class="co"># Get OOS predictions using discrete super learner and adjust variance</span></span></span>
@@ -286,10 +288,10 @@ relevant.</p></li>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> • mod_lm</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB;">i</span>	<span style="color: #000000;">No tuning parameters. `fit_resamples()` will be attempted</span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB;">i</span> <span style="color: #000000;">1 of 2 resampling: mod_mars</span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> <span style="color: #000000;">1 of 2 resampling: mod_mars (145ms)</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> <span style="color: #000000;">1 of 2 resampling: mod_mars (130ms)</span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB;">i</span>	<span style="color: #000000;">No tuning parameters. `fit_resamples()` will be attempted</span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB;">i</span> <span style="color: #000000;">2 of 2 resampling: mod_lm</span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> <span style="color: #000000;">2 of 2 resampling: mod_lm (110ms)</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> <span style="color: #000000;">2 of 2 resampling: mod_lm (96ms)</span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Model with lowest RMSE: mod_mars</span>
 <span class="r-in"><span><span class="va">lrnr2</span> <span class="op">&lt;-</span> <span class="fu"><a href="fit_best_learner.html">fit_best_learner</a></span><span class="op">(</span>preproc <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mod <span class="op">=</span> <span class="va">Y</span> <span class="op">~</span> <span class="va">X1</span> <span class="op">+</span> <span class="va">X2</span> <span class="op">+</span> <span class="va">A</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>                          data <span class="op">=</span> <span class="va">gaus2</span>,</span></span>
@@ -299,11 +301,11 @@ relevant.</p></li>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> • mod_lm</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB;">i</span>	<span style="color: #000000;">No tuning parameters. `fit_resamples()` will be attempted</span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB;">i</span> <span style="color: #000000;">1 of 2 resampling: mod_mars</span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> <span style="color: #000000;">1 of 2 resampling: mod_mars (148ms)</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> <span style="color: #000000;">1 of 2 resampling: mod_mars (126ms)</span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB;">i</span>	<span style="color: #000000;">No tuning parameters. `fit_resamples()` will be attempted</span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB;">i</span> <span style="color: #000000;">2 of 2 resampling: mod_lm</span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> <span style="color: #000000;">2 of 2 resampling: mod_lm (110ms)</span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Model with lowest RMSE: mod_lm</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> <span style="color: #000000;">2 of 2 resampling: mod_lm (96ms)</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Model with lowest RMSE: mod_mars</span>
 <span class="r-in"><span><span class="va">preds_lrnr1</span> <span class="op">&lt;-</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/pull.html" class="external-link">pull</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">lrnr2</span>, new_data <span class="op">=</span> <span class="va">gaus1</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">preds_lrnr2</span> <span class="op">&lt;-</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/pull.html" class="external-link">pull</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">lrnr1</span>, new_data <span class="op">=</span> <span class="va">gaus2</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">preds_lrnr</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">preds_lrnr1</span>, <span class="va">preds_lrnr2</span><span class="op">)</span></span></span>
@@ -326,7 +328,7 @@ relevant.</p></li>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Symbolically deriving partial derivative of the function 'psi1 - psi0' with respect to 'psi1' as: '1'.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> • Alternatively, specify the derivative through the argument</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> `estimand_fun_deriv1`</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.90812</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.8841879</span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
