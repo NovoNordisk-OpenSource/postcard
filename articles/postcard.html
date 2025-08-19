@@ -169,7 +169,7 @@ we suppress this behavior. See more in
 <span><span class="co">#&gt;     data = dat_treat, family = "gaussian")</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Counterfactual control mean (psi_0=E[Y|X, A=0]) estimate: 2.776</span></span>
-<span><span class="co">#&gt; Counterfactual control mean (psi_1=E[Y|X, A=1]) estimate: 4.867</span></span>
+<span><span class="co">#&gt; Counterfactual active mean (psi_1=E[Y|X, A=1]) estimate: 4.867</span></span>
 <span><span class="co">#&gt; Estimand function r: psi1 - psi0</span></span>
 <span><span class="co">#&gt; Estimand (r(psi_1, psi_0)) estimate (SE): 2.091 (0.09209)</span></span></code></pre></div>
 <p>The structure of such an <code>rctglm</code> object is broken down in
@@ -245,7 +245,7 @@ adjusting for a prognostic score, is seen below:</p>
 <span><span class="co">#&gt;     data_hist = dat_notreat)</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Counterfactual control mean (psi_0=E[Y|X, A=0]) estimate: 2.827</span></span>
-<span><span class="co">#&gt; Counterfactual control mean (psi_1=E[Y|X, A=1]) estimate: 4.821</span></span>
+<span><span class="co">#&gt; Counterfactual active mean (psi_1=E[Y|X, A=1]) estimate: 4.821</span></span>
 <span><span class="co">#&gt; Estimand function r: psi1 - psi0</span></span>
 <span><span class="co">#&gt; Estimand (r(psi_1, psi_0)) estimate (SE): 1.994 (0.06405)</span></span></code></pre></div>
 <p>It’s evident that in this case where there is a non-linear
