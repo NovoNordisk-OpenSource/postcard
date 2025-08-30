@@ -1,18 +1,25 @@
 #' Plot power curves calculated using `power_marginaleffect` for a list of models
 #'
-#' @param target_effect
-#' @param exposure_prob
-#' @param desired_power
-#' @param ns
-#' @param n_iter
-#' @param model_list
-#' @param test_data_fun
-#' @param ...
+#' @param target_effect Passed to [power_marginaleffect()]
+#' @param exposure_prob Passed to [power_marginaleffect()]
+#' @param desired_power a `numeric` between 0 and 1 indicating the desired power level
+#' @param ns a `numeric` vector of sample sizes
+#' @param n_iter a `numeric` indicating a number of iterations to process and average over
+#' @param model_list a named `list` of models used to get predictions on generated test
+#' data sets that are then passed to [power_marginaleffect()] as `predictions`
+#' @param test_data_fun a `function` with a single argument `n` that generates test
+#' data sets for the sample sizes `ns` specified
+#' @param ... additional arguments passed to [power_marginaleffect()]
 #'
-#' @returns
+#' @returns a `ggplot2` object
 #' @export
 #'
 #' @examples
+#' # A simple use case with default models and test data
+#' plot_power_marginaleffect(target_effect = 1.3, exposure_prob = 0.5)
+#'
+#' # Specify a margin with the ellipsis argument
+#' plot_power_marginaleffect(target_effect = 1.3, exposure_prob = 0.5, margin = 1.3)
 plot_power_marginaleffect <- function(
     target_effect, exposure_prob,
     model_list = default_power_model_list(),
@@ -42,7 +49,7 @@ default_power_model_list <- function(n = 1e3) {
   )
   model_list <- list(
     "ANCOVA" = glm(Y ~ W, data = train_data),
-    "ANCOVA with prognostisc score" = fit_best_learner(
+    "ANCOVA with prognostic score" = fit_best_learner(
       list(mod = Y ~ W),
       data = train_data,
       verbose = 0),
