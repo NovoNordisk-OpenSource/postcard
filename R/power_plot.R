@@ -120,6 +120,9 @@ add_plot_info_data_power <- function(data_power) {
       .by = "model"
     ) %>%
     dplyr::mutate(
+      n_achieve_power = dplyr::case_when(
+        is.na(n_achieve_power) ~ Inf,
+        TRUE ~ n_achieve_power),
       n_model_group = dplyr::n_distinct(model),
       group_id_achieve_power = dplyr::row_number(),
       .by = "flag_group_achieve_power")
@@ -129,37 +132,40 @@ add_plot_info_data_power <- function(data_power) {
 }
 
 grid_group_show_npower <- function(data, coords) {
-  line <- grid::segmentsGrob(
+  group_num <- unique(data$group_id_achieve_power)
+  n_groups <- unique(data$n_model_group)
+
+  model_achieves_desired_power <- unique(data$flag_group_achieve_power)
+  if (!model_achieves_desired_power) {
+    return(
+      grid::textGrob(
+        label = paste0(data$model_label, ": Desired power not reached"),
+        x = grid::unit(0.3, "npc") / n_groups * group_num,
+        y = grid::unit(0.15, "npc") / n_groups * group_num,
+        just = c(0, 1),
+        gp = grid::gpar(col = data$colour)
+      )
+    )
+  }
+
+  line_grob <- grid::segmentsGrob(
     x0 = coords$x, x1 = coords$x,
     y0 = 0, y1 = coords$y,
     gp = grid::gpar(
       lty = "dashed",
       col = data$colour
     ))
-
-  group_num <- unique(data$group_id_achieve_power)
-  n_groups <- unique(data$n_model_group)
-
-  model_achieves_desired_power <- unique(data$flag_group_achieve_power)
-  if (model_achieves_desired_power) {
-    y_pos_increment <- grid::unit(0.6, "npc") / n_groups
-    x_pos <- grid::unit(coords$x, "npc") + grid::unit(2, "mm")
-    label <- paste0(data$model_label, ": ", ceiling(data$x))
-  } else {
-    y_pos_increment <- grid::unit(0.3, "npc") / n_groups
-    x_pos <- grid::unit(coords$y[1], "npc") + grid::unit(2, "mm")
-    label <- paste0(data$model_label, ": Desired power not reached")
-  }
-  y_pos <- y_pos_increment * group_num
-
-  label <- grid::textGrob(
-    label = label,
-    x = x_pos,
-    y = y_pos,
+  label_grob <- grid::textGrob(
+    label = paste0(data$model_label, ": ", ceiling(data$x)),
+    x = grid::unit(coords$x, "npc") + grid::unit(2, "mm"),
+    y = grid::unit(0.6, "npc") / n_groups * group_num,
     just = c(0, 1),
     gp = grid::gpar(col = data$colour)
   )
-  grid::grobTree(line, label)
+
+  return(
+    grid::grobTree(line_grob, label_grob)
+  )
 }
 
 # Create the plot
