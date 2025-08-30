@@ -1,56 +1,47 @@
+
+
 plot_power_marginaleffect <- function(
     desired_power = 0.9,
-    ns = 10:125, n_iter = 1,
+    ns = 10:250, n_iter = 1,
     prog_formula = Y ~ W,
-    glm_data_train_formula = Y ~ 1+3*sin(W)^2, glm_data_test_formula = Y ~ 1+3*sin(W)^2,
-    glm_data_vars_list = list(W = runif(1e3, min = -2, max = 2)),
-    glm_data_train_family = gaussian(), glm_data_train_family_args = NULL,
-    glm_data_test_family = gaussian(), glm_data_test_family_args = NULL) {
+    train_data = glm_data(
+      Y ~ 1+3*sin(W)^2,
+      W = runif(1e3, min = -2, max = 2)
+    ),
+    test_data_fun = function(n) {
+      glm_data(
+        Y ~ 1+3*sin(W)^2+2*X,
+        W = runif(n, min = -2, max = 2),
+        X = rnorm(n)
+      )
+    }) {
 
-  train_gaus <- glm_data(
-    glm_data_train_formula,
-    glm_data_vars_list,
-    family = glm_data_train_family,
-    family_args = glm_data_train_family_args
-  )
-
-  ancova <- glm(prog_formula, data = train_gaus)
-  lrnr <- fit_best_learner(list(mod = prog_formula), data = train_gaus)
+  ancova <- glm(prog_formula, data = train_data)
+  lrnr <- fit_best_learner(list(mod = prog_formula), data = train_data)
 
   data_power <- mean_iters_marginaleffect(
     ns = ns, desired_power = desired_power, n_iter = n_iter,
     ancova_fit = ancova, dsl_fit = lrnr,
-    glm_data_train = train_gaus,
-    glm_data_test_formula = glm_data_test_formula,
-    glm_data_vars_list = glm_data_vars_list,
-    glm_data_test_family = glm_data_test_family,
-    glm_data_test_family_args = glm_data_test_family_args)
+    train_data = train_data,
+    test_data_fun = test_data_fun)
 
   # Create function to create direct labelling with gggrid
   create_power_plot(data_power)
 }
 
 iterate_power_marginaleffect <- function(
-    ns = 10:125, fit,
-    glm_data_train,
-    glm_data_test_formula = Y ~ 1+3*sin(W)^2,
-    glm_data_vars_list = list(W = runif(1e3, min = -2, max = 2)),
-    glm_data_test_family = gaussian(), glm_data_test_family_args = NULL) {
-
+    ns = 10:250, fit,
+    train_data = NULL,
+    test_data_fun = NULL) {
 
   power <- sapply(ns, FUN = function(n) {
-    test_gaus <- glm_data(
-      glm_data_test_formula,
-      glm_data_vars_list,
-      family = glm_data_test_family,
-      family_args = glm_data_test_family_args
-    )[1:n, ]
+    test_data <- test_data_fun(n)
 
-    if (inherits(fit, "workflow")) preds <- dplyr::pull(predict(fit, new_data = test_gaus))
-    else preds <- predict(fit, newdata = test_gaus)
+    if (inherits(fit, "workflow")) preds <- dplyr::pull(predict(fit, new_data = test_data))
+    else preds <- predict(fit, newdata = test_data)
 
     power_marginaleffect(
-      response = test_gaus$Y,
+      response = test_data$Y,
       predictions = preds,
       target_effect = 1.3,
       exposure_prob = 1/2,
@@ -62,7 +53,7 @@ iterate_power_marginaleffect <- function(
 
 ##############
 # Average results from a number of iterations
-mean_iters_marginaleffect <- function(ns = 10:125, desired_power = 0.9, n_iter = 1, ancova_fit, dsl_fit, ...) {
+mean_iters_marginaleffect <- function(ns = 10:250, desired_power = 0.9, n_iter = 1, ancova_fit, dsl_fit, ...) {
   power_iter <- lapply(
     1:n_iter,
     function(i) {
