@@ -1,51 +1,72 @@
-
-
+#' Plot power curves calculated using `power_marginaleffect` for a list of models
+#'
+#' @param target_effect
+#' @param exposure_prob
+#' @param desired_power
+#' @param ns
+#' @param n_iter
+#' @param model_list
+#' @param test_data_fun
+#' @param ...
+#'
+#' @returns
+#' @export
+#'
+#' @examples
 plot_power_marginaleffect <- function(
-    desired_power = 0.9,
-    ns = 10:250, n_iter = 1,
-    prog_formula = Y ~ W,
-    train_data = glm_data(
-      Y ~ 1+3*sin(W)^2,
-      W = runif(1e3, min = -2, max = 2)
-    ),
+    target_effect, exposure_prob,
+    model_list = default_power_model_list(),
     test_data_fun = function(n) {
       glm_data(
         Y ~ 1+3*sin(W)^2+2*X,
         W = runif(n, min = -2, max = 2),
         X = rnorm(n)
       )
-    }) {
+    },
+    desired_power = 0.9,
+    ns = 10:250, n_iter = 1,
+    ...) {
 
-  ancova <- glm(prog_formula, data = train_data)
-  lrnr <- fit_best_learner(list(mod = prog_formula), data = train_data)
+  args <- c(as.list(environment()), list(...))
+  args_remove_train_data <- args[!names(args) %in% "train_data"]
 
-  data_power <- mean_iters_marginaleffect(
-    ns = ns, desired_power = desired_power, n_iter = n_iter,
-    ancova_fit = ancova, dsl_fit = lrnr,
-    train_data = train_data,
-    test_data_fun = test_data_fun)
+  data_power <- do.call(mean_iters_marginaleffect, args_remove_train_data)
 
-  # Create function to create direct labelling with gggrid
   create_power_plot(data_power)
 }
 
+default_power_model_list <- function(n = 1e3) {
+  train_data <- glm_data(
+    Y ~ 1+3*sin(W)^2,
+    W = runif(n, min = -2, max = 2)
+  )
+  model_list <- list(
+    "ANCOVA" = glm(Y ~ W, data = train_data),
+    "ANCOVA with prognostisc score" = fit_best_learner(
+      list(mod = Y ~ W),
+      data = train_data,
+      verbose = 0)
+  )
+}
+
+#############
+# Simulate data and calculate power for a range of sample sizes
 iterate_power_marginaleffect <- function(
-    ns = 10:250, fit,
-    train_data = NULL,
-    test_data_fun = NULL) {
+    target_effect, exposure_prob, model, test_data_fun, ns = 10:250, ...) {
 
   power <- sapply(ns, FUN = function(n) {
     test_data <- test_data_fun(n)
 
-    if (inherits(fit, "workflow")) preds <- dplyr::pull(predict(fit, new_data = test_data))
-    else preds <- predict(fit, newdata = test_data)
+    if (inherits(model, "workflow")) preds <- dplyr::pull(predict(model, new_data = test_data))
+    else preds <- predict(model, newdata = test_data)
 
     power_marginaleffect(
       response = test_data$Y,
       predictions = preds,
-      target_effect = 1.3,
-      exposure_prob = 1/2,
-      verbose = 0
+      target_effect = target_effect,
+      exposure_prob = exposure_prob,
+      verbose = 0,
+      ...
     )
   })
   data.frame(n = ns, power = power)
@@ -53,36 +74,59 @@ iterate_power_marginaleffect <- function(
 
 ##############
 # Average results from a number of iterations
-mean_iters_marginaleffect <- function(ns = 10:250, desired_power = 0.9, n_iter = 1, ancova_fit, dsl_fit, ...) {
+mean_iters_marginaleffect <- function(
+    target_effect, exposure_prob,
+    model_list, test_data_fun,
+    ns = 10:250, desired_power = 0.9, n_iter = 1,
+    ...) {
   power_iter <- lapply(
     1:n_iter,
     function(i) {
-      dplyr::bind_rows(
-        iterate_power_marginaleffect(ns = ns, fit = ancova_fit, ...) %>%
+      lapply(1:length(model_list), function(k) {
+        cur_model <- model_list[[k]]
+        cur_model_name <- names(model_list)[k]
+        iterate_power_marginaleffect(
+          target_effect = target_effect, exposure_prob = exposure_prob,
+          model = cur_model, test_data_fun = test_data_fun,
+          ns = ns,
+          ...
+        ) %>%
           dplyr::mutate(
-            model = "ancova",
-            model_label = "ANCOVA"
-          ),
-        iterate_power_marginaleffect(ns = ns, fit = dsl_fit, ...) %>%
-          dplyr::mutate(
-            model = "prog",
-            model_label = "ANCOVA with prognostic score")
-      )
+            model = cur_model_name,
+            model_label = cur_model_name
+          )
+      }) %>%
+        dplyr::bind_rows()
     }
   ) %>%
     dplyr::bind_rows()
 
   power_sum <- power_iter %>%
     dplyr::summarise(power = mean(power), .by = c(n, model, model_label)) %>%
-    dplyr::group_by(model) %>%
-    dplyr::mutate(n_desired = n[which(power >= desired_power)[1]]) %>%
-    dplyr::ungroup()
+    dplyr::mutate(desired_power = desired_power,
+                  flag_achieve_power = power >= desired_power,
+                  .by = "model")
 
   return(power_sum)
 }
 
 #####################
 # Plotting utilities
+add_plot_info_data_power <- function(data_power) {
+  data_power_plot_info <- data_power %>%
+    dplyr::summarise(
+      n_achieve_power = n[which(flag_achieve_power)[1]],
+      flag_group_achieve_power = any(flag_achieve_power),
+      .by = "model"
+    ) %>%
+    dplyr::mutate(
+      n_model_group = dplyr::n_distinct(model),
+      group_id_achieve_power = dplyr::row_number(),
+      .by = "flag_group_achieve_power")
+
+  data_power %>%
+    dplyr::left_join(data_power_plot_info, by = "model")
+}
 
 grid_group_show_npower <- function(data, coords) {
   line <- grid::segmentsGrob(
@@ -92,14 +136,25 @@ grid_group_show_npower <- function(data, coords) {
       lty = "dashed",
       col = data$colour
     ))
-  group <- unique(data$group)
-  if (group == 1)
-    y_pos <- grid::unit(coords$y, "npc") - grid::unit(2, "mm")
-  else
-    y_pos <- grid::unit(0.55, "npc")
+
+  group_num <- unique(data$group_id_achieve_power)
+  n_groups <- unique(data$n_model_group)
+
+  model_achieves_desired_power <- unique(data$flag_group_achieve_power)
+  if (model_achieves_desired_power) {
+    y_pos_increment <- grid::unit(0.6, "npc") / n_groups
+    x_pos <- grid::unit(coords$x, "npc") + grid::unit(2, "mm")
+    label <- paste0(data$model_label, ": ", ceiling(data$x))
+  } else {
+    y_pos_increment <- grid::unit(0.3, "npc") / n_groups
+    x_pos <- grid::unit(coords$y[1], "npc") + grid::unit(2, "mm")
+    label <- paste0(data$model_label, ": Desired power not reached")
+  }
+  y_pos <- y_pos_increment * group_num
+
   label <- grid::textGrob(
-    label = paste0(data$model_label, ": ", ceiling(data$x)),
-    x = grid::unit(coords$x, "npc") + grid::unit(2, "mm"),
+    label = label,
+    x = x_pos,
     y = y_pos,
     just = c(0, 1),
     gp = grid::gpar(col = data$colour)
@@ -109,8 +164,13 @@ grid_group_show_npower <- function(data, coords) {
 
 # Create the plot
 create_power_plot <- function(data_power, desired_power = 0.9,
-                              cols = c(ancova = "darkorange1", prog = "dodgerblue4")) {
-  data_power %>%
+                              cols = NULL) {
+  if (is.null(cols)) {
+    n_models <- length(unique(data_power$model))
+    cols <- scales::pal_hue()(n_models)
+  }
+
+  add_plot_info_data_power(data_power) %>%
     ggplot2::ggplot(ggplot2::aes(x = n, y = power, color = model)) +
     ggplot2::geom_line(linewidth = 1.2, alpha = 0.8,
                        show.legend = FALSE) +
@@ -121,9 +181,12 @@ create_power_plot <- function(data_power, desired_power = 0.9,
     ) +
     gggrid::grid_group(
       grid_group_show_npower,
-      ggplot2::aes(x = n_desired,
+      ggplot2::aes(x = n_achieve_power,
                    y = desired_power,
-                   model_label = model_label)
+                   model_label = model_label,
+                   flag_group_achieve_power  = flag_group_achieve_power ,
+                   n_model_group = n_model_group,
+                   group_id_achieve_power = group_id_achieve_power)
     ) +
     ggplot2::scale_color_manual(
       name = "",
