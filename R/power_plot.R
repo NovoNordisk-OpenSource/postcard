@@ -45,7 +45,10 @@ default_power_model_list <- function(n = 1e3) {
     "ANCOVA with prognostisc score" = fit_best_learner(
       list(mod = Y ~ W),
       data = train_data,
-      verbose = 0)
+      verbose = 0),
+    TEST = glm(Y ~ W - 1, data = train_data %>% dplyr::mutate(W = W + 20)),
+    TEST1 = glm(Y ~ W - 1, data = train_data %>% dplyr::mutate(W = W + 20)),
+    TEST2 = glm(Y ~ W - 1, data = train_data %>% dplyr::mutate(W = W + 20))
   )
 }
 
@@ -131,20 +134,39 @@ add_plot_info_data_power <- function(data_power) {
     dplyr::left_join(data_power_plot_info, by = "model")
 }
 
+create_background_grob <- function(label_grob, x_pos, y_pos, colour) {
+  wdt <- grid::grobWidth(label_grob)
+  hgt <- grid::grobHeight(label_grob)
+  rect_grob <- grid::roundrectGrob(
+    x = x_pos - grid::unit(1.5, "mm"),
+    y = y_pos,
+    width = wdt + grid::unit(3, "mm"),
+    height = hgt + grid::unit(3, "mm"),
+    just = c(0, 0.5),
+    r = grid::unit(0.2, "snpc"),
+    gp = grid::gpar(fill = colour, col = colour)
+  )
+}
+
 grid_group_show_npower <- function(data, coords) {
   group_num <- unique(data$group_id_achieve_power)
   n_groups <- unique(data$n_model_group)
 
   model_achieves_desired_power <- unique(data$flag_group_achieve_power)
   if (!model_achieves_desired_power) {
+    x_pos <- grid::unit(0.3, "npc") / n_groups * group_num
+    y_pos <- grid::unit(0.15, "npc") / n_groups * group_num
+    label_grob <- grid::textGrob(
+      label = paste0(data$model_label, ": Desired power not reached"),
+      x = x_pos,
+      y = y_pos,
+      just = c(0, 0.5)
+    )
+    rect_grob <- create_background_grob(
+      label_grob, x_pos = x_pos, y_pos = y_pos, colour = data$colour
+    )
     return(
-      grid::textGrob(
-        label = paste0(data$model_label, ": Desired power not reached"),
-        x = grid::unit(0.3, "npc") / n_groups * group_num,
-        y = grid::unit(0.15, "npc") / n_groups * group_num,
-        just = c(0, 1),
-        gp = grid::gpar(col = data$colour)
-      )
+      grid::grobTree(rect_grob, label_grob)
     )
   }
 
@@ -155,16 +177,20 @@ grid_group_show_npower <- function(data, coords) {
       lty = "dashed",
       col = data$colour
     ))
+  x_pos <- grid::unit(unique(coords$x), "npc") + grid::unit(3, "mm")
+  y_pos <- grid::unit(unique(coords$y), "npc") - grid::unit(0.1, "npc") * (0.5 + group_num)
   label_grob <- grid::textGrob(
     label = paste0(data$model_label, ": ", ceiling(data$x)),
-    x = grid::unit(coords$x, "npc") + grid::unit(2, "mm"),
-    y = grid::unit(0.6, "npc") / n_groups * group_num,
-    just = c(0, 1),
-    gp = grid::gpar(col = data$colour)
+    x = x_pos,
+    y = y_pos,
+    just = c(0, 0.5)
+  )
+  rect_grob <- create_background_grob(
+    label_grob, x_pos = x_pos, y_pos = y_pos, colour = data$colour
   )
 
   return(
-    grid::grobTree(line_grob, label_grob)
+    grid::grobTree(line_grob, rect_grob, label_grob)
   )
 }
 
