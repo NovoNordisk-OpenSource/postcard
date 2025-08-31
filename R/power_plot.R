@@ -102,8 +102,7 @@ mean_iters_marginaleffect <- function(
           ...
         ) %>%
           dplyr::mutate(
-            model = cur_model_name,
-            model_label = cur_model_name
+            model = cur_model_name
           )
       }) %>%
         dplyr::bind_rows()
@@ -112,7 +111,7 @@ mean_iters_marginaleffect <- function(
     dplyr::bind_rows()
 
   power_sum <- power_iter %>%
-    dplyr::summarise(power = mean(power), .by = c(n, model, model_label)) %>%
+    dplyr::summarise(power = mean(power), .by = c(n, model)) %>%
     dplyr::mutate(desired_power = desired_power,
                   flag_achieve_power = power >= desired_power,
                   .by = "model")
@@ -141,15 +140,15 @@ add_plot_info_data_power <- function(data_power) {
     dplyr::left_join(data_power_plot_info, by = "model")
 }
 
-create_background_grob <- function(label_grob, x_pos, y_pos, colour) {
+create_background_grob <- function(label_grob, x_pos, y_pos, colour, hjust = 0) {
   wdt <- grid::grobWidth(label_grob)
   hgt <- grid::grobHeight(label_grob)
   rect_grob <- grid::roundrectGrob(
-    x = x_pos - grid::unit(1.5, "mm"),
+    x = x_pos + ifelse(hjust, 1, -1) * grid::unit(1.5, "mm"),
     y = y_pos,
     width = wdt + grid::unit(3, "mm"),
     height = hgt + grid::unit(3, "mm"),
-    just = c(0, 0.5),
+    just = c(hjust, 0.5),
     r = grid::unit(0.2, "snpc"),
     gp = grid::gpar(fill = colour, col = colour)
   )
@@ -164,13 +163,13 @@ grid_group_show_npower <- function(data, coords) {
     x_pos <- grid::unit(0.3, "npc") / n_groups * group_num
     y_pos <- grid::unit(0.15, "npc") / n_groups * group_num
     label_grob <- grid::textGrob(
-      label = paste0(data$model_label, ": Desired power not reached"),
+      label = paste0(data$model, ": Desired power not reached"),
       x = x_pos,
       y = y_pos,
       just = c(0, 0.5)
     )
     rect_grob <- create_background_grob(
-      label_grob, x_pos = x_pos, y_pos = y_pos, colour = data$colour
+      label_grob, x_pos = x_pos, y_pos = y_pos, colour = data$colour, hjust = 0
     )
     return(
       grid::grobTree(rect_grob, label_grob)
@@ -184,16 +183,16 @@ grid_group_show_npower <- function(data, coords) {
       lty = "dashed",
       col = data$colour
     ))
-  x_pos <- grid::unit(unique(coords$x), "npc") + grid::unit(3, "mm")
-  y_pos <- grid::unit(unique(coords$y), "npc") - grid::unit(0.1, "npc") * (0.5 + group_num)
+  x_pos <- grid::unit(unique(coords$x), "npc") - grid::unit(3, "mm")
+  y_pos <- grid::unit(unique(coords$y), "npc") - grid::unit(0.1, "npc") * (1 + group_num)
   label_grob <- grid::textGrob(
-    label = paste0(data$model_label, ": ", ceiling(data$x)),
+    label = paste0(data$model, ": ", ceiling(data$x)),
     x = x_pos,
     y = y_pos,
-    just = c(0, 0.5)
+    just = c(1, 0.5)
   )
   rect_grob <- create_background_grob(
-    label_grob, x_pos = x_pos, y_pos = y_pos, colour = data$colour
+    label_grob, x_pos = x_pos, y_pos = y_pos, colour = data$colour, hjust = 1
   )
 
   return(
@@ -222,7 +221,7 @@ create_power_plot <- function(data_power, desired_power = 0.9,
       grid_group_show_npower,
       ggplot2::aes(x = n_achieve_power,
                    y = desired_power,
-                   model_label = model_label,
+                   model = model,
                    flag_group_achieve_power  = flag_group_achieve_power ,
                    n_model_group = n_model_group,
                    group_id_achieve_power = group_id_achieve_power)
