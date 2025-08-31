@@ -61,7 +61,7 @@ default_power_model_list <- function(n = 1e3) {
 
 #############
 # Simulate data and calculate power for a range of sample sizes
-iterate_power_marginaleffect <- function(
+iterate_n_power_marginaleffect <- function(
     target_effect, exposure_prob, model, test_data_fun, ns = 10:250, ...) {
 
   power <- sapply(ns, FUN = function(n) {
@@ -83,6 +83,21 @@ iterate_power_marginaleffect <- function(
 }
 
 ##############
+# Iterate over index of model list
+iterate_models_power_marginaleffect <- function(model_list, ...) {
+  lapply(1:length(model_list), function(k) {
+    cur_model <- model_list[[k]]
+    cur_model_name <- names(model_list)[k]
+    iterate_n_power_marginaleffect(
+      model = cur_model,
+      ...
+    ) %>%
+      dplyr::mutate(
+        model = cur_model_name
+      )
+  })
+}
+
 # Average results from a number of iterations
 mean_iters_marginaleffect <- function(
     target_effect, exposure_prob,
@@ -92,19 +107,13 @@ mean_iters_marginaleffect <- function(
   power_iter <- lapply(
     1:n_iter,
     function(i) {
-      lapply(1:length(model_list), function(k) {
-        cur_model <- model_list[[k]]
-        cur_model_name <- names(model_list)[k]
-        iterate_power_marginaleffect(
-          target_effect = target_effect, exposure_prob = exposure_prob,
-          model = cur_model, test_data_fun = test_data_fun,
-          ns = ns,
-          ...
-        ) %>%
-          dplyr::mutate(
-            model = cur_model_name
-          )
-      }) %>%
+      iterate_models_power_marginaleffect(
+        model_list = model_list,
+        target_effect = target_effect, exposure_prob = exposure_prob,
+        test_data_fun = test_data_fun,
+        ns = ns,
+        ...
+      ) %>%
         dplyr::bind_rows()
     }
   ) %>%
@@ -113,8 +122,7 @@ mean_iters_marginaleffect <- function(
   power_sum <- power_iter %>%
     dplyr::summarise(power = mean(power), .by = c(n, model)) %>%
     dplyr::mutate(desired_power = desired_power,
-                  flag_achieve_power = power >= desired_power,
-                  .by = "model")
+                  flag_achieve_power = power >= desired_power)
 
   return(power_sum)
 }
