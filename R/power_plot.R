@@ -1,12 +1,18 @@
 #' Plot power curves calculated using `power_marginaleffect` for a list of models
 #'
+#' Iterate a process of simulating test data from `test_data_fun`, making predictions
+#' using models in `model_list`, and calculating power using `power_marginaleffect()`
+#' across a number of sample sizes `ns` and iterations `n_iter`. The results are averaged
+#' and used to create a plot of the resulting power curves.
+#'
 #' @param target_effect Passed to [power_marginaleffect()]
 #' @param exposure_prob Passed to [power_marginaleffect()]
 #' @param desired_power a `numeric` between 0 and 1 indicating the desired power level
 #' @param ns a `numeric` vector of sample sizes
 #' @param n_iter a `numeric` indicating a number of iterations to process and average over
 #' @param model_list a named `list` of models used to get predictions on generated test
-#' data sets that are then passed to [power_marginaleffect()] as `predictions`
+#' data sets that are then passed to [power_marginaleffect()] as `predictions`. As such,
+#' the elements of `model_list` need to have an existing `predict()` method.
 #' @param test_data_fun a `function` with a single argument `n` that generates test
 #' data sets for the sample sizes `ns` specified
 #' @param ... additional arguments passed to [power_marginaleffect()]
@@ -20,6 +26,8 @@
 #'
 #' # Specify a margin with the ellipsis argument
 #' plot_power_marginaleffect(target_effect = 1.3, exposure_prob = 0.5, margin = 1.3)
+#'
+#' iterate_formulas_power_linear(list(ANCOVA = Y ~ W, prog = Y ~ 1), ate = 2, train_data = glm_data(Y ~ W, W = rnorm(10)))
 plot_power_marginaleffect <- function(
     target_effect, exposure_prob,
     model_list = default_power_model_list(),
@@ -64,11 +72,16 @@ default_power_model_list <- function(n = 1e3) {
 iterate_n_power_marginaleffect <- function(
     target_effect, exposure_prob, model, test_data_fun, ns = 10:250, ...) {
 
+  newdata_arg_name <- get_newdata_arg_name(model)
+  predict_args <- setNames(vector("list", 2), c("object", newdata_arg_name))
+
   power <- sapply(ns, FUN = function(n) {
     test_data <- test_data_fun(n)
 
-    if (inherits(model, "workflow")) preds <- dplyr::pull(predict(model, new_data = test_data))
-    else preds <- predict(model, newdata = test_data)
+    predict_args[1:2] <- list(model, test_data)
+
+    preds <- do.call(predict, args = predict_args)
+    if (inherits(preds, "data.frame")) preds <- dplyr::pull(preds)
 
     power_marginaleffect(
       response = test_data$Y,
@@ -98,6 +111,7 @@ iterate_models_power_marginaleffect <- function(model_list, ...) {
   })
 }
 
+#############
 # Average results from a number of iterations
 mean_iters_marginaleffect <- function(
     target_effect, exposure_prob,

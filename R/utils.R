@@ -95,3 +95,30 @@ print_symbolic_differentiation <- function(fun, arg, add_string = "", verbose = 
 
   return(derivative)
 }
+
+# Utility to get the name of the newdata/new_data argument of a predict method
+get_predict_method <- function(object) {
+  for (cls in class(object)) {
+    pred_method <- tryCatch({
+      pred_method <- getS3method("predict", cls)
+      return(pred_method)
+    }, error = function(e) NULL)
+    if (!is.null(pred_method)) return(pred_method)
+  }
+  stop(paste0("Could not find predict method for model object of class: ", class(object)))
+}
+
+get_newdata_arg_name <- function(object) {
+  pred_method <- get_predict_method(object)
+
+  arg_names <- names(formals(pred_method))
+  newdata_arg_name <- arg_names[grepl("new.*data", arg_names)]
+  if (length(newdata_arg_name) == 0) {
+    stop(
+      paste0("Could not find an argument like 'new.*data' in predict method dispatched on
+             object of class: ",
+             class(object))
+    )
+  }
+  newdata_arg_name[1]
+}

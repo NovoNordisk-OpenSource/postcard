@@ -24,7 +24,8 @@ plot_power_marginaleffect(
 \item{exposure_prob}{Passed to \code{\link[=power_marginaleffect]{power_marginaleffect()}}}
 
 \item{model_list}{a named \code{list} of models used to get predictions on generated test
-data sets that are then passed to \code{\link[=power_marginaleffect]{power_marginaleffect()}} as \code{predictions}}
+data sets that are then passed to \code{\link[=power_marginaleffect]{power_marginaleffect()}} as \code{predictions}. As such,
+the elements of \code{model_list} need to have an existing \code{predict()} method.}
 
 \item{test_data_fun}{a \code{function} with a single argument \code{n} that generates test
 data sets for the sample sizes \code{ns} specified}
@@ -41,7 +42,10 @@ data sets for the sample sizes \code{ns} specified}
 a \code{ggplot2} object
 }
 \description{
-Plot power curves calculated using \code{power_marginaleffect} for a list of models
+Iterate a process of simulating test data from \code{test_data_fun}, making predictions
+using models in \code{model_list}, and calculating power using \code{power_marginaleffect()}
+across a number of sample sizes \code{ns} and iterations \code{n_iter}. The results are averaged
+and used to create a plot of the resulting power curves.
 }
 \examples{
 # A simple use case with default models and test data
@@ -49,4 +53,6 @@ plot_power_marginaleffect(target_effect = 1.3, exposure_prob = 0.5)
 
 # Specify a margin with the ellipsis argument
 plot_power_marginaleffect(target_effect = 1.3, exposure_prob = 0.5, margin = 1.3)
+
+iterate_formulas_power_linear(list(ANCOVA = Y ~ W, prog = Y ~ 1), ate = 2, train_data = glm_data(Y ~ W, W = rnorm(10)))
 }
