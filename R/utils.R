@@ -105,7 +105,7 @@ get_predict_method <- function(object) {
     }, error = function(e) NULL)
     if (!is.null(pred_method)) return(pred_method)
   }
-  stop(paste0("Could not find predict method for model object of class: ", class(object)))
+  cli::cli_abort(paste0("Could not find predict method for model object of class: ", class(object)))
 }
 
 get_newdata_arg_name <- function(object) {
@@ -114,7 +114,7 @@ get_newdata_arg_name <- function(object) {
   arg_names <- names(formals(pred_method))
   newdata_arg_name <- arg_names[grepl("new.*data", arg_names)]
   if (length(newdata_arg_name) == 0) {
-    stop(
+    cli::cli_abort(
       paste0("Could not find an argument like 'new.*data' in predict method dispatched on
              object of class: ",
              class(object))
