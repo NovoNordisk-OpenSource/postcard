@@ -122,3 +122,8 @@ get_newdata_arg_name <- function(object) {
   }
   newdata_arg_name[1]
 }
+
+# Convert the r parameter in power_linear to exposure_prob from power_marginaleffect
+r_to_exposure_prob <- function(r) {
+  r / (r+1)
+}

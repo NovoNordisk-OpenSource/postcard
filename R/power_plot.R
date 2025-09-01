@@ -1,4 +1,4 @@
-#' Plot power curves calculated using [power_marginaleffect()] for a list of models
+#' Create data of power curves calculated using [power_marginaleffect()] for a list of models
 #'
 #' Iterate a process of simulating test data from `test_data_fun`, making predictions
 #' using models in `model_list`, and calculating power using [power_marginaleffect()]
@@ -26,13 +26,12 @@
 #'
 #' @examples
 #' # A simple use case with default models and test data
-#' plot_power_marginaleffect(target_effect = 1.3, exposure_prob = 0.5)
+#' repeat_power_marginaleffect(target_effect = 1.3, exposure_prob = 0.5)
 #'
 #' # Specify a margin with the ellipsis argument
-#' plot_power_marginaleffect(target_effect = 1.3, exposure_prob = 0.5, margin = 1.3)
+#' repeat_power_marginaleffect(target_effect = 1.3, exposure_prob = 0.5, margin = 1.3)
 #'
-#' iterate_formulas_power_linear(list(ANCOVA = Y ~ W, prog = Y ~ 1), ate = 2, train_data = glm_data(Y ~ W, W = rnorm(10)))
-plot_power_marginaleffect <- function(
+repeat_power_marginaleffect <- function(
     target_effect, exposure_prob,
     model_list = default_power_model_list(),
     test_data_fun = function(n) {
@@ -48,9 +47,11 @@ plot_power_marginaleffect <- function(
   args <- c(as.list(environment()), list(...))
   args_remove_train_data <- args[!names(args) %in% "train_data"]
 
-  data_power <- do.call(mean_iters_marginaleffect, args_remove_train_data)
-
-  create_power_plot(data_power)
+  out <- do.call(mean_iters_marginaleffect, args_remove_train_data)
+  structure(
+    out,
+    class = c("postcard_power_data", class(out))
+  )
 }
 
 default_power_model_list <- function(n = 1e3) {
@@ -70,14 +71,14 @@ default_power_model_list <- function(n = 1e3) {
   )
 }
 
-#' Plot power curves calculated using functions in [power_linear()] for a list of formulas/models
+#' Create data of power curves calculated using functions in [power_linear()] for a list of formulas/models
 #'
 #' Estimate a variance for power approximation using [variance_ancova()] for each formula
 #' in `formula_list` on `train_data`. Then calculate power using the function with name
 #' specified in `power_fun` across a number of sample sizes `ns` for an assumed average
 #' treatment effect of `ate`.
 #'
-#' @inheritParams plot_power_marginaleffect
+#' @inheritParams repeat_power_marginaleffect
 #' @param ate Passed to [power_gs()] or [power_nc()]
 #' @param formula_list a named `list` of formulas that are element wise passed to
 #' [variance_ancova()]
@@ -92,21 +93,23 @@ default_power_model_list <- function(n = 1e3) {
 #' @examples
 #' train_data <- glm_data(
 #'   Y ~ 1+3*sin(W)^2,
-#'   W = runif(n, min = -2, max = 2)
+#'   W = runif(1e3, min = -2, max = 2)
 #' )
-#' plot_power_linear(
+#' repeat_power_linear(
 #'   ate = 1.3, formula_list = list(ANCOVA = Y ~ W, ANCOVA2 = Y ~ 1),
 #'   train_data = train_data)
-plot_power_linear <- function(
+repeat_power_linear <- function(
     ate, formula_list, train_data,
     power_fun = c("power_gs", "power_nc"),
     ns = 10:250, desired_power = 0.9,
     ...) {
   args <- c(as.list(environment()), list(...))
 
-  data_power <- do.call(iterate_formulas_power_linear, args)
-
-  create_power_plot(data_power)
+  out <- do.call(iterate_formulas_power_linear, args)
+  structure(
+    out,
+    class = c("postcard_power_data", class(out))
+  )
 }
 
 
@@ -135,7 +138,24 @@ iterate_n_power_marginaleffect <- function(
       ...
     )
   })
-  data.frame(n = ns, power = power)
+  data.frame(n = ns, power = power) %>%
+    add_assumption_parms_to_data(
+      target_effect = target_effect,
+      exposure_prob = exposure_prob,
+      ...)
+}
+
+add_assumption_parms_to_data <- function(.data, ...) {
+  dummy_power <- power_marginaleffect(
+    response = 1,
+    predictions = 1,
+    verbose = 0,
+    ...
+  )
+  assumptions <- attributes(dummy_power)
+  assumptions_add_to_data <- assumptions[names(assumptions) != "estimand_fun"]
+  .data %>%
+    dplyr::mutate(!!!assumptions_add_to_data)
 }
 
 #############
@@ -176,7 +196,8 @@ iterate_models_power_marginaleffect <- function(model_list, ...) {
       ...
     ) %>%
       dplyr::mutate(
-        model = cur_model_name
+        model = cur_model_name,
+        .after = "n"
       )
   })
 }
@@ -231,9 +252,13 @@ mean_iters_marginaleffect <- function(
 
   cli::cli_process_done()
   power_sum <- power_iter %>%
-    dplyr::summarise(power = mean(power), .by = c(n, model)) %>%
+    dplyr::group_by(dplyr::across(-power)) %>%
+    dplyr::summarise(power = mean(power)) %>%
+    dplyr::ungroup() %>%
+    dplyr::relocate("power", .after = "n") %>%
     dplyr::mutate(desired_power = desired_power,
-                  flag_achieve_power = power >= desired_power)
+                  flag_achieve_power = power >= desired_power,
+                  .after = "model")
 
   return(power_sum)
 }

@@ -30,6 +30,39 @@
 #' estimation. `power_xx` and `samplesize_xx` functions return a `numeric` with
 #' the power or sample size approximation.
 #'
+#' @examples
+#' # Generate a data set to use as an example
+#' n_train <- 1e3
+#' n_test <- 100
+#'
+#' dat_gaus <- glm_data(Y ~ 1+2*X1-X2+3*A,
+#'                 X1 = rnorm(n_train),
+#'                 X2 = rgamma(n_train, shape = 2),
+#'                 A = rbinom(n_train, size = 1, prob = 0.5),
+#'                 family = gaussian())
+#'
+#' # Approximate the power using no adjustment covariates
+#' va_nocov <- var(dat_gaus$Y)
+#' power_gs(n = n_test, variance = va_nocov, ate = 1)
+#'
+#' # Approximate the power with a model adjusting for both variables in the
+#' # data generating process
+#'
+#' ## First estimate the variance sigma^2 * (1-R^2)
+#' va_cov <- variance_ancova(Y ~ X1 + X2 + A, dat_gaus)
+#' ## Then estimate the power using this variance
+#' power_gs(n = n_test, variance = va_cov, ate = 1.8, margin = 1, r = 2)
+#'
+#' # Approximate the sample size needed to obtain 90% power with same model as
+#' # above
+#' samplesize_gs(
+#'   variance = va_cov, ate = 1.8, power = 0.9, margin = 1, r = 2
+#' )
+#'
+#' # No adjustment covariates
+#' power_nc(n = n_test, variance = va_nocov, df = 199, ate = 1)
+#' # Adjusting for all covariates in data generating process
+#' power_nc(n = n_test, variance = va_cov, df = 196, ate = 1.8, margin = 1, r = 2)
 NULL
 
 #' @rdname power_linear
@@ -101,7 +134,7 @@ variance_ancova <- function(formula, data, inflation = 1, deflation = 1) {
 #'
 #' @param n               a `numeric` with number of participants in total.
 #' From this number of participants in the treatment group is \eqn{n1=(r/(1+r))n}
-#' and the control group is \eqn{n1=(1/(1+r))n}.
+#' and the control group is \eqn{n0=(1/(1+r))n}.
 #' @param r               a `numeric` allocation ratio \eqn{r=n1/n0}. For one-to-one randomisation `r=1`.
 #' @param variance  a `numeric` variance to use for the approximation. See more details
 #' in documentation sections of each power approximating function.
@@ -127,32 +160,6 @@ variance_ancova <- function(formula, data, inflation = 1, deflation = 1) {
 #' between the outcome variable and each covariate.
 #' In the univariate case \eqn{R^2} is replaced by \eqn{\rho^2}
 #'
-#' @examples
-#' # Generate a data set to use as an example
-#' dat_gaus <- glm_data(Y ~ 1+2*X1-X2+3*A,
-#'                 X1 = rnorm(100),
-#'                 X2 = rgamma(100, shape = 2),
-#'                 A = rbinom(100, size = 1, prob = 0.5),
-#'                 family = gaussian())
-#'
-#' # Approximate the power using no adjustment covariates
-#' va_nocov <- var(dat_gaus$Y)
-#' power_gs(n = 200, variance = va_nocov, ate = 1)
-#'
-#' # Approximate the power with a model adjusting for both variables in the
-#' # data generating process
-#'
-#' ## First estimate the variance sigma^2 * (1-R^2)
-#' va_cov <- variance_ancova(Y ~ X1 + X2 + A, dat_gaus)
-#' ## Then estimate the power using this variance
-#' power_gs(n = 100, variance = va_cov, ate = 1.8, margin = 1, r = 2)
-#'
-#' # Approximate the sample size needed to obtain 90% power with same model as
-#' # above
-#' samplesize_gs(
-#'   variance = va_cov, ate = 1.8, power = 0.9, margin = 1, r = 2
-#' )
-#'
 #' @export
 power_gs <- function(variance,
                      ate,
@@ -168,9 +175,16 @@ power_gs <- function(variance,
         (n - stats::qnorm(1 - alpha / 2)^2/2)
     ) - stats::qnorm(1 - alpha / 2)
   )
-  return(power)
+  out <- structure(
+    power,
+    target_effect = ate,
+    exposure_prob = r_to_exposure_prob(r),
+    estimand_fun = default_estimand_funs("ate"),
+    margin = margin,
+    alpha = alpha
+  )
+  return(out)
 }
-
 
 #' @rdname power_linear
 #'
@@ -240,12 +254,6 @@ samplesize_gs <- function(variance,
 #'
 #' @export
 #'
-#' @examples
-#' # No adjustment covariates
-#' power_nc(n = 200, variance = va_nocov, df = 199, ate = 1)
-#' # Adjusting for all covariates in data generating process
-#' power_nc(n = 200, variance = va_cov, df = 196, ate = 1.8, margin = 1, r = 2)
-#'
 power_nc <- function(variance,
                      df,
                      ate,
@@ -256,5 +264,14 @@ power_nc <- function(variance,
 
   nc <- sqrt(r/(1 + r)^2*(n)) * (ate - margin)/sqrt(variance)
   power <- 1 - stats::pt(q = stats::qt(1 - alpha / 2, df = df), df = df, ncp = nc)
-  return(power)
+  out <- structure(
+    power,
+    target_effect = ate,
+    exposure_prob = r_to_exposure_prob(r),
+    estimand_fun = default_estimand_funs("ate"),
+    margin = margin,
+    alpha = alpha,
+    df = df
+  )
+  return(out)
 }

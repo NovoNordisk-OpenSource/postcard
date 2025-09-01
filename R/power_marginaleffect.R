@@ -219,7 +219,15 @@ power_marginaleffect <- function(
   sd <- sqrt(v_bound / n_resp)
   f0 <- qnorm(1 - alpha / 2, mean = margin, sd = sd)
   f1 <- pnorm(f0, mean = target_effect, sd = sd)
-  1 - f1
+  out <- 1 - f1
+  structure(
+    out,
+    target_effect = target_effect,
+    exposure_prob = exposure_prob,
+    estimand_fun = estimand_fun,
+    margin = margin,
+    alpha = alpha
+  )
 }
 
 var_bound_marginaleffect <- function(
