@@ -127,3 +127,28 @@ get_newdata_arg_name <- function(object) {
 r_to_exposure_prob <- function(r) {
   r / (r+1)
 }
+
+# Used to add power assumption parameters to data
+add_power_assumption_params_to_data <- function(
+    .data, power_fun = c("power_marginaleffect", "power_gs", "power_nc"), ...) {
+  power_fun <- match.arg(power_fun)
+  power_fun_function <- getFromNamespace(power_fun, ns = "postcard")
+  if (power_fun == "power_marginaleffect") {
+    dummy_power <- power_fun_function(
+      response = 1,
+      predictions = 1,
+      verbose = 0,
+      ...
+    )
+  } else {
+    dummy_power <- power_fun_function(
+      variance = 1, n = 10,
+      ...
+    )
+  }
+
+  assumptions <- attributes(dummy_power)
+  assumptions_add_to_data <- assumptions[names(assumptions) != "estimand_fun"]
+  .data %>%
+    dplyr::mutate(!!!c(assumptions_add_to_data, list(power_fun = power_fun)))
+}

@@ -47,7 +47,11 @@ repeat_power_marginaleffect <- function(
   args <- c(as.list(environment()), list(...))
   args_remove_train_data <- args[!names(args) %in% "train_data"]
 
-  out <- do.call(mean_iters_marginaleffect, args_remove_train_data)
+  out <- do.call(mean_iters_marginaleffect, args_remove_train_data) %>%
+    add_power_assumption_params_to_data(
+      target_effect = target_effect,
+      exposure_prob = exposure_prob,
+      ...)
   structure(
     out,
     class = c("postcard_power_data", class(out))
@@ -70,48 +74,6 @@ default_power_model_list <- function(n = 1e3) {
     TEST2 = glm(Y ~ W - 1, data = train_data %>% dplyr::mutate(W = W + 20))
   )
 }
-
-#' Create data of power curves calculated using functions in [power_linear()] for a list of formulas/models
-#'
-#' Estimate a variance for power approximation using [variance_ancova()] for each formula
-#' in `formula_list` on `train_data`. Then calculate power using the function with name
-#' specified in `power_fun` across a number of sample sizes `ns` for an assumed average
-#' treatment effect of `ate`.
-#'
-#' @inheritParams repeat_power_marginaleffect
-#' @param ate Passed to [power_gs()] or [power_nc()]
-#' @param formula_list a named `list` of formulas that are element wise passed to
-#' [variance_ancova()]
-#' @param train_data Passed as the `data` argument in [variance_ancova()]
-#' @param power_fun a `character` string with value `"power_gs"` or `"power_nc"`,
-#' specifying what function in the [power_linear()] topic to use
-#' @param ... Arguments passed to [variance_ancova()] and [power_gs()] or [power_nc()]
-#'
-#' @returns a `ggplot2` object
-#' @export
-#'
-#' @examples
-#' train_data <- glm_data(
-#'   Y ~ 1+3*sin(W)^2,
-#'   W = runif(1e3, min = -2, max = 2)
-#' )
-#' repeat_power_linear(
-#'   ate = 1.3, formula_list = list(ANCOVA = Y ~ W, ANCOVA2 = Y ~ 1),
-#'   train_data = train_data)
-repeat_power_linear <- function(
-    ate, formula_list, train_data,
-    power_fun = c("power_gs", "power_nc"),
-    ns = 10:250, desired_power = 0.9,
-    ...) {
-  args <- c(as.list(environment()), list(...))
-
-  out <- do.call(iterate_formulas_power_linear, args)
-  structure(
-    out,
-    class = c("postcard_power_data", class(out))
-  )
-}
-
 
 #############
 # Simulate data and calculate power for a range of sample sizes
@@ -138,50 +100,6 @@ iterate_n_power_marginaleffect <- function(
       ...
     )
   })
-  data.frame(n = ns, power = power) %>%
-    add_assumption_parms_to_data(
-      target_effect = target_effect,
-      exposure_prob = exposure_prob,
-      ...)
-}
-
-add_assumption_parms_to_data <- function(.data, ...) {
-  dummy_power <- power_marginaleffect(
-    response = 1,
-    predictions = 1,
-    verbose = 0,
-    ...
-  )
-  assumptions <- attributes(dummy_power)
-  assumptions_add_to_data <- assumptions[names(assumptions) != "estimand_fun"]
-  .data %>%
-    dplyr::mutate(!!!assumptions_add_to_data)
-}
-
-#############
-# Simulate data and calculate power for a range of sample sizes
-iterate_n_power_linear <- function(
-    ate, formula, train_data, power_fun = c("power_gs", "power_nc"), ns = 10:250, ...) {
-  power_fun <- match.arg(power_fun)
-  power_fun <- getFromNamespace(power_fun, ns = "postcard")
-
-  extra_args <- list(...)
-  extra_args_to_variance_ancova <- extra_args[names(extra_args) %in% names(formals(variance_ancova))]
-
-  var <- do.call(
-    variance_ancova,
-    args = c(list(formula = formula,
-                  data = train_data),
-             extra_args_to_variance_ancova)
-  )
-
-  extra_args_to_power_fun <- extra_args[names(extra_args) %in% names(formals(power_fun))]
-  power <- sapply(ns, FUN = function(n) {
-    do.call(
-      power_fun,
-      args = c(list(variance = var, ate = ate, n = n),
-               extra_args_to_power_fun))
-  })
   data.frame(n = ns, power = power)
 }
 
@@ -201,26 +119,6 @@ iterate_models_power_marginaleffect <- function(model_list, ...) {
       )
   })
 }
-
-#############
-# Simulate data and calculate power for a range of sample sizes
-iterate_formulas_power_linear <- function(formula_list, desired_power = 0.9, ...) {
-  lapply(1:length(formula_list), function(k) {
-    cur_formula <- formula_list[[k]]
-    cur_model_name <- names(formula_list)[k]
-    iterate_n_power_linear(
-      formula = cur_formula,
-      ...
-    ) %>%
-      dplyr::mutate(
-        model = cur_model_name
-      )
-  }) %>%
-    dplyr::bind_rows() %>%
-    dplyr::mutate(desired_power = desired_power,
-                  flag_achieve_power = power >= desired_power)
-}
-
 
 #############
 # Average results from a number of iterations
@@ -255,12 +153,103 @@ mean_iters_marginaleffect <- function(
     dplyr::group_by(dplyr::across(-power)) %>%
     dplyr::summarise(power = mean(power)) %>%
     dplyr::ungroup() %>%
-    dplyr::relocate("power", .after = "n") %>%
-    dplyr::mutate(desired_power = desired_power,
-                  flag_achieve_power = power >= desired_power,
-                  .after = "model")
+    dplyr::relocate("power") %>%
+    dplyr::mutate(desired_power = desired_power) %>%
+    dplyr::mutate(flag_achieve_power = power >= desired_power, .before = "desired_power")
 
   return(power_sum)
+}
+
+#' Create data of power curves calculated using functions in [power_linear()] for a list of formulas/models
+#'
+#' Estimate a variance for power approximation using [variance_ancova()] for each formula
+#' in `formula_list` on `train_data`. Then calculate power using the function with name
+#' specified in `power_fun` across a number of sample sizes `ns` for an assumed average
+#' treatment effect of `ate`.
+#'
+#' @inheritParams repeat_power_marginaleffect
+#' @param ate Passed to [power_gs()] or [power_nc()]
+#' @param formula_list a named `list` of formulas that are element wise passed to
+#' [variance_ancova()]
+#' @param train_data Passed as the `data` argument in [variance_ancova()]
+#' @param power_fun a `character` string with value `"power_gs"` or `"power_nc"`,
+#' specifying what function in the [power_linear()] topic to use
+#' @param ... Arguments passed to [variance_ancova()] and [power_gs()] or [power_nc()]
+#'
+#' @returns a `ggplot2` object
+#' @export
+#'
+#' @examples
+#' train_data <- glm_data(
+#'   Y ~ 1+3*sin(W)^2,
+#'   W = runif(1e3, min = -2, max = 2)
+#' )
+#' repeat_power_linear(
+#'   ate = 1.3, formula_list = list(ANCOVA = Y ~ W, ANCOVA2 = Y ~ 1),
+#'   train_data = train_data)
+repeat_power_linear <- function(
+    ate, formula_list, train_data,
+    power_fun = c("power_gs", "power_nc"),
+    ns = 10:250, desired_power = 0.9,
+    ...) {
+  power_fun <- match.arg(power_fun)
+  args <- c(as.list(environment()), list(...))
+
+  out <- do.call(iterate_formulas_power_linear, args) %>%
+    add_power_assumption_params_to_data(
+      ate = ate, power_fun = power_fun,
+      ...)
+  structure(
+    out,
+    class = c("postcard_power_data", class(out))
+  )
+}
+
+#############
+# Simulate data and calculate power for a range of sample sizes
+iterate_n_power_linear <- function(
+    ate, formula, train_data, power_fun = c("power_gs", "power_nc"), ns = 10:250, ...) {
+  power_fun <- match.arg(power_fun)
+  power_fun <- getFromNamespace(power_fun, ns = "postcard")
+
+  extra_args <- list(...)
+  extra_args_to_variance_ancova <- extra_args[names(extra_args) %in% names(formals(variance_ancova))]
+
+  var <- do.call(
+    variance_ancova,
+    args = c(list(formula = formula,
+                  data = train_data),
+             extra_args_to_variance_ancova)
+  )
+
+  extra_args_to_power_fun <- extra_args[names(extra_args) %in% names(formals(power_fun))]
+  power <- sapply(ns, FUN = function(n) {
+    do.call(
+      power_fun,
+      args = c(list(variance = var, ate = ate, n = n),
+               extra_args_to_power_fun))
+  })
+  data.frame(n = ns, power = power)
+}
+
+#############
+# Simulate data and calculate power for a range of sample sizes
+iterate_formulas_power_linear <- function(formula_list, desired_power = 0.9, ...) {
+  lapply(1:length(formula_list), function(k) {
+    cur_formula <- formula_list[[k]]
+    cur_model_name <- names(formula_list)[k]
+    iterate_n_power_linear(
+      formula = cur_formula,
+      ...
+    ) %>%
+      dplyr::mutate(
+        model = cur_model_name,
+        .after = "n"
+      )
+  }) %>%
+    dplyr::bind_rows() %>%
+    dplyr::mutate(desired_power = desired_power) %>%
+    dplyr::mutate(flag_achieve_power = power >= desired_power, .before = "desired_power")
 }
 
 #####################
