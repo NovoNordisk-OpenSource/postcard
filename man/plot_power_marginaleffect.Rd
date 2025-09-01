@@ -2,7 +2,7 @@
 % Please edit documentation in R/power_plot.R
 \name{plot_power_marginaleffect}
 \alias{plot_power_marginaleffect}
-\title{Plot power curves calculated using \code{power_marginaleffect} for a list of models}
+\title{Plot power curves calculated using \code{\link[=power_marginaleffect]{power_marginaleffect()}} for a list of models}
 \usage{
 plot_power_marginaleffect(
   target_effect,
@@ -12,8 +12,8 @@ plot_power_marginaleffect(
      glm_data(Y ~ 1 + 3 * sin(W)^2 + 2 * X, W = runif(n,
     min = -2, max = 2), X = rnorm(n))
  },
-  desired_power = 0.9,
   ns = 10:250,
+  desired_power = 0.9,
   n_iter = 1,
   ...
 )
@@ -24,15 +24,19 @@ plot_power_marginaleffect(
 \item{exposure_prob}{Passed to \code{\link[=power_marginaleffect]{power_marginaleffect()}}}
 
 \item{model_list}{a named \code{list} of models used to get predictions on generated test
-data sets that are then passed to \code{\link[=power_marginaleffect]{power_marginaleffect()}} as \code{predictions}. As such,
-the elements of \code{model_list} need to have an existing \code{predict()} method.}
+data sets that are then passed to \code{\link[=power_marginaleffect]{power_marginaleffect()}} as \code{predictions}. The
+elements of \code{model_list} need to have an existing \code{predict()} method. The default is
+an ANCOVA and a prognostic model fitted with \code{\link[=fit_best_learner]{fit_best_learner()}} to a simple data set
+generated with a non-linear effect of a single covariate using \code{\link[=glm_data]{glm_data()}}.}
 
 \item{test_data_fun}{a \code{function} with a single argument \code{n} that generates test
-data sets for the sample sizes \code{ns} specified}
-
-\item{desired_power}{a \code{numeric} between 0 and 1 indicating the desired power level}
+data sets for the sample sizes \code{ns} specified. The default generates data using
+\code{\link[=glm_data]{glm_data()}} with two covariates, one with a non-linear and the other with a linear
+effect.}
 
 \item{ns}{a \code{numeric} vector of sample sizes}
+
+\item{desired_power}{a \code{numeric} between 0 and 1 indicating the desired power level}
 
 \item{n_iter}{a \code{numeric} indicating a number of iterations to process and average over}
 
@@ -43,7 +47,7 @@ a \code{ggplot2} object
 }
 \description{
 Iterate a process of simulating test data from \code{test_data_fun}, making predictions
-using models in \code{model_list}, and calculating power using \code{power_marginaleffect()}
+using models in \code{model_list}, and calculating power using \code{\link[=power_marginaleffect]{power_marginaleffect()}}
 across a number of sample sizes \code{ns} and iterations \code{n_iter}. The results are averaged
 and used to create a plot of the resulting power curves.
 }

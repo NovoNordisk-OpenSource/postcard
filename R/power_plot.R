@@ -1,7 +1,7 @@
-#' Plot power curves calculated using `power_marginaleffect` for a list of models
+#' Plot power curves calculated using [power_marginaleffect()] for a list of models
 #'
 #' Iterate a process of simulating test data from `test_data_fun`, making predictions
-#' using models in `model_list`, and calculating power using `power_marginaleffect()`
+#' using models in `model_list`, and calculating power using [power_marginaleffect()]
 #' across a number of sample sizes `ns` and iterations `n_iter`. The results are averaged
 #' and used to create a plot of the resulting power curves.
 #'
@@ -11,10 +11,14 @@
 #' @param ns a `numeric` vector of sample sizes
 #' @param n_iter a `numeric` indicating a number of iterations to process and average over
 #' @param model_list a named `list` of models used to get predictions on generated test
-#' data sets that are then passed to [power_marginaleffect()] as `predictions`. As such,
-#' the elements of `model_list` need to have an existing `predict()` method.
+#' data sets that are then passed to [power_marginaleffect()] as `predictions`. The
+#' elements of `model_list` need to have an existing `predict()` method. The default is
+#' an ANCOVA and a prognostic model fitted with [fit_best_learner()] to a simple data set
+#' generated with a non-linear effect of a single covariate using [glm_data()].
 #' @param test_data_fun a `function` with a single argument `n` that generates test
-#' data sets for the sample sizes `ns` specified
+#' data sets for the sample sizes `ns` specified. The default generates data using
+#' [glm_data()] with two covariates, one with a non-linear and the other with a linear
+#' effect.
 #' @param ... additional arguments passed to [power_marginaleffect()]
 #'
 #' @returns a `ggplot2` object
@@ -38,8 +42,7 @@ plot_power_marginaleffect <- function(
         X = rnorm(n)
       )
     },
-    desired_power = 0.9,
-    ns = 10:250, n_iter = 1,
+    ns = 10:250, desired_power = 0.9, n_iter = 1,
     ...) {
 
   args <- c(as.list(environment()), list(...))
@@ -66,6 +69,46 @@ default_power_model_list <- function(n = 1e3) {
     TEST2 = glm(Y ~ W - 1, data = train_data %>% dplyr::mutate(W = W + 20))
   )
 }
+
+#' Plot power curves calculated using functions in [power_linear()] for a list of formulas/models
+#'
+#' Estimate a variance for power approximation using [variance_ancova()] for each formula
+#' in `formula_list` on `train_data`. Then calculate power using the function with name
+#' specified in `power_fun` across a number of sample sizes `ns` for an assumed average
+#' treatment effect of `ate`.
+#'
+#' @inheritParams plot_power_marginaleffect
+#' @param ate Passed to [power_gs()] or [power_nc()]
+#' @param formula_list a named `list` of formulas that are element wise passed to
+#' [variance_ancova()]
+#' @param train_data Passed as the `data` argument in [variance_ancova()]
+#' @param power_fun a `character` string with value `"power_gs"` or `"power_nc"`,
+#' specifying what function in the [power_linear()] topic to use
+#' @param ... Arguments passed to [variance_ancova()] and [power_gs()] or [power_nc()]
+#'
+#' @returns a `ggplot2` object
+#' @export
+#'
+#' @examples
+#' train_data <- glm_data(
+#'   Y ~ 1+3*sin(W)^2,
+#'   W = runif(n, min = -2, max = 2)
+#' )
+#' plot_power_linear(
+#'   ate = 1.3, formula_list = list(ANCOVA = Y ~ W, ANCOVA2 = Y ~ 1),
+#'   train_data = train_data)
+plot_power_linear <- function(
+    ate, formula_list, train_data,
+    power_fun = c("power_gs", "power_nc"),
+    ns = 10:250, desired_power = 0.9,
+    ...) {
+  args <- c(as.list(environment()), list(...))
+
+  data_power <- do.call(iterate_formulas_power_linear, args)
+
+  create_power_plot(data_power)
+}
+
 
 #############
 # Simulate data and calculate power for a range of sample sizes
@@ -95,6 +138,33 @@ iterate_n_power_marginaleffect <- function(
   data.frame(n = ns, power = power)
 }
 
+#############
+# Simulate data and calculate power for a range of sample sizes
+iterate_n_power_linear <- function(
+    ate, formula, train_data, power_fun = c("power_gs", "power_nc"), ns = 10:250, ...) {
+  power_fun <- match.arg(power_fun)
+  power_fun <- getFromNamespace(power_fun, ns = "postcard")
+
+  extra_args <- list(...)
+  extra_args_to_variance_ancova <- extra_args[names(extra_args) %in% names(formals(variance_ancova))]
+
+  var <- do.call(
+    variance_ancova,
+    args = c(list(formula = formula,
+                  data = train_data),
+             extra_args_to_variance_ancova)
+  )
+
+  extra_args_to_power_fun <- extra_args[names(extra_args) %in% names(formals(power_fun))]
+  power <- sapply(ns, FUN = function(n) {
+    do.call(
+      power_fun,
+      args = c(list(variance = var, ate = ate, n = n),
+               extra_args_to_power_fun))
+  })
+  data.frame(n = ns, power = power)
+}
+
 ##############
 # Iterate over index of model list
 iterate_models_power_marginaleffect <- function(model_list, ...) {
@@ -110,6 +180,26 @@ iterate_models_power_marginaleffect <- function(model_list, ...) {
       )
   })
 }
+
+#############
+# Simulate data and calculate power for a range of sample sizes
+iterate_formulas_power_linear <- function(formula_list, desired_power = 0.9, ...) {
+  lapply(1:length(formula_list), function(k) {
+    cur_formula <- formula_list[[k]]
+    cur_model_name <- names(formula_list)[k]
+    iterate_n_power_linear(
+      formula = cur_formula,
+      ...
+    ) %>%
+      dplyr::mutate(
+        model = cur_model_name
+      )
+  }) %>%
+    dplyr::bind_rows() %>%
+    dplyr::mutate(desired_power = desired_power,
+                  flag_achieve_power = power >= desired_power)
+}
+
 
 #############
 # Average results from a number of iterations
@@ -172,7 +262,7 @@ create_background_grob <- function(label_grob, x_pos, y_pos, colour, hjust = 0) 
     height = hgt + grid::unit(3, "mm"),
     just = c(hjust, 0.5),
     r = grid::unit(0.2, "snpc"),
-    gp = grid::gpar(fill = colour, col = colour)
+    gp = grid::gpar(fill = colour, col = colour, alpha = 0.8)
   )
 }
 

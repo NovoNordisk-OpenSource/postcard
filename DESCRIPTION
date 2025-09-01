@@ -23,6 +23,8 @@ Imports:
     dplyr,
     earth,
     generics,
+    gggrid,
+    ggplot2,
     magrittr,
     options,
     parsnip,
@@ -37,8 +39,6 @@ Imports:
     xgboost,
     yardstick
 Suggests: 
-    gggrid,
-    ggplot2,
     knitr,
     LiblineaR,
     MASS,
