@@ -208,7 +208,10 @@ mean_iters_marginaleffect <- function(
     model_list, test_data_fun,
     ns = 10:250, desired_power = 0.9, n_iter = 1,
     ...) {
-  cli::cli_progress_bar(paste0("Estimating power across sample sizes ", n_iter, " times"), total = n_iter)
+  cli::cli_progress_bar(
+    format = paste0(
+      "Estimating power across sample sizes `n_iter` times {cli::pb_bar} {cli::pb_current}/{cli::pb_total}"),
+    total = n_iter)
   power_iter <- lapply(
     1:n_iter,
     function(i) {
