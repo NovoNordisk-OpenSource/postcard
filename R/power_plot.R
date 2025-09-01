@@ -208,10 +208,11 @@ mean_iters_marginaleffect <- function(
     model_list, test_data_fun,
     ns = 10:250, desired_power = 0.9, n_iter = 1,
     ...) {
+  cli::cli_progress_bar(paste0("Estimating power across sample sizes ", n_iter, " times"), total = n_iter)
   power_iter <- lapply(
     1:n_iter,
     function(i) {
-      iterate_models_power_marginaleffect(
+      out <- iterate_models_power_marginaleffect(
         model_list = model_list,
         target_effect = target_effect, exposure_prob = exposure_prob,
         test_data_fun = test_data_fun,
@@ -219,10 +220,13 @@ mean_iters_marginaleffect <- function(
         ...
       ) %>%
         dplyr::bind_rows()
+      cli::cli_progress_update(.envir = parent.frame(2))
+      return(out)
     }
   ) %>%
     dplyr::bind_rows()
 
+  cli::cli_process_done()
   power_sum <- power_iter %>%
     dplyr::summarise(power = mean(power), .by = c(n, model)) %>%
     dplyr::mutate(desired_power = desired_power,
