@@ -100,7 +100,7 @@ print_symbolic_differentiation <- function(fun, arg, add_string = "", verbose = 
 get_predict_method <- function(object) {
   for (cls in class(object)) {
     pred_method <- tryCatch({
-      pred_method <- getS3method("predict", cls)
+      pred_method <- utils::getS3method("predict", cls)
       return(pred_method)
     }, error = function(e) NULL)
     if (!is.null(pred_method)) return(pred_method)
@@ -132,7 +132,7 @@ r_to_exposure_prob <- function(r) {
 add_power_assumption_params_to_data <- function(
     .data, power_fun = c("power_marginaleffect", "power_gs", "power_nc"), ...) {
   power_fun <- match.arg(power_fun)
-  power_fun_function <- getFromNamespace(power_fun, ns = "postcard")
+  power_fun_function <- utils::getFromNamespace(power_fun, ns = "postcard")
   if (power_fun == "power_marginaleffect") {
     dummy_power <- power_fun_function(
       response = 1,

@@ -13,10 +13,10 @@ test_that("snapshot tests", {
   expect_snapshot(va3)
 
   pgs <- power_gs(variance = 6, ate = 1, n = 200, r = 2, margin = 0.5, alpha = 0.05)
-  expect_snapshot(pgs)
+  expect_snapshot(pgs, transform = function(x) gsub("<environment: .+", "", x))
 
   ssgs2 <- samplesize_gs(variance = 27.3, ate = 2, r = 2/3, margin = -1, alpha = 0.05)
-  expect_snapshot(ssgs2)
+  expect_snapshot(ssgs2, transform = function(x) gsub("<environment: .+", "", x))
 })
 
 test_that("`power_gs` and `samplesize_gs` agree", {
@@ -24,7 +24,7 @@ test_that("`power_gs` and `samplesize_gs` agree", {
   common_args <- list(variance = 6, ate = 0.7, margin = 0, alpha = 0.025)
   ssgs <- do.call(samplesize_gs, c(common_args, list(power = desired_power)))
   pgs <- do.call(power_gs, c(common_args, list(n = ssgs)))
-  expect_equal(pgs, desired_power)
+  expect_equal(as.numeric(pgs), as.numeric(desired_power))
 })
 
 test_that("`variance_ancova` works", {

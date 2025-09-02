@@ -14,7 +14,7 @@ test_that("`power_marginaleffect` snapshot tests", {
     target_effect = 2,
     exposure_prob = exp_prob
   )
-  expect_snapshot(pow)
+  expect_snapshot(pow, transform = function(x) gsub("<environment: .+", "", x))
 
   spec_var_kappa <- power_marginaleffect(
     response = dat$Y,
@@ -24,7 +24,7 @@ test_that("`power_marginaleffect` snapshot tests", {
     target_effect = 2,
     exposure_prob = exp_prob
   )
-  expect_snapshot(spec_var_kappa)
+  expect_snapshot(spec_var_kappa, transform = function(x) gsub("<environment: .+", "", x))
 })
 
 test_that("`power_marginaleffect` gives errors", {

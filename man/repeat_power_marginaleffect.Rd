@@ -10,8 +10,8 @@ repeat_power_marginaleffect(
   exposure_prob,
   model_list = default_power_model_list(),
   test_data_fun = function(n) {
-     glm_data(Y ~ 1 + 3 * sin(W)^2 + 2 * X, W = runif(n,
-    min = -2, max = 2), X = rnorm(n))
+     glm_data(Y ~ 1 + 3 * sin(W)^2 + 2 * X, W =
+    stats::runif(n, min = -2, max = 2), X = rnorm(n))
  },
   ns = 10:250,
   desired_power = 0.9,
@@ -19,7 +19,7 @@ repeat_power_marginaleffect(
   ...
 )
 
-\method{plot}{postcard_rpm}(object, cols = NULL)
+\method{plot}{postcard_rpm}(x, cols = NULL)
 }
 \arguments{
 \item{target_effect}{Passed to \code{\link[=power_marginaleffect]{power_marginaleffect()}}}
@@ -44,6 +44,8 @@ effect.}
 \item{n_iter}{a \code{numeric} indicating a number of iterations to process and average over}
 
 \item{...}{additional arguments passed to \code{\link[=power_marginaleffect]{power_marginaleffect()}}}
+
+\item{x}{an object of class \code{postcard_rpm} created by \code{repeat_power_marginaleffect()}}
 
 \item{cols}{a (potentially named) \code{character} vector of colors for the different models}
 }

@@ -222,6 +222,7 @@ power_marginaleffect <- function(
   out <- 1 - f1
   structure(
     out,
+    samplesize = n_pred,
     target_effect = target_effect,
     exposure_prob = exposure_prob,
     estimand_fun = estimand_fun,

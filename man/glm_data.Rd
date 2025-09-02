@@ -4,7 +4,7 @@
 \alias{glm_data}
 \title{Generate data simulated from a GLM}
 \usage{
-glm_data(formula, ..., family = gaussian(), family_args = list(sd = 1))
+glm_data(formula, ..., family = gaussian(), family_args = NULL)
 }
 \arguments{
 \item{formula}{an object of class "formula" (or one that can be coerced to that class):
@@ -13,8 +13,7 @@ given under ‘Details’ in the \link{glm} documentation.}
 
 \item{...}{a \code{data.frame} with columns corresponding to variables used
 in \code{formula}, a named \code{list} of those variables, or individually provided
-named arguments of variables
-from}
+named arguments of variables}
 
 \item{family}{the \code{family} of the response. this can be a \code{character}
 string naming a family function, a family \code{function} or the result of
@@ -50,12 +49,14 @@ glm_data(Y ~ 1+2*x1-x2,
                 x2 = rgamma(10, shape = 2),
                 family = MASS::negative.binomial(2))
 
-# Provide variables as a list/data.frame
+# Provide variables as a list/data.frame and pass a link to the negative.binomial
+# function
 glm_data(resp ~ 1+2*x1-x2,
                 data.frame(
                   x1 = rnorm(10),
                   x2 = rgamma(10, shape = 2)
                 ),
-                family = MASS::negative.binomial(2))
+                family = MASS::negative.binomial(2),
+                family_args = list(link = "identity"))
 
 }

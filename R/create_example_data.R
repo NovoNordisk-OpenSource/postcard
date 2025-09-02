@@ -10,7 +10,6 @@
 #' @param ... a `data.frame` with columns corresponding to variables used
 #' in `formula`, a named `list` of those variables, or individually provided
 #' named arguments of variables
-#' from
 #' @param family the `family` of the response. this can be a `character`
 #' string naming a family function, a family `function` or the result of
 #' a `call` to a family function
@@ -36,19 +35,21 @@
 #'                 x2 = rgamma(10, shape = 2),
 #'                 family = MASS::negative.binomial(2))
 #'
-#' # Provide variables as a list/data.frame
+#' # Provide variables as a list/data.frame and pass a link to the negative.binomial
+#' # function
 #' glm_data(resp ~ 1+2*x1-x2,
 #'                 data.frame(
 #'                   x1 = rnorm(10),
 #'                   x2 = rgamma(10, shape = 2)
 #'                 ),
-#'                 family = MASS::negative.binomial(2))
+#'                 family = MASS::negative.binomial(2),
+#'                 family_args = list(link = "identity"))
 #'
 #' @export
 glm_data <- function(formula,
                      ...,
                      family = gaussian(),
-                     family_args = list(sd = 1)) {
+                     family_args = NULL) {
   formula <- check_formula(formula)
   family <- check_family(family)
 
@@ -138,7 +139,7 @@ check_family <- function(family) {
   }
   if (is.null(family$family)) {
     print(family)
-    stop("'family' not recognized")
+    cli::cli_abort("'family' not recognized")
   }
 
   return(family)

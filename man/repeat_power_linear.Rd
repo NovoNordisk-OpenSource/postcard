@@ -15,7 +15,7 @@ repeat_power_linear(
   ...
 )
 
-\method{plot}{postcard_rpl}(object, cols = NULL)
+\method{plot}{postcard_rpl}(x, cols = NULL)
 }
 \arguments{
 \item{ate}{Passed to \code{\link[=power_gs]{power_gs()}} or \code{\link[=power_nc]{power_nc()}}}
@@ -33,6 +33,8 @@ specifying what function in the \code{\link[=power_linear]{power_linear()}} topi
 \item{desired_power}{a \code{numeric} between 0 and 1 indicating the desired power level}
 
 \item{...}{Arguments passed to \code{\link[=variance_ancova]{variance_ancova()}} and \code{\link[=power_gs]{power_gs()}} or \code{\link[=power_nc]{power_nc()}}}
+
+\item{x}{an object of class \code{postcard_rpl} created by \code{repeat_power_linear()}}
 
 \item{cols}{a (potentially named) \code{character} vector of colors for the different models}
 }

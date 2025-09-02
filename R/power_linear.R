@@ -181,6 +181,7 @@ power_gs <- function(variance,
   )
   out <- structure(
     power,
+    samplesize = n,
     target_effect = ate,
     exposure_prob = r_to_exposure_prob(r),
     estimand_fun = default_estimand_funs("ate"),
@@ -205,7 +206,15 @@ samplesize_gs <- function(variance,
     (stats::qnorm(1 - alpha / 2) + stats::qnorm(power))^2 * variance /
     (ate - margin)^2 +
     stats::qnorm(1 - alpha / 2)^2/2
-  return(samplesize)
+  out <- structure(
+    samplesize,
+    power = power,
+    target_effect = ate,
+    exposure_prob = r_to_exposure_prob(r),
+    estimand_fun = default_estimand_funs("ate"),
+    margin = margin,
+    alpha = alpha
+  )
 }
 
 #' @rdname power_linear
@@ -270,6 +279,7 @@ power_nc <- function(variance,
   power <- 1 - stats::pt(q = stats::qt(1 - alpha / 2, df = df), df = df, ncp = nc)
   out <- structure(
     power,
+    samplesize = n,
     target_effect = ate,
     exposure_prob = r_to_exposure_prob(r),
     estimand_fun = default_estimand_funs("ate"),

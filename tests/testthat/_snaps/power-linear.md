@@ -1,40 +1,61 @@
-# `power_marginaleffect` snapshot tests
+# snapshot tests
 
     Code
-      pow
+      va1
     Output
-      [1] 0.9999991
+      [1] 0.8476228
+
+---
+
+    Code
+      va2
+    Output
+      [1] 0.8523504
+
+---
+
+    Code
+      va3
+    Output
+      [1] 5.46521
+
+---
+
+    Code
+      pgs
+    Output
+      [1] 0.2723615
       attr(,"samplesize")
-      [1] 100
+      [1] 200
       attr(,"target_effect")
-      [1] 2
+      [1] 1
       attr(,"exposure_prob")
-      [1] 0.5
+      [1] 0.6666667
       attr(,"estimand_fun")
       function(psi1, psi0) psi1-psi0
       
       attr(,"margin")
-      [1] 0
+      [1] 0.5
       attr(,"alpha")
       [1] 0.05
 
 ---
 
     Code
-      spec_var_kappa
+      ssgs2
     Output
-      [1] 0.9998617
-      attr(,"samplesize")
-      [1] 100
+      [1] 134.7229
+      attr(,"power")
+      [1] 0.9
       attr(,"target_effect")
       [1] 2
       attr(,"exposure_prob")
-      [1] 0.5
+      [1] 0.4
       attr(,"estimand_fun")
       function(psi1, psi0) psi1-psi0
       
       attr(,"margin")
-      [1] 0
+      [1] -1
       attr(,"alpha")
       [1] 0.05
 

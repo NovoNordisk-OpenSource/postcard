@@ -30,6 +30,7 @@ Imports:
     parsnip,
     rlang,
     rsample,
+    scales,
     stats,
     stringr,
     tidyselect,

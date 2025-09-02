@@ -42,7 +42,7 @@ repeat_power_marginaleffect <- function(
     test_data_fun = function(n) {
       glm_data(
         Y ~ 1+3*sin(W)^2+2*X,
-        W = runif(n, min = -2, max = 2),
+        W = stats::runif(n, min = -2, max = 2),
         X = rnorm(n)
       )
     },
@@ -65,11 +65,12 @@ repeat_power_marginaleffect <- function(
 
 #' @export
 #'
+#' @param x an object of class `postcard_rpm` created by `repeat_power_marginaleffect()`
 #' @param cols a (potentially named) `character` vector of colors for the different models
 #'
 #' @rdname repeat_power_marginaleffect
-plot.postcard_rpm <- function(object, cols = NULL) {
-  create_power_plot(object, cols = cols)
+plot.postcard_rpm <- function(x, cols = NULL) {
+  create_power_plot(x, cols = cols)
 }
 
 #############
@@ -77,7 +78,7 @@ plot.postcard_rpm <- function(object, cols = NULL) {
 default_power_model_list <- function(n = 1e3) {
   train_data <- glm_data(
     Y ~ 1+3*sin(W)^2,
-    W = runif(n, min = -2, max = 2)
+    W = stats::runif(n, min = -2, max = 2)
   )
   model_list <- list(
     "ANCOVA" = glm(Y ~ W, data = train_data),
@@ -97,9 +98,9 @@ iterate_n_power_marginaleffect <- function(
     target_effect, exposure_prob, model, test_data_fun, ns = 10:250, ...) {
 
   newdata_arg_name <- get_newdata_arg_name(model)
-  predict_args <- setNames(vector("list", 2), c("object", newdata_arg_name))
+  predict_args <- stats::setNames(vector("list", 2), c("object", newdata_arg_name))
 
-  power <- sapply(ns, FUN = function(n) {
+  pow <- sapply(ns, FUN = function(n) {
     test_data <- test_data_fun(n)
 
     predict_args[1:2] <- list(model, test_data)
@@ -116,7 +117,7 @@ iterate_n_power_marginaleffect <- function(
       ...
     )
   })
-  data.frame(n = ns, power = power)
+  data.frame(n = ns, power = pow)
 }
 
 ##############
@@ -167,11 +168,11 @@ mean_iters_marginaleffect <- function(
   cli::cli_process_done()
   power_sum <- power_iter %>%
     dplyr::group_by(dplyr::across(-power)) %>%
-    dplyr::summarise(power = mean(power)) %>%
+    dplyr::summarise(power = mean(.data$power)) %>%
     dplyr::ungroup() %>%
     dplyr::relocate("power") %>%
-    dplyr::mutate(desired_power = desired_power) %>%
-    dplyr::mutate(flag_achieve_power = power >= desired_power, .before = "desired_power")
+    dplyr::mutate(desired_power = .data$desired_power) %>%
+    dplyr::mutate(flag_achieve_power = .data$power >= .data$desired_power, .before = "desired_power")
 
   return(power_sum)
 }
@@ -228,11 +229,12 @@ repeat_power_linear <- function(
 
 #' @export
 #'
-#' @param cols a (potentially named) `character` vector of colors for the different models
+#' @inheritParams repeat_power_marginaleffect
+#' @param x an object of class `postcard_rpl` created by `repeat_power_linear()`
 #'
 #' @rdname repeat_power_linear
-plot.postcard_rpl <- function(object, cols = NULL) {
-  create_power_plot(object, cols = cols)
+plot.postcard_rpl <- function(x, cols = NULL) {
+  create_power_plot(x, cols = cols)
 }
 
 #############
@@ -240,7 +242,7 @@ plot.postcard_rpl <- function(object, cols = NULL) {
 iterate_n_power_linear <- function(
     ate, formula, train_data, power_fun = c("power_gs", "power_nc"), ns = 10:250, ...) {
   power_fun <- match.arg(power_fun)
-  power_fun <- getFromNamespace(power_fun, ns = "postcard")
+  power_fun <- utils::getFromNamespace(power_fun, ns = "postcard")
 
   extra_args <- list(...)
   extra_args_to_variance_ancova <- extra_args[names(extra_args) %in% names(formals(variance_ancova))]
@@ -279,7 +281,7 @@ iterate_formulas_power_linear <- function(formula_list, desired_power = 0.9, ...
   }) %>%
     dplyr::bind_rows() %>%
     dplyr::mutate(desired_power = desired_power) %>%
-    dplyr::mutate(flag_achieve_power = power >= desired_power, .before = "desired_power")
+    dplyr::mutate(flag_achieve_power = .data$power >= .data$desired_power, .before = "desired_power")
 }
 
 #####################
@@ -287,15 +289,15 @@ iterate_formulas_power_linear <- function(formula_list, desired_power = 0.9, ...
 add_plot_info_data_power <- function(data_power) {
   data_power_plot_info <- data_power %>%
     dplyr::summarise(
-      n_achieve_power = n[which(flag_achieve_power)[1]],
-      flag_group_achieve_power = any(flag_achieve_power),
+      n_achieve_power = .data$n[which(.data$flag_achieve_power)[1]],
+      flag_group_achieve_power = any(.data$flag_achieve_power),
       .by = "model"
     ) %>%
     dplyr::mutate(
       n_achieve_power = dplyr::case_when(
-        is.na(n_achieve_power) ~ Inf,
-        TRUE ~ n_achieve_power),
-      n_model_group = dplyr::n_distinct(model),
+        is.na(.data$n_achieve_power) ~ Inf,
+        TRUE ~ .data$n_achieve_power),
+      n_model_group = dplyr::n_distinct(.data$model),
       group_id_achieve_power = dplyr::row_number(),
       .by = "flag_group_achieve_power")
 
@@ -374,7 +376,7 @@ create_power_plot <- function(data_power, cols = NULL) {
   desired_power <- unique(plot_data$desired_power)
 
   plot_data %>%
-    ggplot2::ggplot(ggplot2::aes(x = n, y = power, color = model)) +
+    ggplot2::ggplot(ggplot2::aes(x = .data$n, y = .data$power, color = .data$model)) +
     ggplot2::geom_line(linewidth = 1.2, alpha = 0.8,
                        show.legend = FALSE) +
     ggplot2::geom_hline(
@@ -384,12 +386,12 @@ create_power_plot <- function(data_power, cols = NULL) {
     ) +
     gggrid::grid_group(
       grid_group_show_npower,
-      ggplot2::aes(x = n_achieve_power,
-                   y = desired_power,
-                   model = model,
-                   flag_group_achieve_power  = flag_group_achieve_power ,
-                   n_model_group = n_model_group,
-                   group_id_achieve_power = group_id_achieve_power)
+      ggplot2::aes(x = .data$n_achieve_power,
+                   y = .data$desired_power,
+                   model = .data$model,
+                   flag_group_achieve_power = .data$flag_group_achieve_power ,
+                   n_model_group = .data$n_model_group,
+                   group_id_achieve_power = .data$group_id_achieve_power)
     ) +
     ggplot2::scale_color_manual(
       name = "",
