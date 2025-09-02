@@ -17,8 +17,7 @@
 #' a symbolic description of the model to be fitted. The details of model specification are
 #' given under ‘Details’ in the [glm] documentation.
 #' @param exposure_indicator (name of) the *binary* variable in `data` that
-#' identifies randomisation groups. The variable is required to be binary to
-#' make the "orientation" of the `estimand_fun` clear.
+#' identifies randomisation groups. The variable is required to be binary currently.
 #' @param exposure_prob a `numeric` with the probability of being in
 #' "group 1" (rather than group 0) in groups defined by `exposure_indicator`.
 #' @param estimand_fun a `function` with arguments `psi1` and `psi0` specifying

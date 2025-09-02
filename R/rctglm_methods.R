@@ -16,18 +16,20 @@
 #' The function [estimand] (or short-hand version [est]) can be used to extract
 #' a `data.frame` with an estimated value and standard error of the estimand.
 #'
-#' A method for the generic [coef] has been added for `rctglm`
-#' (i.e., [coef.rctglm]), which uses the method `coef.glm` to extract coefficient
-#' information from the underlying `glm` fit in the procedure.
+#' A method for the generic [coef()] has been added for class `rctglm`, which uses the
+#' method [coef.glm()] to extract coefficient information from the underlying `glm` fit
+#' in the procedure. The same is true for the method defined for the [predict()] generic.
+#' The method for an `rctglm` class object calls [predict.glm()] on the `glm` fit
+#' contained within an `rctglm` object.
 #'
-#' @seealso The generic [rctglm()] which these are methods for.
+#' @seealso The generic [rctglm()] which produces `rctglm` class objects.
 #'
 #' @returns
 #' `estimand`/`est` returns a `data.frame` with columns `Estimate` and
 #' `Std. Error` with the estimate and standard error of the estimand.
 #'
-#' `coef` returns a named `numeric`, being the result of the `glm` method of
-#' `coef` on the `glm` object contained within an [rctglm] object.
+#' See [coef()] and [predict.glm()] for details on what is returned by the corresponding
+#' methods.
 #'
 #' @examples
 #' # Generate some data to showcase example
@@ -75,6 +77,12 @@ est <- function(object) {
 #' @rdname rctglm_methods
 coef.rctglm <- function(object, ...) {
   coef(object$glm)
+}
+
+#' @rdname rctglm_methods
+#' @export
+predict.rctglm <- function(object, ...) {
+  predict(object$glm, ...)
 }
 
 #' @rdname rctglm_methods

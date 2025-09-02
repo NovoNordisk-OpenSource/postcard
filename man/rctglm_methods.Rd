@@ -6,6 +6,7 @@
 \alias{estimand.rctglm}
 \alias{est}
 \alias{coef.rctglm}
+\alias{predict.rctglm}
 \alias{print.rctglm}
 \title{Methods for objects of class \code{rctglm}}
 \usage{
@@ -16,6 +17,8 @@ estimand(object)
 est(object)
 
 \method{coef}{rctglm}(object, ...)
+
+\method{predict}{rctglm}(object, ...)
 
 \method{print}{rctglm}(x, digits = max(3L, getOption("digits") - 3L), ...)
 }
@@ -32,8 +35,8 @@ est(object)
 \code{estimand}/\code{est} returns a \code{data.frame} with columns \code{Estimate} and
 \verb{Std. Error} with the estimate and standard error of the estimand.
 
-\code{coef} returns a named \code{numeric}, being the result of the \code{glm} method of
-\code{coef} on the \code{glm} object contained within an \link{rctglm} object.
+See \code{\link[=coef]{coef()}} and \code{\link[=predict.glm]{predict.glm()}} for details on what is returned by the corresponding
+methods.
 }
 \description{
 Methods mostly to extract information from model fit and inference. See
@@ -43,9 +46,11 @@ details for more information on each method.
 The function \link{estimand} (or short-hand version \link{est}) can be used to extract
 a \code{data.frame} with an estimated value and standard error of the estimand.
 
-A method for the generic \link{coef} has been added for \code{rctglm}
-(i.e., \link{coef.rctglm}), which uses the method \code{coef.glm} to extract coefficient
-information from the underlying \code{glm} fit in the procedure.
+A method for the generic \code{\link[=coef]{coef()}} has been added for class \code{rctglm}, which uses the
+method \code{\link[=coef.glm]{coef.glm()}} to extract coefficient information from the underlying \code{glm} fit
+in the procedure. The same is true for the method defined for the \code{\link[=predict]{predict()}} generic.
+The method for an \code{rctglm} class object calls \code{\link[=predict.glm]{predict.glm()}} on the \code{glm} fit
+contained within an \code{rctglm} object.
 }
 \examples{
 # Generate some data to showcase example
@@ -71,5 +76,5 @@ estimand(ate)
 coef(ate)
 }
 \seealso{
-The generic \code{\link[=rctglm]{rctglm()}} which these are methods for.
+The generic \code{\link[=rctglm]{rctglm()}} which produces \code{rctglm} class objects.
 }
