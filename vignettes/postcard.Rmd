@@ -80,7 +80,7 @@ ate
 
 The structure of such an `rctglm` object is broken down in the **`Value`** section of the documentation in `rctglm()`.
     
-Methods available are `estimand` (or the shorthand `est`) which prints a `data.frame` with and estimate of the estimand and its standard error. A method for `coef` is also available to extract coefficients from the underlying `glm` fit.
+Methods available are `estimand` (or the shorthand `est`) which prints a `data.frame` with and estimate of the estimand and its standard error. A method for the generics `coef` and `predict` are also available that are "shortcuts" to applying the corresponding methods to the underlying `glm` fit.
 ```{r}
 est(ate)
 ```
