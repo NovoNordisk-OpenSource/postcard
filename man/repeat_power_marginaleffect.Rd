@@ -2,7 +2,8 @@
 % Please edit documentation in R/power_plot.R
 \name{repeat_power_marginaleffect}
 \alias{repeat_power_marginaleffect}
-\title{Create data of power curves calculated using \code{\link[=power_marginaleffect]{power_marginaleffect()}} for a list of models}
+\alias{plot.postcard_rpm}
+\title{Create data and plot power curves calculated using \code{\link[=power_marginaleffect]{power_marginaleffect()}} for a list of models}
 \usage{
 repeat_power_marginaleffect(
   target_effect,
@@ -17,6 +18,8 @@ repeat_power_marginaleffect(
   n_iter = 1,
   ...
 )
+
+\method{plot}{postcard_rpm}(object, cols = NULL)
 }
 \arguments{
 \item{target_effect}{Passed to \code{\link[=power_marginaleffect]{power_marginaleffect()}}}
@@ -41,6 +44,8 @@ effect.}
 \item{n_iter}{a \code{numeric} indicating a number of iterations to process and average over}
 
 \item{...}{additional arguments passed to \code{\link[=power_marginaleffect]{power_marginaleffect()}}}
+
+\item{cols}{a (potentially named) \code{character} vector of colors for the different models}
 }
 \value{
 a \code{ggplot2} object

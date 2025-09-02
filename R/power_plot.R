@@ -1,4 +1,4 @@
-#' Create data of power curves calculated using [power_marginaleffect()] for a list of models
+#' Create data and plot power curves calculated using [power_marginaleffect()] for a list of models
 #'
 #' Iterate a process of simulating test data from `test_data_fun`, making predictions
 #' using models in `model_list`, and calculating power using [power_marginaleffect()]
@@ -21,7 +21,9 @@
 #' effect.
 #' @param ... additional arguments passed to [power_marginaleffect()]
 #'
-#' @returns a `ggplot2` object
+#' @returns `repeat_power_marginal` returns an object of class `postcard_rpm`, which is
+#' just a `data.frame` with a `plot` method defined. The `plot` method returns a
+#' `ggplot2` object.
 #' @export
 #'
 #' @examples
@@ -54,10 +56,21 @@ repeat_power_marginaleffect <- function(
       ...)
   structure(
     out,
-    class = c("postcard_power_data", class(out))
+    class = c("postcard_rpm", class(out))
   )
 }
 
+#' @export
+#'
+#' @param cols a (potentially named) `character` vector of colors for the different models
+#'
+#' @rdname repeat_power_marginaleffect
+plot.postcard_rpm <- function(object, cols = NULL) {
+  create_power_plot(object, cols = cols)
+}
+
+#############
+# Define default list of models
 default_power_model_list <- function(n = 1e3) {
   train_data <- glm_data(
     Y ~ 1+3*sin(W)^2,
@@ -160,7 +173,7 @@ mean_iters_marginaleffect <- function(
   return(power_sum)
 }
 
-#' Create data of power curves calculated using functions in [power_linear()] for a list of formulas/models
+#' Create data and plot power curves calculated using functions in [power_linear()] for a list of formulas/models
 #'
 #' Estimate a variance for power approximation using [variance_ancova()] for each formula
 #' in `formula_list` on `train_data`. Then calculate power using the function with name
@@ -176,7 +189,9 @@ mean_iters_marginaleffect <- function(
 #' specifying what function in the [power_linear()] topic to use
 #' @param ... Arguments passed to [variance_ancova()] and [power_gs()] or [power_nc()]
 #'
-#' @returns a `ggplot2` object
+#' @returns `repeat_power_linear` returns an object of class `postcard_rpl`, which is
+#' just a `data.frame` with a `plot` method defined. The `plot` method returns a
+#' `ggplot2` object.
 #' @export
 #'
 #' @examples
@@ -201,8 +216,17 @@ repeat_power_linear <- function(
       ...)
   structure(
     out,
-    class = c("postcard_power_data", class(out))
+    class = c("postcard_rpl", class(out))
   )
+}
+
+#' @export
+#'
+#' @param cols a (potentially named) `character` vector of colors for the different models
+#'
+#' @rdname repeat_power_linear
+plot.postcard_rpl <- function(object, cols = NULL) {
+  create_power_plot(object, cols = cols)
 }
 
 #############
@@ -334,14 +358,16 @@ grid_group_show_npower <- function(data, coords) {
 }
 
 # Create the plot
-create_power_plot <- function(data_power, desired_power = 0.9,
-                              cols = NULL) {
+create_power_plot <- function(data_power, cols = NULL) {
   if (is.null(cols)) {
     n_models <- length(unique(data_power$model))
     cols <- scales::pal_hue()(n_models)
   }
 
-  add_plot_info_data_power(data_power) %>%
+  plot_data <- add_plot_info_data_power(data_power)
+  desired_power <- unique(plot_data$desired_power)
+
+  plot_data %>%
     ggplot2::ggplot(ggplot2::aes(x = n, y = power, color = model)) +
     ggplot2::geom_line(linewidth = 1.2, alpha = 0.8,
                        show.legend = FALSE) +

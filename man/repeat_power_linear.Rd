@@ -2,7 +2,8 @@
 % Please edit documentation in R/power_plot.R
 \name{repeat_power_linear}
 \alias{repeat_power_linear}
-\title{Create data of power curves calculated using functions in \code{\link[=power_linear]{power_linear()}} for a list of formulas/models}
+\alias{plot.postcard_rpl}
+\title{Create data and plot power curves calculated using functions in \code{\link[=power_linear]{power_linear()}} for a list of formulas/models}
 \usage{
 repeat_power_linear(
   ate,
@@ -13,6 +14,8 @@ repeat_power_linear(
   desired_power = 0.9,
   ...
 )
+
+\method{plot}{postcard_rpl}(object, cols = NULL)
 }
 \arguments{
 \item{ate}{Passed to \code{\link[=power_gs]{power_gs()}} or \code{\link[=power_nc]{power_nc()}}}
@@ -30,6 +33,8 @@ specifying what function in the \code{\link[=power_linear]{power_linear()}} topi
 \item{desired_power}{a \code{numeric} between 0 and 1 indicating the desired power level}
 
 \item{...}{Arguments passed to \code{\link[=variance_ancova]{variance_ancova()}} and \code{\link[=power_gs]{power_gs()}} or \code{\link[=power_nc]{power_nc()}}}
+
+\item{cols}{a (potentially named) \code{character} vector of colors for the different models}
 }
 \value{
 a \code{ggplot2} object
