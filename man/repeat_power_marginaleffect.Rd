@@ -48,7 +48,9 @@ effect.}
 \item{cols}{a (potentially named) \code{character} vector of colors for the different models}
 }
 \value{
-a \code{ggplot2} object
+\code{repeat_power_marginal} returns an object of class \code{postcard_rpm}, which is
+just a \code{data.frame} with a \code{plot} method defined. The \code{plot} method returns a
+\code{ggplot2} object.
 }
 \description{
 Iterate a process of simulating test data from \code{test_data_fun}, making predictions
@@ -58,9 +60,13 @@ and used to create a plot of the resulting power curves.
 }
 \examples{
 # A simple use case with default models and test data
-repeat_power_marginaleffect(target_effect = 1.3, exposure_prob = 0.5)
+rpm1305 <- repeat_power_marginaleffect(target_effect = 1.3, exposure_prob = 0.5)
 
 # Specify a margin with the ellipsis argument
 repeat_power_marginaleffect(target_effect = 1.3, exposure_prob = 0.5, margin = 1.3)
 
+}
+\seealso{
+\code{\link[=repeat_power_linear]{repeat_power_linear()}} for a similar implementation to iterate the process
+of approximating power with the functions in \code{\link[=power_linear]{power_linear()}}
 }

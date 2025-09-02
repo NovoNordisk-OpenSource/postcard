@@ -205,5 +205,5 @@ power_marginaleffect(
 
 }
 \seealso{
-See \link{power_linear} for power approximation functionalities for linear models.
+See \link{power_linear} for power approximation functionalities specific to linear models.
 }

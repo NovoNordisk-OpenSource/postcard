@@ -21,6 +21,9 @@
 #' effect.
 #' @param ... additional arguments passed to [power_marginaleffect()]
 #'
+#' @seealso [repeat_power_linear()] for a similar implementation to iterate the process
+#' of approximating power with the functions in [power_linear()]
+#'
 #' @returns `repeat_power_marginal` returns an object of class `postcard_rpm`, which is
 #' just a `data.frame` with a `plot` method defined. The `plot` method returns a
 #' `ggplot2` object.
@@ -28,7 +31,7 @@
 #'
 #' @examples
 #' # A simple use case with default models and test data
-#' repeat_power_marginaleffect(target_effect = 1.3, exposure_prob = 0.5)
+#' rpm1305 <- repeat_power_marginaleffect(target_effect = 1.3, exposure_prob = 0.5)
 #'
 #' # Specify a margin with the ellipsis argument
 #' repeat_power_marginaleffect(target_effect = 1.3, exposure_prob = 0.5, margin = 1.3)
@@ -193,6 +196,9 @@ mean_iters_marginaleffect <- function(
 #' just a `data.frame` with a `plot` method defined. The `plot` method returns a
 #' `ggplot2` object.
 #' @export
+#'
+#' @seealso [repeat_power_marginaleffect()] for a similar implementation to iterate the
+#' process of approximating power with the [power_marginaleffect()]
 #'
 #' @examples
 #' train_data <- glm_data(

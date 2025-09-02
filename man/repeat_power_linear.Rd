@@ -37,7 +37,9 @@ specifying what function in the \code{\link[=power_linear]{power_linear()}} topi
 \item{cols}{a (potentially named) \code{character} vector of colors for the different models}
 }
 \value{
-a \code{ggplot2} object
+\code{repeat_power_linear} returns an object of class \code{postcard_rpl}, which is
+just a \code{data.frame} with a \code{plot} method defined. The \code{plot} method returns a
+\code{ggplot2} object.
 }
 \description{
 Estimate a variance for power approximation using \code{\link[=variance_ancova]{variance_ancova()}} for each formula
@@ -53,4 +55,8 @@ train_data <- glm_data(
 repeat_power_linear(
   ate = 1.3, formula_list = list(ANCOVA = Y ~ W, ANCOVA2 = Y ~ 1),
   train_data = train_data)
+}
+\seealso{
+\code{\link[=repeat_power_marginaleffect]{repeat_power_marginaleffect()}} for a similar implementation to iterate the
+process of approximating power with the \code{\link[=power_marginaleffect]{power_marginaleffect()}}
 }

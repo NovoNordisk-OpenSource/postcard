@@ -193,3 +193,7 @@ power_nc(n = n_test, variance = va_nocov, df = 199, ate = 1)
 # Adjusting for all covariates in data generating process
 power_nc(n = n_test, variance = va_cov, df = 196, ate = 1.8, margin = 1, r = 2)
 }
+\seealso{
+See \link{power_marginaleffect} for a power approximation function that works for a larger
+class of models.
+}

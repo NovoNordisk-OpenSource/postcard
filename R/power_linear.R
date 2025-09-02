@@ -24,6 +24,10 @@
 #'
 #' The user can estimate the `variance` any way they see fit.
 #'
+#' @seealso
+#' See [power_marginaleffect] for a power approximation function that works for a larger
+#' class of models.
+#'
 #' @returns
 #' All functions return a `numeric`. `variance_ancova` returns a `numeric` with
 #' a variance estimated from data to used for power estimation and sample size
