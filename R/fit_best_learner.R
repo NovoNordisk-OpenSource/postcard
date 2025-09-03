@@ -128,7 +128,7 @@ add_learners <- function(preproc, learners) {
   )
   for (learner_name in names(learners)){
     for (preproc_name in get_preproc_names(wf)) {
-      wf %<>%
+      wf <- wf %>%
         workflowsets::option_add(
           id = stringr::str_c(preproc_name, "_", learner_name),
           grid = learners[[learner_name]]$grid

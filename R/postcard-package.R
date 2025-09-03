@@ -2,9 +2,8 @@
 "_PACKAGE"
 
 ## usethis namespace: start
+#' @importFrom dplyr %>%
 #' @importFrom gggrid grid_group
-#' @importFrom magrittr %<>%
-#' @importFrom magrittr %>%
 #' @importFrom rlang .data
 #' @importFrom rlang :=
 #' @importFrom scales pal_hue

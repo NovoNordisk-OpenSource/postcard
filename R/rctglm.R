@@ -167,7 +167,7 @@ rctglm <- function(formula,
 
   response_var <- model$y
   exposure_indicator_var <- data %>%
-    dplyr::pull(tidyselect::all_of(exposure_indicator_name))
+    dplyr::pull(dplyr::all_of(exposure_indicator_name))
 
   full_model_fitted.values_counterfactual <- predict_counterfactual_means(
     model = model,
