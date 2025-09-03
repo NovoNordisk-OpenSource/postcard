@@ -36,7 +36,8 @@ specifying what function in the \code{\link[=power_linear]{power_linear()}} topi
 
 \item{x}{an object of class \code{postcard_rpl} created by \code{repeat_power_linear()}}
 
-\item{cols}{a (potentially named) \code{character} vector of colors for the different models}
+\item{cols}{a (potentially named) \code{character} vector of colors for the different models
+in \code{formula_list}}
 }
 \value{
 \code{repeat_power_linear} returns an object of class \code{postcard_rpl}, which is

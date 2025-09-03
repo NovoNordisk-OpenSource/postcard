@@ -48,7 +48,8 @@ data used to fit the default models in \code{model_list}.}
 
 \item{x}{an object of class \code{postcard_rpm} created by \code{repeat_power_marginaleffect()}}
 
-\item{cols}{a (potentially named) \code{character} vector of colors for the different models}
+\item{cols}{a (potentially named) \code{character} vector of colors for the different models
+in \code{model_list}}
 }
 \value{
 \code{repeat_power_marginal} returns an object of class \code{postcard_rpm}, which is

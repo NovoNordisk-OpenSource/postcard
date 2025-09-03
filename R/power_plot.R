@@ -67,6 +67,7 @@ repeat_power_marginaleffect <- function(
 #'
 #' @param x an object of class `postcard_rpm` created by `repeat_power_marginaleffect()`
 #' @param cols a (potentially named) `character` vector of colors for the different models
+#' in `model_list`
 #'
 #' @rdname repeat_power_marginaleffect
 plot.postcard_rpm <- function(x, cols = NULL, ...) {
@@ -244,8 +245,9 @@ repeat_power_linear <- function(
 
 #' @export
 #'
-#' @inheritParams repeat_power_marginaleffect
 #' @param x an object of class `postcard_rpl` created by `repeat_power_linear()`
+#' @param cols a (potentially named) `character` vector of colors for the different models
+#' in `formula_list`
 #'
 #' @rdname repeat_power_linear
 plot.postcard_rpl <- function(x, cols = NULL, ...) {
