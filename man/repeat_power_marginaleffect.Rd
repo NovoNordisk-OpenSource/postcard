@@ -10,16 +10,16 @@ repeat_power_marginaleffect(
   exposure_prob,
   model_list = default_power_model_list(),
   test_data_fun = function(n) {
-     glm_data(Y ~ 1 + 3 * sin(W)^2 + 2 * X, W =
-    stats::runif(n, min = -2, max = 2), X = rnorm(n))
+     glm_data(Y ~ 1 + 3 * sin(W)^2, W = stats::runif(n,
+    min = -2, max = 2))
  },
-  ns = 10:250,
+  ns = 5:100,
   desired_power = 0.9,
   n_iter = 1,
   ...
 )
 
-\method{plot}{postcard_rpm}(x, cols = NULL)
+\method{plot}{postcard_rpm}(x, cols = NULL, ...)
 }
 \arguments{
 \item{target_effect}{Passed to \code{\link[=power_marginaleffect]{power_marginaleffect()}}}
@@ -30,12 +30,13 @@ repeat_power_marginaleffect(
 data sets that are then passed to \code{\link[=power_marginaleffect]{power_marginaleffect()}} as \code{predictions}. The
 elements of \code{model_list} need to have an existing \code{predict()} method. The default is
 an ANCOVA and a prognostic model fitted with \code{\link[=fit_best_learner]{fit_best_learner()}} to a simple data set
-generated with a non-linear effect of a single covariate using \code{\link[=glm_data]{glm_data()}}.}
+of 1000 observations generated with a non-linear effect of a single covariate using
+\code{\link[=glm_data]{glm_data()}}.}
 
 \item{test_data_fun}{a \code{function} with a single argument \code{n} that generates test
 data sets for the sample sizes \code{ns} specified. The default generates data using
-\code{\link[=glm_data]{glm_data()}} with two covariates, one with a non-linear and the other with a linear
-effect.}
+\code{\link[=glm_data]{glm_data()}} with the same data generating process as the training
+data used to fit the default models in \code{model_list}.}
 
 \item{ns}{a \code{numeric} vector of sample sizes}
 

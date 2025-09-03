@@ -14,11 +14,12 @@
 #' data sets that are then passed to [power_marginaleffect()] as `predictions`. The
 #' elements of `model_list` need to have an existing `predict()` method. The default is
 #' an ANCOVA and a prognostic model fitted with [fit_best_learner()] to a simple data set
-#' generated with a non-linear effect of a single covariate using [glm_data()].
+#' of 1000 observations generated with a non-linear effect of a single covariate using
+#' [glm_data()].
 #' @param test_data_fun a `function` with a single argument `n` that generates test
 #' data sets for the sample sizes `ns` specified. The default generates data using
-#' [glm_data()] with two covariates, one with a non-linear and the other with a linear
-#' effect.
+#' [glm_data()] with the same data generating process as the training
+#' data used to fit the default models in `model_list`.
 #' @param ... additional arguments passed to [power_marginaleffect()]
 #'
 #' @seealso [repeat_power_linear()] for a similar implementation to iterate the process
@@ -41,12 +42,11 @@ repeat_power_marginaleffect <- function(
     model_list = default_power_model_list(),
     test_data_fun = function(n) {
       glm_data(
-        Y ~ 1+3*sin(W)^2+2*X,
-        W = stats::runif(n, min = -2, max = 2),
-        X = rnorm(n)
+        Y ~ 1+3*sin(W)^2,
+        W = stats::runif(n, min = -2, max = 2)
       )
     },
-    ns = 10:250, desired_power = 0.9, n_iter = 1,
+    ns = 5:100, desired_power = 0.9, n_iter = 1,
     ...) {
 
   args <- c(as.list(environment()), list(...))
@@ -69,7 +69,7 @@ repeat_power_marginaleffect <- function(
 #' @param cols a (potentially named) `character` vector of colors for the different models
 #'
 #' @rdname repeat_power_marginaleffect
-plot.postcard_rpm <- function(x, cols = NULL) {
+plot.postcard_rpm <- function(x, cols = NULL, ...) {
   create_power_plot(x, cols = cols)
 }
 
@@ -85,10 +85,7 @@ default_power_model_list <- function(n = 1e3) {
     "ANCOVA with prognostic score" = fit_best_learner(
       list(mod = Y ~ W),
       data = train_data,
-      verbose = 0),
-    TEST = glm(Y ~ W - 1, data = train_data %>% dplyr::mutate(W = W + 20)),
-    TEST1 = glm(Y ~ W - 1, data = train_data %>% dplyr::mutate(W = W + 20)),
-    TEST2 = glm(Y ~ W - 1, data = train_data %>% dplyr::mutate(W = W + 20))
+      verbose = 0)
   )
 }
 
@@ -171,7 +168,7 @@ mean_iters_marginaleffect <- function(
     dplyr::summarise(power = mean(.data$power)) %>%
     dplyr::ungroup() %>%
     dplyr::relocate("power") %>%
-    dplyr::mutate(desired_power = .data$desired_power) %>%
+    dplyr::mutate(desired_power = desired_power) %>%
     dplyr::mutate(flag_achieve_power = .data$power >= .data$desired_power, .before = "desired_power")
 
   return(power_sum)
@@ -203,16 +200,34 @@ mean_iters_marginaleffect <- function(
 #'
 #' @examples
 #' train_data <- glm_data(
-#'   Y ~ 1+3*sin(W)^2,
-#'   W = runif(1e3, min = -2, max = 2)
+#'   Y ~ 1+1.5*sin(W)+2*X,
+#'   W = runif(1e3, min = -2, max = 2),
+#'   X = rnorm(1e3, sd = 3)
 #' )
-#' repeat_power_linear(
-#'   ate = 1.3, formula_list = list(ANCOVA = Y ~ W, ANCOVA2 = Y ~ 1),
+#' rpl <- repeat_power_linear(
+#'   ate = 1.3,
+#'   formula_list = list("ANCOVA 1 covariate" = Y ~ X, "ANCOVA 2 covariates" = Y ~ W + X),
 #'   train_data = train_data)
+#'
+#' rpl_nc <- repeat_power_linear(
+#'   ate = 1.3,
+#'   formula_list = list("ANCOVA 1 covariate" = Y ~ X, "ANCOVA 2 covariates" = Y ~ W + X),
+#'   train_data = train_data,
+#'   power_fun = "power_nc",
+#'   df = 1e3-3,
+#'   deflation = 0.8,
+#'   margin = 0.2,
+#'   r = 2)
+#'
+#' \dontrun{
+#' plot(rpl)
+#'
+#' plot(rpl_nc)
+#' }
 repeat_power_linear <- function(
     ate, formula_list, train_data,
     power_fun = c("power_gs", "power_nc"),
-    ns = 10:250, desired_power = 0.9,
+    ns = 5:100, desired_power = 0.9,
     ...) {
   power_fun <- match.arg(power_fun)
   args <- c(as.list(environment()), list(...))
@@ -233,7 +248,7 @@ repeat_power_linear <- function(
 #' @param x an object of class `postcard_rpl` created by `repeat_power_linear()`
 #'
 #' @rdname repeat_power_linear
-plot.postcard_rpl <- function(x, cols = NULL) {
+plot.postcard_rpl <- function(x, cols = NULL, ...) {
   create_power_plot(x, cols = cols)
 }
 
@@ -375,6 +390,8 @@ create_power_plot <- function(data_power, cols = NULL) {
   plot_data <- add_plot_info_data_power(data_power)
   desired_power <- unique(plot_data$desired_power)
 
+  yaxis_breaks <- unique(sort(c(desired_power, c(0, 0.2, 0.4, 0.6, 0.8, 1))))
+
   plot_data %>%
     ggplot2::ggplot(ggplot2::aes(x = .data$n, y = .data$power, color = .data$model)) +
     ggplot2::geom_line(linewidth = 1.2, alpha = 0.8,
@@ -397,9 +414,10 @@ create_power_plot <- function(data_power, cols = NULL) {
       name = "",
       values = cols) +
     ggplot2::scale_y_continuous(
-      breaks = c(0, 0.2, 0.4, 0.6, 0.8, 1),
+      breaks = yaxis_breaks,
       labels = function(x) paste0(x*100, "%")
     ) +
+    ggplot2::coord_cartesian(ylim = c(0,1)) +
     ggplot2::labs(x = "Total sample size", y = "Power") +
     ggplot2::theme(plot.title = ggplot2::element_text(
       face = "bold",

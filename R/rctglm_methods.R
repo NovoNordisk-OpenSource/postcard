@@ -16,8 +16,8 @@
 #' The function [estimand] (or short-hand version [est]) can be used to extract
 #' a `data.frame` with an estimated value and standard error of the estimand.
 #'
-#' A method for the generic [coef()] has been added for class `rctglm`, which uses the
-#' method [coef.glm()] to extract coefficient information from the underlying `glm` fit
+#' A method for the generic [coef()] has been added for class `rctglm`, which
+#' extracts coefficient information from the underlying `glm` fit
 #' in the procedure. The same is true for the method defined for the [predict()] generic.
 #' The method for an `rctglm` class object calls [predict.glm()] on the `glm` fit
 #' contained within an `rctglm` object.

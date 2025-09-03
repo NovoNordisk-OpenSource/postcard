@@ -46,8 +46,8 @@ details for more information on each method.
 The function \link{estimand} (or short-hand version \link{est}) can be used to extract
 a \code{data.frame} with an estimated value and standard error of the estimand.
 
-A method for the generic \code{\link[=coef]{coef()}} has been added for class \code{rctglm}, which uses the
-method \code{\link[=coef.glm]{coef.glm()}} to extract coefficient information from the underlying \code{glm} fit
+A method for the generic \code{\link[=coef]{coef()}} has been added for class \code{rctglm}, which
+extracts coefficient information from the underlying \code{glm} fit
 in the procedure. The same is true for the method defined for the \code{\link[=predict]{predict()}} generic.
 The method for an \code{rctglm} class object calls \code{\link[=predict.glm]{predict.glm()}} on the \code{glm} fit
 contained within an \code{rctglm} object.

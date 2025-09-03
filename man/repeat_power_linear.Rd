@@ -10,12 +10,12 @@ repeat_power_linear(
   formula_list,
   train_data,
   power_fun = c("power_gs", "power_nc"),
-  ns = 10:250,
+  ns = 5:100,
   desired_power = 0.9,
   ...
 )
 
-\method{plot}{postcard_rpl}(x, cols = NULL)
+\method{plot}{postcard_rpl}(x, cols = NULL, ...)
 }
 \arguments{
 \item{ate}{Passed to \code{\link[=power_gs]{power_gs()}} or \code{\link[=power_nc]{power_nc()}}}
@@ -51,12 +51,30 @@ treatment effect of \code{ate}.
 }
 \examples{
 train_data <- glm_data(
-  Y ~ 1+3*sin(W)^2,
-  W = runif(1e3, min = -2, max = 2)
+  Y ~ 1+1.5*sin(W)+2*X,
+  W = runif(1e3, min = -2, max = 2),
+  X = rnorm(1e3, sd = 3)
 )
-repeat_power_linear(
-  ate = 1.3, formula_list = list(ANCOVA = Y ~ W, ANCOVA2 = Y ~ 1),
+rpl <- repeat_power_linear(
+  ate = 1.3,
+  formula_list = list("ANCOVA 1 covariate" = Y ~ X, "ANCOVA 2 covariates" = Y ~ W + X),
   train_data = train_data)
+
+rpl_nc <- repeat_power_linear(
+  ate = 1.3,
+  formula_list = list("ANCOVA 1 covariate" = Y ~ X, "ANCOVA 2 covariates" = Y ~ W + X),
+  train_data = train_data,
+  power_fun = "power_nc",
+  df = 1e3-3,
+  deflation = 0.8,
+  margin = 0.2,
+  r = 2)
+
+\dontrun{
+plot(rpl)
+
+plot(rpl_nc)
+}
 }
 \seealso{
 \code{\link[=repeat_power_marginaleffect]{repeat_power_marginaleffect()}} for a similar implementation to iterate the
