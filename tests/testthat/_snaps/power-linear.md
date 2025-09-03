@@ -33,7 +33,7 @@
       [1] 0.6666667
       attr(,"estimand_fun")
       function(psi1, psi0) psi1-psi0
-      
+      env_placeholder
       attr(,"margin")
       [1] 0.5
       attr(,"alpha")
@@ -53,7 +53,7 @@
       [1] 0.4
       attr(,"estimand_fun")
       function(psi1, psi0) psi1-psi0
-      
+      env_placeholder
       attr(,"margin")
       [1] -1
       attr(,"alpha")
