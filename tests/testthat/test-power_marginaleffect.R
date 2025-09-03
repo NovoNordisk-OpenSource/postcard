@@ -14,7 +14,10 @@ test_that("`power_marginaleffect` snapshot tests", {
     target_effect = 2,
     exposure_prob = exp_prob
   )
-  expect_snapshot(pow, transform = function(x) gsub("<environment: .+", "", x))
+  # Extract the body of the estimand_fun to avoid the environment in the snapshot test
+  # `transform` argument causes problems with CI
+  attr(pow, "estimand_fun") <- body(attr(pow, "estimand_fun"))
+  expect_snapshot(pow)
 
   spec_var_kappa <- power_marginaleffect(
     response = dat$Y,
@@ -24,7 +27,10 @@ test_that("`power_marginaleffect` snapshot tests", {
     target_effect = 2,
     exposure_prob = exp_prob
   )
-  expect_snapshot(spec_var_kappa, transform = function(x) gsub("<environment: .+", "", x))
+  # Extract the body of the estimand_fun to avoid the environment in the snapshot test
+  # `transform` argument causes problems with CI
+  attr(spec_var_kappa, "estimand_fun") <- body(attr(spec_var_kappa, "estimand_fun"))
+  expect_snapshot(spec_var_kappa)
 })
 
 test_that("`power_marginaleffect` gives errors", {
