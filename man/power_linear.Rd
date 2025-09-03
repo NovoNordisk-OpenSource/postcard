@@ -8,13 +8,13 @@
 \alias{power_nc}
 \title{Power and sample size estimation for linear models}
 \usage{
-variance_ancova(formula, data, inflation = 1, deflation = 1)
+variance_ancova(formula, data, inflation = 1, deflation = 1, ...)
 
-power_gs(variance, ate, n, r = 1, margin = 0, alpha = 0.05)
+power_gs(variance, ate, n, r = 1, margin = 0, alpha = 0.05, ...)
 
-samplesize_gs(variance, ate, r = 1, margin = 0, power = 0.9, alpha = 0.05)
+samplesize_gs(variance, ate, r = 1, margin = 0, power = 0.9, alpha = 0.05, ...)
 
-power_nc(variance, df, ate, n, r = 1, margin = 0, alpha = 0.05)
+power_nc(variance, df, ate, n, r = 1, margin = 0, alpha = 0.05, ...)
 }
 \arguments{
 \item{formula}{an object of class "formula" (or one that can be coerced to that class):
@@ -35,6 +35,9 @@ to obtain a more conservative estimate of the marginal response variance.}
 Default is \code{1} which means the estimate of \eqn{R^2} is unchanged. Use values
 below \code{1} to obtain a more conservative estimate of the coefficient of determination.
 See details about how \eqn{R^2} related to the estimation.}
+
+\item{...}{Not currently used. Here to accomodate implementation of \code{...} for the
+\code{\link[=repeat_power_linear]{repeat_power_linear()}} function.}
 
 \item{variance}{a \code{numeric} variance to use for the approximation. See more details
 in documentation sections of each power approximating function.}

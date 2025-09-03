@@ -2,6 +2,9 @@
 #'
 #' @name power_linear
 #'
+#' @param ... Not currently used. Here to accomodate implementation of `...` for the
+#' [repeat_power_linear()] function.
+#'
 #' @details
 #'
 #' This details section provides information about relation between arguments to
@@ -89,7 +92,7 @@ NULL
 #' See details about how \eqn{R^2} related to the estimation.
 #'
 #' @export
-variance_ancova <- function(formula, data, inflation = 1, deflation = 1) {
+variance_ancova <- function(formula, data, inflation = 1, deflation = 1, ...) {
   if(missing(data)) data <- environment(formula)
   mf <- match.call(expand.dots = FALSE)
   m <- match(c("formula", "data", "subset", "weights", "na.action",
@@ -170,7 +173,8 @@ power_gs <- function(variance,
                      n,
                      r = 1,
                      margin = 0,
-                     alpha = 0.05) {
+                     alpha = 0.05,
+                     ...) {
 
   power <- stats::pnorm(
     sqrt(
@@ -201,7 +205,8 @@ samplesize_gs <- function(variance,
                           r = 1,
                           margin = 0,
                           power = 0.9,
-                          alpha = 0.05) {
+                          alpha = 0.05,
+                          ...) {
   samplesize <- (1 + r)^2 / r *
     (stats::qnorm(1 - alpha / 2) + stats::qnorm(power))^2 * variance /
     (ate - margin)^2 +
@@ -273,7 +278,8 @@ power_nc <- function(variance,
                      n,
                      r = 1,
                      margin = 0,
-                     alpha = 0.05){
+                     alpha = 0.05,
+                     ...){
 
   nc <- sqrt(r/(1 + r)^2*(n)) * (ate - margin)/sqrt(variance)
   power <- 1 - stats::pt(q = stats::qt(1 - alpha / 2, df = df), df = df, ncp = nc)
