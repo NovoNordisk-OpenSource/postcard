@@ -216,7 +216,7 @@ relevant.</p></li>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
-    <div class="dont-index"><p>See <a href="power_linear.html">power_linear</a> for power approximation functionalities for linear models.</p></div>
+    <div class="dont-index"><p>See <a href="power_linear.html">power_linear</a> for power approximation functionalities specific to linear models.</p></div>
     </div>
 
     <div class="section level2">
@@ -259,7 +259,22 @@ relevant.</p></li>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Symbolically deriving partial derivative of the function 'psi1 - psi0' with respect to 'psi1' as: '1'.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> • Alternatively, specify the derivative through the argument</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> `estimand_fun_deriv1`</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.8851028</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.846076</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"samplesize")</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 100</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"target_effect")</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"exposure_prob")</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"estimand_fun")</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> function (psi1, psi0) </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> psi1 - psi0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;bytecode: 0x56224119dc28&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;environment: 0x562245370758&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"margin")</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"alpha")</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.05</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># ---------------------------------------------------------------------------</span></span></span>
 <span class="r-in"><span><span class="co"># Get OOS predictions using discrete super learner and adjust variance</span></span></span>
@@ -288,10 +303,10 @@ relevant.</p></li>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> • mod_lm</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB;">i</span>	<span style="color: #000000;">No tuning parameters. `fit_resamples()` will be attempted</span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB;">i</span> <span style="color: #000000;">1 of 2 resampling: mod_mars</span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> <span style="color: #000000;">1 of 2 resampling: mod_mars (135ms)</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> <span style="color: #000000;">1 of 2 resampling: mod_mars (286ms)</span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB;">i</span>	<span style="color: #000000;">No tuning parameters. `fit_resamples()` will be attempted</span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB;">i</span> <span style="color: #000000;">2 of 2 resampling: mod_lm</span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> <span style="color: #000000;">2 of 2 resampling: mod_lm (100ms)</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> <span style="color: #000000;">2 of 2 resampling: mod_lm (254ms)</span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Model with lowest RMSE: mod_mars</span>
 <span class="r-in"><span><span class="va">lrnr2</span> <span class="op">&lt;-</span> <span class="fu"><a href="fit_best_learner.html">fit_best_learner</a></span><span class="op">(</span>preproc <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mod <span class="op">=</span> <span class="va">Y</span> <span class="op">~</span> <span class="va">X1</span> <span class="op">+</span> <span class="va">X2</span> <span class="op">+</span> <span class="va">A</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>                          data <span class="op">=</span> <span class="va">gaus2</span>,</span></span>
@@ -301,10 +316,10 @@ relevant.</p></li>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> • mod_lm</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB;">i</span>	<span style="color: #000000;">No tuning parameters. `fit_resamples()` will be attempted</span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB;">i</span> <span style="color: #000000;">1 of 2 resampling: mod_mars</span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> <span style="color: #000000;">1 of 2 resampling: mod_mars (135ms)</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> <span style="color: #000000;">1 of 2 resampling: mod_mars (288ms)</span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB;">i</span>	<span style="color: #000000;">No tuning parameters. `fit_resamples()` will be attempted</span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB;">i</span> <span style="color: #000000;">2 of 2 resampling: mod_lm</span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> <span style="color: #000000;">2 of 2 resampling: mod_lm (105ms)</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> <span style="color: #000000;">2 of 2 resampling: mod_lm (254ms)</span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Model with lowest RMSE: mod_mars</span>
 <span class="r-in"><span><span class="va">preds_lrnr1</span> <span class="op">&lt;-</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/pull.html" class="external-link">pull</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">lrnr2</span>, new_data <span class="op">=</span> <span class="va">gaus1</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">preds_lrnr2</span> <span class="op">&lt;-</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/pull.html" class="external-link">pull</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">lrnr1</span>, new_data <span class="op">=</span> <span class="va">gaus2</span><span class="op">)</span><span class="op">)</span></span></span>
@@ -328,7 +343,22 @@ relevant.</p></li>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Symbolically deriving partial derivative of the function 'psi1 - psi0' with respect to 'psi1' as: '1'.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> • Alternatively, specify the derivative through the argument</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> `estimand_fun_deriv1`</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.8841879</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.8566579</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"samplesize")</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 100</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"target_effect")</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"exposure_prob")</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"estimand_fun")</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> function (psi1, psi0) </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> psi1 - psi0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;bytecode: 0x56224119dc28&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;environment: 0x5622448e6e70&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"margin")</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"alpha")</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.05</span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>

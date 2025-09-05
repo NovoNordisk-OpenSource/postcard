@@ -64,6 +64,9 @@ details for more information on each method.</p>
 <span><span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="va">object</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S3 method for class 'rctglm'</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">object</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for class 'rctglm'</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">x</span>, digits <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="fl">3L</span>, <span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">getOption</a></span><span class="op">(</span><span class="st">"digits"</span><span class="op">)</span> <span class="op">-</span> <span class="fl">3L</span><span class="op">)</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -91,20 +94,22 @@ details for more information on each method.</p>
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     <p><code>estimand</code>/<code>est</code> returns a <code>data.frame</code> with columns <code>Estimate</code> and
 <code>Std. Error</code> with the estimate and standard error of the estimand.</p>
-<p><code>coef</code> returns a named <code>numeric</code>, being the result of the <code>glm</code> method of
-<code>coef</code> on the <code>glm</code> object contained within an <a href="rctglm.html">rctglm</a> object.</p>
+<p>See <code><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef()</a></code> and <code><a href="https://rdrr.io/r/stats/predict.glm.html" class="external-link">predict.glm()</a></code> for details on what is returned by the corresponding
+methods.</p>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
     <p>The function estimand (or short-hand version est) can be used to extract
 a <code>data.frame</code> with an estimated value and standard error of the estimand.</p>
-<p>A method for the generic <a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a> has been added for <code>rctglm</code>
-(i.e., coef.rctglm), which uses the method <code>coef.glm</code> to extract coefficient
-information from the underlying <code>glm</code> fit in the procedure.</p>
+<p>A method for the generic <code><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef()</a></code> has been added for class <code>rctglm</code>, which
+extracts coefficient information from the underlying <code>glm</code> fit
+in the procedure. The same is true for the method defined for the <code><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict()</a></code> generic.
+The method for an <code>rctglm</code> class object calls <code><a href="https://rdrr.io/r/stats/predict.glm.html" class="external-link">predict.glm()</a></code> on the <code>glm</code> fit
+contained within an <code>rctglm</code> object.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
-    <div class="dont-index"><p>The generic <code><a href="rctglm.html">rctglm()</a></code> which these are methods for.</p></div>
+    <div class="dont-index"><p>The generic <code><a href="rctglm.html">rctglm()</a></code> which produces <code>rctglm</code> class objects.</p></div>
     </div>
 
     <div class="section level2">
@@ -143,16 +148,16 @@ information from the underlying <code>glm</code> fit in the procedure.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Call:  rctglm(formula = Y ~ ., exposure_indicator = A, exposure_prob = exposure_prob, </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     data = dat_binom, family = binomial, estimand_fun = "ate")</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Counterfactual control mean (psi_0=E[Y|X, A=0]) estimate: 0.693</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Counterfactual active mean (psi_1=E[Y|X, A=1]) estimate: 0.9151</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Counterfactual control mean (psi_0=E[Y|X, A=0]) estimate: 0.6275</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Counterfactual active mean (psi_1=E[Y|X, A=1]) estimate: 0.8418</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Estimand function r: psi1 - psi0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Estimand (r(psi_1, psi_0)) estimate (SE): 0.222 (0.06819)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Estimand (r(psi_1, psi_0)) estimate (SE): 0.2143 (0.07495)</span>
 <span class="r-in"><span><span class="fu">estimand</span><span class="op">(</span><span class="va">ate</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Estimate Std. Error</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1 0.222028 0.06818564</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    Estimate Std. Error</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1 0.2143439 0.07495377</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="va">ate</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> (Intercept)          X1           A </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    1.130405    1.666472    2.071192 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   0.6253111   1.4850566   1.5630501 </span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
