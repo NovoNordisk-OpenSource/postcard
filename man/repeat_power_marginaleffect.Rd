@@ -11,9 +11,9 @@ repeat_power_marginaleffect(
   model_list = default_power_model_list(),
   test_data_fun = function(n) {
      glm_data(Y ~ 1 + 3 * log(W), W = stats::runif(n, min
-    = 1, max = 10))
+    = 1, max = 50))
  },
-  ns = seq(5, 100, 5),
+  ns = seq(10, 300, 10),
   desired_power = 0.9,
   n_iter = 1,
   ...
@@ -64,11 +64,61 @@ and used to create a plot of the resulting power curves.
 }
 \examples{
 # A simple use case with default models and test data
-rpm1305 <- repeat_power_marginaleffect(target_effect = 1.3, exposure_prob = 0.5)
+rpm <- repeat_power_marginaleffect(target_effect = 0.9, exposure_prob = 0.5)
 
-# Specify a margin with the ellipsis argument
-repeat_power_marginaleffect(target_effect = 1.3, exposure_prob = 0.5, margin = 1.3)
+\dontrun{
+plot(rpm)
+}
 
+################################
+# Create model from a poisson family and estimate the power of rate ratio with
+# several arguments passed to power_marginaleffect
+################################
+b1 <- 0.9
+b2 <- 0.2
+b3 <- -0.4
+b4 <- -0.6
+
+train_pois <- glm_data(
+  Y ~ b1*log(X1)+b2*X2+b3*X3+b4*X2*X3,
+  X1 = runif(1e3, min = 1, max = 10),
+  X2 = rnorm(1e3),
+  X3 = rgamma(1e3, shape = 1),
+  family = poisson()
+)
+
+# Define models to compare fit to training data
+ancova_prog_list <- list(
+ANCOVA = glm(Y ~ X1 + X2 + X3, data = train_pois, family = poisson),
+"ANCOVA with prognostic score" = fit_best_learner(list(mod = Y ~ X1 + X2 + X3), data = train_pois)
+)
+
+# Create a function that produces data to predict on
+test_pois_fun <- function(n) {
+ glm_data(
+   Y ~ b1*log(X1)+b2*X2+b3*X3+b4*X2*X3,
+   X1 = runif(n, min = 1, max = 10),
+   X2 = rnorm(n),
+   X3 = rgamma(n, shape = 1),
+   family = poisson()
+ )
+}
+
+rpm_rr <- repeat_power_marginaleffect(
+  model_list = ancova_prog_list,
+  test_data_fun = test_pois_fun,
+  ns = seq(20, 500, by = 10), n_iter = 20,
+  var1 = function(var0) 1.1 * var0,
+  kappa1_squared = function(kap0) 1.1 * kap0,
+  estimand_fun = "rate_ratio",
+  target_effect = 1.4,
+  exposure_prob = 1/2,
+  margin = 0.8
+)
+
+\dontrun{
+plot(rpm_rr)
+}
 }
 \seealso{
 \code{\link[=repeat_power_linear]{repeat_power_linear()}} for a similar implementation to iterate the process

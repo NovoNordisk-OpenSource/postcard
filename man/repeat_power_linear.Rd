@@ -10,7 +10,7 @@ repeat_power_linear(
   formula_list,
   train_data,
   power_fun = c("power_gs", "power_nc"),
-  ns = 5:100,
+  ns = 10:400,
   desired_power = 0.9,
   ...
 )
@@ -57,18 +57,18 @@ train_data <- glm_data(
   X = rnorm(1e3, sd = 3)
 )
 rpl <- repeat_power_linear(
-  ate = 1.3,
+  ate = 0.5,
   formula_list = list("ANCOVA 1 covariate" = Y ~ X, "ANCOVA 2 covariates" = Y ~ W + X),
   train_data = train_data)
 
 rpl_nc <- repeat_power_linear(
-  ate = 1.3,
+  ate = 0.5,
   formula_list = list("ANCOVA 1 covariate" = Y ~ X, "ANCOVA 2 covariates" = Y ~ W + X),
   train_data = train_data,
   power_fun = "power_nc",
   df = 1e3-3,
-  deflation = 0.8,
-  margin = 0.2,
+  deflation = 0.95,
+  margin = -0.2,
   r = 2)
 
 \dontrun{
