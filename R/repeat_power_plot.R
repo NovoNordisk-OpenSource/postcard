@@ -46,7 +46,7 @@ repeat_power_marginaleffect <- function(
         W = stats::runif(n, min = -2, max = 2)
       )
     },
-    ns = 5:100, desired_power = 0.9, n_iter = 1,
+    ns = seq(5, 100, 5), desired_power = 0.9, n_iter = 1,
     ...) {
 
   args <- c(as.list(environment()), list(...))
