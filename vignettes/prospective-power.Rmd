@@ -2,20 +2,20 @@
 title: "Prospective Power Estimation"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Prospective Power Estimation}
+%\VignetteIndexEntry{Prospective Power Estimation}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
----
+  ---
   
-```{r, include = FALSE}
-  knitr::opts_chunk$set(
-  collapse = TRUE,
-  comment = "#>"
-  )
+  ```{r, include = FALSE}
+knitr::opts_chunk$set(
+collapse = TRUE,
+comment = "#>"
+)
 ```
-  
+
 ```{r setup, message = FALSE}
-  library(postcard)
+library(postcard)
 withr::local_seed(1395878)
 withr::local_options(list(postcard.verbose = 0))
 ```
@@ -68,6 +68,8 @@ The same is true for the MSE, where `kappa1_squared` as a default is taken to be
 
 Below is an example showcasing the specification of `var1` and `kappa1_squared` according to prior beliefs.
 
+> Note that we fit a prognostic model using `fit_best_learner()` and use this as our prediction in accordance with the guidance in the main reference to obtain a conservative power estimate of estimating a marginal effect in a GLM that adjusts for the prognostic score as a covariate alongside other covariates.
+
 ```{r}
 lrnr <- fit_best_learner(list(mod = Y ~ X1 + X2 + X3), data = train_pois)
 preds <- dplyr::pull(predict(lrnr, new_data = test_pois))
@@ -83,168 +85,45 @@ power_marginaleffect(
 )
 ```
 
-# For linear models
+The function `repeat_power_marginaleffect()` allows passing arguments along to `power_marginaleffect()`, so we are able to quickly create power curves for the above case.
 
-The functions described in the help page `power_linear()` provide utilities for prospective power calculations using linear models. We conduct sample size calculations by constructing power curves using a **standard ANCOVA method** as described in (Guenther WC. Sample Size Formulas for Normal Theory T Tests. The American Statistician. 1981;35(4):243–244) and (Schouten HJA. Sample size formula with a continuous outcome for unequal group sizes and unequal variances. Statistics in Medicine. 1999;18(1):87–91).
-
-We compare the resulting power for ANCOVA models that leverage prognostic covariate adjustment and ones that don't. In usual cases of wanting to conduct sample size/power analyses prospectively, data of the new exposure is not available at the time of the analysis. What we can do is use historical data of the comparator group to estimate a variance and adjust this according to beliefs we might have about data from the novel group.
-
-### Simulating data
-
-As described above, data is not available at the time of a prospective power analysis. To showcase a common use case, we here simulate historical data, which we use to estimate the variance of the response adjusted by the coefficient of determination with the function `variance_ancova()`.
-
-> To compare power curves between a "standard" ANCOVA model and one using prognostic covariate adjustment, we simulate historical data, so we can fit a prognostic model to the training data and use the resulting model to predict prognostic scores in the test data.
+We define our models in a named list and define a function of a single parameter - the sample size `n` - that simulates the test data with the same structure as above but for different sample sizes. 
 
 ```{r}
-# Generate some data
-b0 <- 1
-b1 <- 1.6
-b2 <- 1.4
-b3 <- 2
-b4 <- 0.8
-
-train <- glm_data(
-  Y ~ b0+b1*abs(sin(X1))+b2*X2+b3*X3+b4*X2*X3,
-  X1 = runif(n_train, min = -2, max = 2),
-  X2 = rnorm(n_train, mean = 2, sd = 2),
-  X3 = rbinom(n_train, 1, 0.5)
+ancova_prog_list <- list(
+  ANCOVA = glm(Y ~ X1 + X2 + X3, data = train_pois, family = poisson),
+  # "Null model" = glm(Y ~ 1, data = train_pois, family = poisson),
+  "ANCOVA with prognostic score" = fit_best_learner(list(mod = Y ~ X1 + X2 + X3), data = train_pois)
 )
-
-test <- glm_data(
-  Y ~ b0+b1*abs(sin(X1))+b2*X2+b3*X3+b4*X2*X3,
-  X1 = runif(n_test, min = -2, max = 2),
-  X2 = rnorm(n_test, mean = 2, sd = 2),
-  X3 = rbinom(n_test, 1, 0.5)
-)
-```
-
-### Fitting a prognostic model
-
-Using the training part of the historical data, we fit a prognostic model using the `fit_best_learner()` function. This fits a discrete super learner and returns it as a trained workflow, we can use for prediction to construct our prognostic scores.
-
-```{r}
-lrnr <- fit_best_learner(
-  data = train,
-  preproc = list(mod = Y ~ .),
-  cv_folds = 10,
-  verbose = 0
-)
-
-test <- dplyr::bind_cols(test, predict(lrnr, test))
-```
-
-## Estimating the variance used for power approximation
-
-We use the function `variance_ancova` to estimate the entity $\sigma^2(1-R^2)$ in case of a "standard" ANCOVA model adjusting for covariates in data, and in case of an ANCOVA utilising **prognostic covariate adjustment** by adjusting for the prognostic score as a covariate.
-
-```{r}
-var_bound_ancova <- variance_ancova(Y ~ X1 + X2 + X3, data = test)
-var_bound_prog <- variance_ancova(Y ~ X1 + X2 + X3 + .pred, data = test)
-```
-
-## Creating a plot of power curves
-
-In order to see how the estimated power behaves as a function of the total sample size, we iterate the `power_gs` function for a number of different sample sizes and save the results using both the estimated variance with and without prognostic covariate adjustment.
-
-> Note we here just use the `power_gs()` function, but `power_nc()` is also available and works exactly the same except it needs an additional mandatory argument `df` with degrees of freedom for the t-distribution.
-
-```{r}
-desired_power <- 0.9
-n_from <- 10
-n_to <- 250
-
-iterate_power <- function(variance) {
-  power_ancova <- sapply(n_from:n_to, FUN = function(n) power_gs(
-    n = n,
-    variance = variance,
-    r = 1, ate = .8, margin = 0
-  )
-  )
-  data.frame(n = n_from:n_to, power = power_ancova)
-}
-
-data_power <- dplyr::bind_rows(
-  iterate_power(var_bound_ancova) %>% 
-    dplyr::mutate(
-      n_desired = samplesize_gs(
-        variance = var_bound_ancova,
-        power = desired_power,
-        r = 1, ate = .8, margin = 0
-      ),
-      model = "ancova",
-      model_label = "ANCOVA"
+test_pois_fun <- function(n) {
+  dplyr::mutate(
+    glm_data(
+      Y ~ b1*abs(sin(X1))-b2*X2+b3*X3-b4*X2*X3,
+      X1 = runif(n, min = -2, max = 2),
+      X2 = rnorm(n, mean = 2, sd = 2),
+      X3 = rgamma(n, shape = 1),
+      family = gaussian()
     ),
-  iterate_power(var_bound_prog) %>% 
-    dplyr::mutate(
-      n_desired = samplesize_gs(
-        variance = var_bound_prog,
-        power = desired_power,
-        r = 1, ate = .8, margin = 0
-      ),
-      model = "prog",
-      model_label = "ANCOVA with prognostic score")
-)
+    Y = round(abs(Y))
+  )
+}
 ```
 
-We create a plot of the estimated power across values of sample sizes for the two different models, mark a desired power of 90% as a horizontal line and create vertical lines with labels that show the sample size needed to obtain 90% power with each model.
-
-> Note if we were just interested in finding the sample size needed for 90% power, simply running `samplesize_gs()` as we do below would be enough.
+We then run the power estimation and plot the results:
 
 ```{r}
-model_cols <- c(ancova = "darkorange1", prog = "dodgerblue4")
+rpm <- repeat_power_marginaleffect(
+  model_list = ancova_prog_list,
+  test_data_fun = test_pois_fun,
+  ns = 10:300, n_iter = 1,
+  var1 = function(var0) 1.2 * var0,
+  kappa1_squared = 2,
+  estimand_fun = "rate_ratio",
+  target_effect = 1.3,
+  exposure_prob = 1/2
+)
 
-show_npower <- function(data, coords) {
-  line <- grid::segmentsGrob(
-    x0 = coords$x, x1 = coords$x,
-    y0 = 0, y1 = coords$y,
-    gp = grid::gpar(
-      lty = "dashed",
-      col = data$colour
-    ))
-  group <- unique(data$group)
-  if (group == 1) 
-    y_pos <- grid::unit(coords$y, "npc") - grid::unit(2, "mm")
-  else 
-    y_pos <- grid::unit(0.55, "npc")
-  label <- grid::textGrob(
-    label = paste0(data$model_label, ": ", ceiling(data$x)),
-    x = grid::unit(coords$x, "npc") + grid::unit(2, "mm"),
-    y = y_pos,
-    just = c(0, 1),
-    gp = grid::gpar(col = data$colour)
-  )
-  grid::grobTree(line, label)
-}
-
-data_power %>%
-  ggplot2::ggplot(ggplot2::aes(x = n, y = power, color = model)) +
-  ggplot2::geom_line(linewidth = 1.2, alpha = 0.8,
-                     show.legend = FALSE) +
-  ggplot2::geom_hline(
-    yintercept = desired_power,
-    color = "grey40",
-    linetype = "dashed"
-  ) +
-  gggrid::grid_group(
-    show_npower,
-    ggplot2::aes(x = n_desired,
-                 y = desired_power,
-                 model_label = model_label)
-  ) +
-  ggplot2::scale_color_manual(
-    name = "",
-    values = model_cols) +
-  ggplot2::scale_y_continuous(
-    breaks = c(0, 0.2, 0.4, 0.6, 0.8, 1),
-    labels = function(x) paste0(x*100, "%")
-  ) +
-  ggplot2::labs(x = "Total sample size", y = "Power",
-                title = "Guenther Schouten approximation of power") +
-  ggplot2::theme(plot.title = ggplot2::element_text(
-    face = "bold",
-    size = 16
-  )) +
-  ggplot2::theme_minimal()
+plot(rpm)
 ```
 
 

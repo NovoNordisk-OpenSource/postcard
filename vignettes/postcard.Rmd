@@ -136,53 +136,89 @@ It's evident that in this case where there is a non-linear relationship between 
 
 Information on the prognostic model is available in the list element `prognostic_info`, which the method `prog()` can be used to extract. A breakdown of what this list includes, see the **`Value`** section of the `rctglm_with_prognosticscore()` documentation.
 
-# Power approximation
+# Prospective power approximation
 
-In cases of seeking to conduct new studies, sample size/power analyses are vital to the successful planning of such studies. Here, we present implementations in this package that take advantage of power approximation formulas to perform such analyses.
+In cases of seeking to conduct new studies, sample size/power analyses are vital to the successful planning of such studies. Here, we present implementations in this package that take advantage of power approximation formulas to perform analyses.
 
 See a more detailed walkthrough of a use case in `vignette("prospective-power")`.
 
 ## For marginal effects
 
-The method proposed in [Powering RCTs for marginal effects with GLMs using prognostic score adjustment](https://arxiv.org/abs/2503.22284) by Højbjerre-Frandsen et. al (2025), which can be used to estimate the power when estimating any marginal effect, is implemented in the function `power_marginaleffect()`.
+The method proposed in [Powering RCTs for marginal effects with GLMs using prognostic score adjustment](https://arxiv.org/abs/2503.22284) by Højbjerre-Frandsen et. al (2025) is a method to estimate the power of any marginal effect, which is robust to misspecification. The method works for prospective power estimation, performing an analysis only using data of control participants. This is implemented in the function `power_marginaleffect()`.
 
-According to the conservative approach in the article, if wanting to conduct power analyses to figure out how many participants is needed for an upcoming trial, where you are planning to use *prognostic covariate adjustment*, predictions should be obtained from a discrete super learner identical to the one planned to use for generating prognostic scores when adjusting in the analysis when estimating the marginal effect.
+According to the conservative approach in the article, if wanting to conduct power analyses to figure out how many participants is needed for an upcoming trial, where you are planning to use *prognostic score adjustment*, predictions should be obtained from a discrete super learner identical to the one planned to use for generating prognostic scores when adjusting in the analysis when estimating the marginal effect.
 
-> Here we showcase a simple use of a `glm()`, but fx. `fit_best_learner()` could be used to fit a discrete super learner as the prediction model. Could also add steps to get out-of-sample (OOS) predictions (see examples).
+Here we showcase the use of a `glm()` as well as a discrete super learner prognostic model fit with `fit_best_learner()`. We create the model and predict on the same data for simplicity of the example, but you could add steps to get out-of-sample (OOS) predictions (see examples).
 
 ```{r}
-pred_mod <- glm(Y ~ W + A, data = dat_treat)
-preds <- predict(pred_mod, dat_treat)
+ancova <- glm(Y ~ W, data = dat_notreat)
+preds_anc <- predict(ancova, dat_notreat)
+lrnr <- fit_best_learner(list(mod = Y ~ W), data = dat_notreat)
+preds_dsl <- dplyr::pull(predict(lrnr, new_data = dat_notreat))
 
 power_marginaleffect(
-  response = dat_treat$Y,
-  predictions = preds,
-  target_effect = 0.4,
+  response = dat_notreat$Y,
+  predictions = preds_anc,
+  target_effect = 0.3,
+  exposure_prob = 1/2
+)
+power_marginaleffect(
+  response = dat_notreat$Y,
+  predictions = preds_dsl,
+  target_effect = 0.3,
   exposure_prob = 1/2
 )
 ```
 
-## Specific to linear models
+Note that the power is greater for the model that can account for the non-linear effect of the covariate on the response.
 
-### Estimating the assumed variance
+## For linear models
 
-Finding the assumed variance to use for your power analysis with an ANCOVA model can be done using the `variance_ancova` function, which estimates the term $\sigma^2(1-R^2)$ given a `formula` and `data`.
+The functions described in the help page `power_linear()` provide utilities for prospective power calculations using linear models. We conduct sample size calculations by constructing power curves using a **standard ANCOVA method** as described in (Guenther WC. Sample Size Formulas for Normal Theory T Tests. The American Statistician. 1981;35(4):243–244) and (Schouten HJA. Sample size formula with a continuous outcome for unequal group sizes and unequal variances. Statistics in Medicine. 1999;18(1):87–91).
+
+We compare the resulting power for ANCOVA models that leverage prognostic covariate adjustment and ones that don't. We use the function `variance_ancova` to estimate the entity $\sigma^2(1-R^2)$ in case of a "standard" ANCOVA model adjusting for covariates in data, and in case of an ANCOVA utilising **prognostic score adjustment** by adjusting for the prognostic score as a covariate.
 
 ```{r}
-vanc <- variance_ancova(Y ~ A + W, data = dat_treat)
-vanc
+dat_notreat <- dat_notreat %>% 
+  dplyr::mutate(.pred = preds_dsl)
+
+var_bound_ancova <- variance_ancova(Y ~ W, data = dat_notreat)
+var_bound_prog <- variance_ancova(Y ~ W + .pred, data = dat_notreat)
 ```
 
-### Finding the power (or sample size)
-
-Functions `power_gs()` and `power_nc()` exist, which estimate the power given a sample size `n` using approximation formulas. The functions are the results of two different approximation formulas but behave exactly the same except for a mandatory specification of a `df` argument for the `power_nc` function, which gives the degrees of freedom in the t-distribution used.
-
-> Details about the formulas are available in the documentation
-
-For the Guenther-Schouten approximation, the formula directly gives us a sample size as a function of the power, so getting the required sample size as a function of the power is available in the function `samplesize_gs()`.
+We can then estimate the power for a certain sample size using `power_gs()` or `power_nc()` with an `n` specified, or we can use `samplesize_gs()` to estimate the sample size needed to obtain a certain `power`.
 
 ```{r}
-power_gs(variance = vanc, n = 100, ate = 0.8)
-power_nc(variance = vanc, n = 100, df = 97, ate = 0.8)
-samplesize_gs(variance = vanc, ate = 0.8, power = 0.9)
+samplesize_gs(variance = var_bound_ancova,
+              power = 0.9, r = 1, ate = .8, margin = 0)
+samplesize_gs(variance = var_bound_prog,
+              power = 0.9, r = 1, ate = .8, margin = 0)
+```
+
+# Creating a plot of prospective power curves
+
+To easily visualise how the estimated power behaves as a function of the total sample size compared between models, functions `repeat_power_marginaleffect()` and `repeat_power_linear()` are available, which both produce S3 class objects with associated plot methods.
+
+> We will here describe and show an example for `repeat_power_marginaleffect()`. While the arguments are slightly different, the idea behind `repeat_power_linear()` is exactly the same.
+
+## Using `repeat_power_marginaleffect()` and plotting the results
+
+The function has two arguments with non-default values. Like in `power_marginaleffect()`, we need to specify our `target_effect` and an `exposure_prob`. Arguments `model_list` and `test_data_fun` do have default values just to enable an easy way for the user to inspect the output of the function, but these are arguments the user will typically want to specified. These arguments give a list of fitted models, which are used to create predictions on the test data created for each sample size using the function provided in `test_data_fun`.
+
+The function also has arguments `ns`, `desired_power` and `n_iter`, which are a vector of sample sizes to estimate the power for, the power that is trying to be achieved, and a number of iterations to average the results over, respectively.
+
+Running the function specifying nothing but arguments with non-default values, we estimate the power on data with the same structure as has been used earlier in this vignette, with the response modelled by a non-linear effect of a single covariate. We use a simple ANCOVA and a prognostic model fitted with `fit_best_learner()` as our models.
+
+Thus, a simple use of `repeat_power_marginaleffect()` could look like this:
+
+```{r}
+rpm <- repeat_power_marginaleffect(
+  target_effect = 1.3, exposure_prob = 1/2
+)
+```
+
+`rpm` is then a `data.frame` containing information on the estimated power across the list of models for different sample sizes. It has the class `postcard_rpm`, which has a plot method, enabling us to easily plot the results.
+
+```{r}
+plot(rpm)
 ```
