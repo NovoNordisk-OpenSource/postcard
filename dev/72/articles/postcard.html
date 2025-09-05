@@ -317,8 +317,8 @@ out-of-sample (OOS) predictions (see examples).</p>
 <span><span class="co">#&gt; attr(,"estimand_fun")</span></span>
 <span><span class="co">#&gt; function (psi1, psi0) </span></span>
 <span><span class="co">#&gt; psi1 - psi0</span></span>
-<span><span class="co">#&gt; &lt;bytecode: 0x563c99240b30&gt;</span></span>
-<span><span class="co">#&gt; &lt;environment: 0x563ca6a6b118&gt;</span></span>
+<span><span class="co">#&gt; &lt;bytecode: 0x561de8b96cf8&gt;</span></span>
+<span><span class="co">#&gt; &lt;environment: 0x561df49a1b68&gt;</span></span>
 <span><span class="co">#&gt; attr(,"margin")</span></span>
 <span><span class="co">#&gt; [1] 0</span></span>
 <span><span class="co">#&gt; attr(,"alpha")</span></span>
@@ -339,8 +339,8 @@ out-of-sample (OOS) predictions (see examples).</p>
 <span><span class="co">#&gt; attr(,"estimand_fun")</span></span>
 <span><span class="co">#&gt; function (psi1, psi0) </span></span>
 <span><span class="co">#&gt; psi1 - psi0</span></span>
-<span><span class="co">#&gt; &lt;bytecode: 0x563c99240b30&gt;</span></span>
-<span><span class="co">#&gt; &lt;environment: 0x563ca6720518&gt;</span></span>
+<span><span class="co">#&gt; &lt;bytecode: 0x561de8b96cf8&gt;</span></span>
+<span><span class="co">#&gt; &lt;environment: 0x561df4708e08&gt;</span></span>
 <span><span class="co">#&gt; attr(,"margin")</span></span>
 <span><span class="co">#&gt; [1] 0</span></span>
 <span><span class="co">#&gt; attr(,"alpha")</span></span>
@@ -388,8 +388,8 @@ estimate the sample size needed to obtain a certain
 <span><span class="co">#&gt; attr(,"estimand_fun")</span></span>
 <span><span class="co">#&gt; function (psi1, psi0) </span></span>
 <span><span class="co">#&gt; psi1 - psi0</span></span>
-<span><span class="co">#&gt; &lt;bytecode: 0x563c99240b30&gt;</span></span>
-<span><span class="co">#&gt; &lt;environment: 0x563ca5783d68&gt;</span></span>
+<span><span class="co">#&gt; &lt;bytecode: 0x561de8b96cf8&gt;</span></span>
+<span><span class="co">#&gt; &lt;environment: 0x561df352f280&gt;</span></span>
 <span><span class="co">#&gt; attr(,"margin")</span></span>
 <span><span class="co">#&gt; [1] 0</span></span>
 <span><span class="co">#&gt; attr(,"alpha")</span></span>
@@ -406,8 +406,8 @@ estimate the sample size needed to obtain a certain
 <span><span class="co">#&gt; attr(,"estimand_fun")</span></span>
 <span><span class="co">#&gt; function (psi1, psi0) </span></span>
 <span><span class="co">#&gt; psi1 - psi0</span></span>
-<span><span class="co">#&gt; &lt;bytecode: 0x563c99240b30&gt;</span></span>
-<span><span class="co">#&gt; &lt;environment: 0x563ca56f7a30&gt;</span></span>
+<span><span class="co">#&gt; &lt;bytecode: 0x561de8b96cf8&gt;</span></span>
+<span><span class="co">#&gt; &lt;environment: 0x561df347fd50&gt;</span></span>
 <span><span class="co">#&gt; attr(,"margin")</span></span>
 <span><span class="co">#&gt; [1] 0</span></span>
 <span><span class="co">#&gt; attr(,"alpha")</span></span>
@@ -456,10 +456,16 @@ ANCOVA and a prognostic model fitted with
 could look like this:</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">rpm</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/repeat_power_marginaleffect.html">repeat_power_marginaleffect</a></span><span class="op">(</span></span>
-<span>  target_effect <span class="op">=</span> <span class="fl">1.3</span>, exposure_prob <span class="op">=</span> <span class="fl">1</span><span class="op">/</span><span class="fl">2</span>, n_iter <span class="op">=</span> <span class="fl">10</span></span>
+<span>  target_effect <span class="op">=</span> <span class="fl">1.3</span>, exposure_prob <span class="op">=</span> <span class="fl">1</span><span class="op">/</span><span class="fl">2</span>,</span>
+<span>  ns <span class="op">=</span> <span class="fl">10</span><span class="op">:</span><span class="fl">200</span>, n_iter <span class="op">=</span> <span class="fl">10</span></span>
 <span><span class="op">)</span></span>
-<span><span class="co">#&gt; Estimating power across sample sizes `n_iter` times <span style="color: #00BB00;">■■■■■■■■■■                 </span>…</span></span>
+<span><span class="co">#&gt; Estimating power across sample sizes `n_iter` times <span style="color: #00BB00;">■■■■                       </span>…</span></span>
+<span><span class="co">#&gt; Estimating power across sample sizes `n_iter` times <span style="color: #00BB00;">■■■■■■■                    </span>…</span></span>
+<span><span class="co">#&gt; Estimating power across sample sizes `n_iter` times <span style="color: #00BB00;">■■■■■■■■■■■■■              </span>…</span></span>
 <span><span class="co">#&gt; Estimating power across sample sizes `n_iter` times <span style="color: #00BB00;">■■■■■■■■■■■■■■■■           </span>…</span></span>
+<span><span class="co">#&gt; Estimating power across sample sizes `n_iter` times <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■        </span>…</span></span>
+<span><span class="co">#&gt; Estimating power across sample sizes `n_iter` times <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■  </span>…</span></span>
+<span><span class="co">#&gt; Estimating power across sample sizes `n_iter` times <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■■■</span>…</span></span>
 <span><span class="co">#&gt; Estimating power across sample sizes `n_iter` times <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■■■</span>…</span></span></code></pre></div>
 <p><code>rpm</code> is then a <code>data.frame</code> containing
 information on the estimated power across the list of models for
