@@ -65,17 +65,17 @@
 #' b0 <- 1
 #' b1 <- 1.5
 #' b2 <- 2
-#' W1 <- runif(n, min = -2, max = 2)
+#' W1 <- runif(n, min = 1, max = 10)
 #' exp_prob <- .5
 #'
 #' dat_treat <- glm_data(
-#'   Y ~ b0+b1*sin(W1)^2+b2*A,
+#'   Y ~ b0+b1*log(W1)+b2*A,
 #'   W1 = W1,
 #'   A = rbinom (n, 1, exp_prob)
 #' )
 #'
 #' dat_notreat <- glm_data(
-#'   Y ~ b0+b1*sin(W1)^2,
+#'   Y ~ b0+b1*log(W1),
 #'   W1 = W1
 #' )
 #'

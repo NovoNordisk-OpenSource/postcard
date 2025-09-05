@@ -42,11 +42,11 @@ repeat_power_marginaleffect <- function(
     model_list = default_power_model_list(),
     test_data_fun = function(n) {
       glm_data(
-        Y ~ 1+3*sin(W)^2,
-        W = stats::runif(n, min = -2, max = 2)
+        Y ~ 1+3*log(W),
+        W = stats::runif(n, min = 1, max = 50)
       )
     },
-    ns = seq(5, 100, 5), desired_power = 0.9, n_iter = 1,
+    ns = seq(10, 300, 10), desired_power = 0.9, n_iter = 1,
     ...) {
 
   args <- c(as.list(environment()), list(...))
@@ -78,8 +78,8 @@ plot.postcard_rpm <- function(x, cols = NULL, ...) {
 # Define default list of models
 default_power_model_list <- function(n = 1e3) {
   train_data <- glm_data(
-    Y ~ 1+3*sin(W)^2,
-    W = stats::runif(n, min = -2, max = 2)
+    Y ~ 1+3*log(W),
+    W = stats::runif(n, min = 1, max = 50)
   )
   model_list <- list(
     "ANCOVA" = glm(Y ~ W, data = train_data),
@@ -201,8 +201,8 @@ mean_iters_marginaleffect <- function(
 #'
 #' @examples
 #' train_data <- glm_data(
-#'   Y ~ 1+1.5*sin(W)+2*X,
-#'   W = runif(1e3, min = -2, max = 2),
+#'   Y ~ 1+1.5*log(W)+2*X,
+#'   W = runif(1e3, min = 1, max = 10),
 #'   X = rnorm(1e3, sd = 3)
 #' )
 #' rpl <- repeat_power_linear(

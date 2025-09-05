@@ -42,8 +42,8 @@ b2 <- 2
 
 # Simulate data with a non-linear effect
 dat_treat <- glm_data(
-  Y ~ b0+b1*sin(W)^2+b2*A,
-  W = runif(n, min = -2, max = 2),
+  Y ~ b0+b1*log(W)+b2*A,
+  W = runif(n, min = 1, max = 100),
   A = rbinom(n, 1, prob = 1/2),
   family = gaussian() # Default value
 )
@@ -101,8 +101,8 @@ Allowing the use of complex non-linear models to create such a prognostic score 
 We simulate some historical data to showcase the use of this function as well:
 ```{r hist-data}
 dat_notreat <- glm_data(
-  Y ~ b0+b1*sin(W)^2,
-  W = runif(n, min = -2, max = 2),
+  Y ~ b0+b1*log(W),
+  W = runif(n, min = 1, max = 100),
   family = gaussian # Default value
 )
 ```
@@ -213,7 +213,7 @@ Thus, a simple use of `repeat_power_marginaleffect()` could look like this:
 
 ```{r}
 rpm <- repeat_power_marginaleffect(
-  target_effect = 1.3, exposure_prob = 1/2
+  target_effect = 1.3, exposure_prob = 1/2, n_iter = 10
 )
 ```
 

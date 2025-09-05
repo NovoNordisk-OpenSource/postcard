@@ -10,8 +10,8 @@ repeat_power_marginaleffect(
   exposure_prob,
   model_list = default_power_model_list(),
   test_data_fun = function(n) {
-     glm_data(Y ~ 1 + 3 * sin(W)^2, W = stats::runif(n,
-    min = -2, max = 2))
+     glm_data(Y ~ 1 + 3 * log(W), W = stats::runif(n, min
+    = 1, max = 10))
  },
   ns = seq(5, 100, 5),
   desired_power = 0.9,

@@ -39,8 +39,8 @@ glm_data(Y ~ 1+2*x1,
 
 # Generate a gaussian response from a single covariate with non-linear
 # effects. Specify that the response should have standard deviation sqrt(3)
-glm_data(Y ~ 1+2*abs(sin(x1)),
-                x1 = runif(10, min = -2, max = 2),
+glm_data(Y ~ 1+2*log(x1),
+                x1 = runif(10, min = 1, max = 10),
                 family_args = list(sd = sqrt(3)))
 
 # Generate a negative binomial response

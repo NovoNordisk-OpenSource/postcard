@@ -161,3 +161,11 @@ cli::test_that_cli("`print_symbolic_differentiation` provides message", {
     transform = function(x) gsub("^<environment:.*>$", "", x)
   )
 })
+
+test_that("`get_predict_method` works for different model types", {
+  lm_mod <- lm(mpg ~ wt + cyl, data = mtcars)
+  glm_mod <- glm(vs ~ wt + cyl, data = mtcars, family = binomial())
+
+  expect_equal(get_predict_method(lm_mod), predict.lm)
+  expect_equal(get_predict_method(glm_mod), predict.glm)
+})

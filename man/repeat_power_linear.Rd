@@ -52,8 +52,8 @@ treatment effect of \code{ate}.
 }
 \examples{
 train_data <- glm_data(
-  Y ~ 1+1.5*sin(W)+2*X,
-  W = runif(1e3, min = -2, max = 2),
+  Y ~ 1+1.5*log(W)+2*X,
+  W = runif(1e3, min = 1, max = 10),
   X = rnorm(1e3, sd = 3)
 )
 rpl <- repeat_power_linear(

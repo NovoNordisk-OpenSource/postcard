@@ -33,40 +33,32 @@ We generate count data to showcase the flexibility of `power_marginaleffect()` t
 ```{r}
 n_train <- 2000
 n_test <- 200
-b1 <- 1.2
-b2 <- 2.3
-b3 <- 1
-b4 <- 1.8
+b1 <- 0.9
+b2 <- 0.2
+b3 <- -0.4
+b4 <- -0.6
 
-train_pois <- dplyr::mutate(
-  glm_data(
-    Y ~ b1*abs(sin(X1))-b2*X2+b3*X3-b4*X2*X3,
-    X1 = runif(n_train, min = -2, max = 2),
-    X2 = rnorm(n_train, mean = 2, sd = 2),
+train_pois <- glm_data(
+    Y ~ b1*log(X1)+b2*X2+b3*X3+b4*X2*X3,
+    X1 = runif(n_train, min = 1, max = 10),
+    X2 = rnorm(n_train),
     X3 = rgamma(n_train, shape = 1),
-    family = gaussian()
-  ),
-  Y = round(abs(Y))
-)
-test_pois <- dplyr::mutate(
-  glm_data(
-    Y ~ b1*abs(sin(X1))-b2*X2+b3*X3-b4*X2*X3,
-    X1 = runif(n_test, min = -2, max = 2),
-    X2 = rnorm(n_test, mean = 2, sd = 2),
+    family = poisson()
+  )
+test_pois <- glm_data(
+    Y ~ b1*log(X1)+b2*X2+b3*X3+b4*X2*X3,
+    X1 = runif(n_test, min = 1, max = 10),
+    X2 = rnorm(n_test),
     X3 = rgamma(n_test, shape = 1),
-    family = gaussian()
-  ),
-  Y = round(abs(Y))
-)
+    family = poisson()
+  )
 ```
 
 ## Controlling assumptions
 
-As a default, the variance in group 0 is estimated from the sample variance of the response, and the variance in group 1 is assumed to be the same as the estimated variance in group 0. Use argument `var1` to change the variance estimate in group 1, either with a function that modifies the estimate obtained for group 0 or as a `numeric`.
+As a default, the variance in group 0 is estimated from the sample variance of the response, and the variance in group 1 is assumed to be the same as the estimated variance in group 0. Use argument `var1` to change the variance estimate in group 1, either with a function that modifies the estimate obtained for group 0 or as a `numeric`. The same is true for the MSE, where `kappa1_squared` as a default is taken to be the same as the MSE in group 0 unless a `function` or `numeric` is specified.
 
-The same is true for the MSE, where `kappa1_squared` as a default is taken to be the same as the MSE in group 0 unless a `function` or `numeric` is specified.
-
-Below is an example showcasing the specification of `var1` and `kappa1_squared` according to prior beliefs.
+Below is an example showcasing the different ways to specify `var1` and `kappa1_squared` used to adjust the assumptions according to prior beliefs. In practice, if wanting to specify either of these arguments as just a numeric, you will likely do a calculation on some historical data, whereas here we just put some number to showcase.
 
 > Note that we fit a prognostic model using `fit_best_learner()` and use this as our prediction in accordance with the guidance in the main reference to obtain a conservative power estimate of estimating a marginal effect in a GLM that adjusts for the prognostic score as a covariate alongside other covariates.
 
@@ -77,11 +69,12 @@ preds <- dplyr::pull(predict(lrnr, new_data = test_pois))
 power_marginaleffect(
   response = test_pois$Y,
   predictions = preds,
-  var1 = function(var0) 1.2 * var0,
+  var1 = function(var0) 1.1 * var0,
   kappa1_squared = 2,
   estimand_fun = "rate_ratio",
-  target_effect = 1.3,
-  exposure_prob = 1/2
+  target_effect = 1.4,
+  exposure_prob = 1/2,
+  margin = 0.8
 )
 ```
 
@@ -96,15 +89,12 @@ ancova_prog_list <- list(
   "ANCOVA with prognostic score" = fit_best_learner(list(mod = Y ~ X1 + X2 + X3), data = train_pois)
 )
 test_pois_fun <- function(n) {
-  dplyr::mutate(
-    glm_data(
-      Y ~ b1*abs(sin(X1))-b2*X2+b3*X3-b4*X2*X3,
-      X1 = runif(n, min = -2, max = 2),
-      X2 = rnorm(n, mean = 2, sd = 2),
-      X3 = rgamma(n, shape = 1),
-      family = gaussian()
-    ),
-    Y = round(abs(Y))
+  glm_data(
+    Y ~ b1*log(X1)+b2*X2+b3*X3+b4*X2*X3,
+    X1 = runif(n, min = 1, max = 10),
+    X2 = rnorm(n),
+    X3 = rgamma(n, shape = 1),
+    family = poisson()
   )
 }
 ```
@@ -115,12 +105,13 @@ We then run the power estimation and plot the results:
 rpm <- repeat_power_marginaleffect(
   model_list = ancova_prog_list,
   test_data_fun = test_pois_fun,
-  ns = 10:300, n_iter = 1,
-  var1 = function(var0) 1.2 * var0,
-  kappa1_squared = 2,
+  ns = seq(20, 500, by = 10), n_iter = 20,
+  var1 = function(var0) 1.1 * var0,
+  kappa1_squared = function(kap0) 1.1 * kap0,
   estimand_fun = "rate_ratio",
-  target_effect = 1.3,
-  exposure_prob = 1/2
+  target_effect = 1.4,
+  exposure_prob = 1/2,
+  margin = 0.8
 )
 
 plot(rpm)
