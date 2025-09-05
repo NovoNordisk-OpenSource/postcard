@@ -220,6 +220,7 @@ samplesize_gs <- function(variance,
     margin = margin,
     alpha = alpha
   )
+  return(out)
 }
 
 #' @rdname power_linear
