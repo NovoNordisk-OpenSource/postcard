@@ -21,7 +21,7 @@
       i	No tuning parameters. `fit_resamples()` will be attempted
       i 2 of 2 resampling: mod_lm
       v 2 of 2 resampling: mod_lm ()
-      i Model with lowest RMSE: mod_mars
+      i Model with lowest RMSE: mod_lm
       i Investigate trained learners and fitted model in `prognostic_info` list element
       
       -- Symbolic differentiation of estimand function --
@@ -56,10 +56,10 @@
           estimand_fun = "rate_ratio", cv_variance = FALSE, data_hist = dat_notreat_pois, 
           learners = learners, verbose = 0)
       
-      Counterfactual control mean (psi_0=E[Y|X, A=0]) estimate: 7.981
-      Counterfactual active mean (psi_1=E[Y|X, A=1]) estimate: 58.48
+      Counterfactual control mean (psi_0=E[Y|X, A=0]) estimate: 37.45
+      Counterfactual active mean (psi_1=E[Y|X, A=1]) estimate: 274.4
       Estimand function r: psi1/psi0
-      Estimand (r(psi_1, psi_0)) estimate (SE): 7.327 (0.518)
+      Estimand (r(psi_1, psi_0)) estimate (SE): 7.327 (0.206)
 
 ---
 
@@ -74,10 +74,10 @@
           estimand_fun = "rate_ratio", cv_variance = TRUE, data_hist = dat_notreat_pois, 
           learners = learners, verbose = 0)
       
-      Counterfactual control mean (psi_0=E[Y|X, A=0]) estimate: 7.981
-      Counterfactual active mean (psi_1=E[Y|X, A=1]) estimate: 58.48
+      Counterfactual control mean (psi_0=E[Y|X, A=0]) estimate: 37.45
+      Counterfactual active mean (psi_1=E[Y|X, A=1]) estimate: 274.4
       Estimand function r: psi1/psi0
-      Estimand (r(psi_1, psi_0)) estimate (SE): 7.327 (0.5271)
+      Estimand (r(psi_1, psi_0)) estimate (SE): 7.327 (0.2111)
 
 ---
 
@@ -92,10 +92,10 @@
           estimand_fun = "rate_ratio", cv_variance = FALSE, data_hist = dat_notreat_pois, 
           learners = learners, verbose = 0)
       
-      Counterfactual control mean (psi_0=E[Y|X, A=0]) estimate: 8.067
-      Counterfactual active mean (psi_1=E[Y|X, A=1]) estimate: 57.7
+      Counterfactual control mean (psi_0=E[Y|X, A=0]) estimate: 36.66
+      Counterfactual active mean (psi_1=E[Y|X, A=1]) estimate: 282.9
       Estimand function r: psi1/psi0
-      Estimand (r(psi_1, psi_0)) estimate (SE): 7.153 (0.5005)
+      Estimand (r(psi_1, psi_0)) estimate (SE): 7.717 (0.2389)
 
 ---
 
@@ -110,8 +110,8 @@
           estimand_fun = "rate_ratio", cv_variance = TRUE, data_hist = dat_notreat_pois, 
           learners = learners, verbose = 0)
       
-      Counterfactual control mean (psi_0=E[Y|X, A=0]) estimate: 8.067
-      Counterfactual active mean (psi_1=E[Y|X, A=1]) estimate: 57.7
+      Counterfactual control mean (psi_0=E[Y|X, A=0]) estimate: 36.66
+      Counterfactual active mean (psi_1=E[Y|X, A=1]) estimate: 282.9
       Estimand function r: psi1/psi0
-      Estimand (r(psi_1, psi_0)) estimate (SE): 7.153 (0.5114)
+      Estimand (r(psi_1, psi_0)) estimate (SE): 7.717 (0.2446)
 
