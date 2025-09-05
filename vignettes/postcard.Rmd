@@ -179,8 +179,7 @@ The functions described in the help page `power_linear()` provide utilities for 
 We compare the resulting power for ANCOVA models that leverage prognostic covariate adjustment and ones that don't. We use the function `variance_ancova` to estimate the entity $\sigma^2(1-R^2)$ in case of a "standard" ANCOVA model adjusting for covariates in data, and in case of an ANCOVA utilising **prognostic score adjustment** by adjusting for the prognostic score as a covariate.
 
 ```{r}
-dat_notreat <- dat_notreat %>% 
-  dplyr::mutate(.pred = preds_dsl)
+dat_notreat <- dplyr::mutate(dat_notreat, .pred = preds_dsl)
 
 var_bound_ancova <- variance_ancova(Y ~ W, data = dat_notreat)
 var_bound_prog <- variance_ancova(Y ~ W + .pred, data = dat_notreat)
