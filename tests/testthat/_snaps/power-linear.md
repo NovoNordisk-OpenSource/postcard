@@ -62,7 +62,7 @@
     Code
       pnc
     Output
-      [1] 0.2723615
+      [1] 0.2700725
       attr(,"samplesize")
       [1] 200
       attr(,"target_effect")
@@ -75,4 +75,6 @@
       [1] 0.5
       attr(,"alpha")
       [1] 0.05
+      attr(,"df")
+      [1] 97
 
