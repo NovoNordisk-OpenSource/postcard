@@ -143,7 +143,7 @@ default_power_model_list <- function(n = 1e3) {
 #############
 # Simulate data and calculate power for a range of sample sizes
 iterate_n_power_marginaleffect <- function(
-    target_effect, exposure_prob, model, test_data_fun, ns = 10:250, ...) {
+    target_effect, exposure_prob, model, test_data_fun, response_name, ns = 10:250, ...) {
 
   newdata_arg_name <- get_newdata_arg_name(model)
   predict_args <- stats::setNames(vector("list", 2), c("object", newdata_arg_name))
@@ -157,7 +157,7 @@ iterate_n_power_marginaleffect <- function(
     if (inherits(preds, "data.frame")) preds <- dplyr::pull(preds)
 
     power_marginaleffect(
-      response = test_data$Y,
+      response = test_data[[response_name]],
       predictions = preds,
       target_effect = target_effect,
       exposure_prob = exposure_prob,
@@ -171,11 +171,15 @@ iterate_n_power_marginaleffect <- function(
 ##############
 # Iterate over index of model list
 iterate_models_power_marginaleffect <- function(model_list, ...) {
+
+  response_name <- get_response_name_from_model_list(model_list)
+
   lapply(1:length(model_list), function(k) {
     cur_model <- model_list[[k]]
     cur_model_name <- names(model_list)[k]
     iterate_n_power_marginaleffect(
       model = cur_model,
+      response_name = response_name,
       ...
     ) %>%
       dplyr::mutate(

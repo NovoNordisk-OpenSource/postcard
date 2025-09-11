@@ -218,7 +218,7 @@ test_that("`add_power_assumption_params_to_data` works correctly", {
   # Test with custom parameters
   result2 <- add_power_assumption_params_to_data(
     .data = dat, power_fun = "power_gs", ate = 1.3, margin = margin, alpha = alpha
-    )
+  )
   expect_true(all(c("samplesize", "target_effect", "exposure_prob", "margin",
                     "alpha", "power_fun") %in% colnames(result2)))
   expect_equal(nrow(result2), nrow(dat))
@@ -229,3 +229,53 @@ test_that("`add_power_assumption_params_to_data` works correctly", {
   expect_equal(alpha, unique(result2$alpha))
 })
 
+test_that("`get_formula_from_model` gives correct type of output", {
+  lm <- lm(cyl ~ wt + mpg, data = mtcars)
+  lm_formula <- get_formula_from_model(lm)
+
+  dsl <- fit_best_learner(list(cyl ~ wt + mpg), data = mtcars)
+  dsl_formula <- get_formula_from_model(dsl)
+
+  expect_type(lm_formula, "language")
+  expect_equal(dsl_formula, lm_formula)
+})
+
+test_that("`get_formula_from_model` gives error when no method exists", {
+  expect_error(
+    get_formula_from_model(list(a = 2)),
+    regexp = "Tried extracting the formula of an element in"
+  )
+})
+
+test_that("`get_response_name_from_model_list` correctly returns response name when it's given as the same in models", {
+  lm1 <- lm(cyl ~ wt + mpg, data = mtcars)
+  glm1 <- glm(cyl ~ wt + mpg, data = mtcars, family = poisson())
+  expect_equal(
+    "cyl",
+    get_response_name_from_model_list(list(lm1, glm1))
+  )
+})
+
+test_that("`get_response_name_from_model_list` gives error when response names different in models", {
+  lm1 <- lm(cyl ~ wt + mpg, data = mtcars)
+  glm2 <- glm(gear ~ wt + mpg, data = mtcars, family = poisson())
+  expect_error(
+    get_response_name_from_model_list(list(lm1, glm2)),
+    regexp = "Could not extract a unique response"
+  )
+})
+
+test_that("`get_response_name_from_model_list` gives response name if one model has response name and other doesn't specify", {
+  lm1 <- lm(cyl ~ wt + mpg, data = mtcars)
+  expect_equal(
+    "cyl",
+    get_response_name_from_model_list(list(lm1, 5))
+  )
+})
+
+test_that("`get_response_name_from_model_list` gives error if response name cannot be extracted from any model", {
+  expect_error(
+    get_response_name_from_model_list(list(2, 5)),
+    regexp = "No method exists. Define a method get_formula_from_model.numeric"
+  )
+})

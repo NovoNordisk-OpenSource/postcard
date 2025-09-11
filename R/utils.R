@@ -19,11 +19,11 @@ check_formula <- function(formula) {
     error = function(e) {
       sym_formula <- rlang::as_label(rlang::enquo(formula))
       cli::cli_abort(
-      c(
-        "`{sym_formula}` is not of class `formula` or could not be coerced to one.",
-        i = "This usually means you did not include a response followed by a `~`."
+        c(
+          "`{sym_formula}` is not of class `formula` or could not be coerced to one.",
+          i = "This usually means you did not include a response followed by a `~`."
+        )
       )
-    )
     }
   )
 
@@ -89,6 +89,54 @@ print_symbolic_differentiation <- function(fun, arg, add_string = "", verbose = 
 
   return(derivative)
 }
+
+#' Use the r<family_name> function to generate data from family
+#' @noRd
+get_formula_from_model <- function(object, ...) {
+  UseMethod("get_formula_from_model", object = object)
+}
+
+#' @noRd
+#' @export
+get_formula_from_model.default <- function(object, ...) {
+  has_terms <- tryCatch(!is.null(object$terms),
+                        error = function(e) FALSE)
+  if (has_terms) {
+    return(formula(object$terms))
+  }
+  cli::cli_abort(
+    c("Tried extracting the formula of an element in `model_list` with class: {class(object)}",
+      i = "No method exists. Define a method get_formula_from_model.{class(object)}")
+  )
+}
+
+#' @noRd
+#' @export
+get_formula_from_model.workflow <- function(object, ...) {
+  return(object$pre$actions$formula$formula)
+}
+
+get_response_name_from_model_list <- function(model_list) {
+  model_response_names <- lapply(model_list, function(x) {
+    mod_form <- tryCatch(get_formula_from_model(x),
+                         error = function(e) NULL)
+    if (is.null(mod_form)) return(NULL)
+    get_response_from_formula(mod_form)
+  })
+  model_response_names <- unlist(model_response_names[!sapply(model_response_names, function(x) is.null(x))])
+  response_name <- unique(model_response_names)
+  if (length(response_name) == 0) {
+    get_formula_from_model(model_list[[1]])
+  }
+  if (length(response_name) > 1) {
+    cli::cli_abort(
+      c("Could not extract a unique response variable name from the models in `model_list`.",
+        i = "Please ensure all models have the same response variable.")
+    )
+  }
+  return(response_name)
+}
+
 
 # Utility to get the name of the newdata/new_data argument of a predict method
 get_predict_method <- function(object) {
