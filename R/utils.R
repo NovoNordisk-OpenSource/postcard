@@ -14,7 +14,7 @@ deparse_fun_body <- function(fun) {
 
 # Transform character or family function to a call
 check_formula <- function(formula) {
-  tryCatch(
+  out <- tryCatch(
     formula(formula),
     error = function(e) {
       sym_formula <- rlang::as_label(rlang::enquo(formula))
@@ -26,14 +26,8 @@ check_formula <- function(formula) {
     )
     }
   )
-  if (is.character(formula)) {
-    formula <- formula(formula)
-  }
-  if (!inherits(formula, "formula")) {
-    cli::cli_abort("{.arg formula} needs to have class `formula` or `character`")
-  }
 
-  return(formula)
+  return(out)
 }
 
 formula_to_str <- function(formula) {
@@ -105,7 +99,7 @@ get_predict_method <- function(object) {
     }, error = function(e) NULL)
     if (!is.null(pred_method)) return(pred_method)
   }
-  cli::cli_abort(paste0("Could not find predict method for model object of class: ", class(object)))
+  cli::cli_abort(paste0("Could not find predict method for object of class: ", class(object)))
 }
 
 get_newdata_arg_name <- function(object) {
@@ -133,16 +127,17 @@ add_power_assumption_params_to_data <- function(
     .data, power_fun = c("power_marginaleffect", "power_gs", "power_nc"), ...) {
   power_fun <- match.arg(power_fun)
   power_fun_function <- utils::getFromNamespace(power_fun, ns = "postcard")
+  n <- nrow(.data)
   if (power_fun == "power_marginaleffect") {
     dummy_power <- power_fun_function(
-      response = 1,
-      predictions = 1,
+      response = rep(1, n),
+      predictions = rep(1, n),
       verbose = 0,
       ...
     )
   } else {
     dummy_power <- power_fun_function(
-      variance = 1, n = 10,
+      variance = 1, n = n,
       ...
     )
   }
