@@ -23,6 +23,12 @@ test_that("snapshot tests", {
   # `transform` argument causes problems with CI
   attr(ssgs2, "estimand_fun") <- body(attr(ssgs2, "estimand_fun"))
   expect_snapshot(ssgs2)
+
+  pnc <- power_nc(variance = 6, ate = 1, n = 200, r = 2, margin = 0.5, alpha = 0.05, df = 97)
+  # Extract the body of the estimand_fun to avoid the environment in the snapshot test
+  # `transform` argument causes problems with CI
+  attr(pnc, "estimand_fun") <- body(attr(pnc, "estimand_fun"))
+  expect_snapshot(pnc)
 })
 
 test_that("`power_gs` and `samplesize_gs` agree", {
@@ -33,17 +39,28 @@ test_that("`power_gs` and `samplesize_gs` agree", {
   expect_equal(as.numeric(pgs), as.numeric(desired_power))
 })
 
-test_that("`variance_ancova` works", {
+test_that("`variance_ancova` estimates consistently with marginal variance", {
   dat1 <- data.frame(Y = rnorm(100))
   var_fun <- variance_ancova(Y ~ 1, data = dat1)
   var_man <- var(dat1$Y)
   expect_equal(var_fun, var_man)
+})
 
+test_that("`variance_ancova` estimates correctly with and without intercept", {
   dat2 <- data.frame(
     Y = rnorm(100) + c(rep(0, 50), rep(2, 50)),
     A = c(rep(0, 50), rep(1, 50))
   )
   var_int <- variance_ancova(Y ~ A, data = dat2)
   var_noint <- variance_ancova(Y ~ A - 1, data = dat2)
+  expect_equal(var_int, var_noint)
+})
+
+test_that("`variance_ancova` can use variables from the environment", {
+    Y <- rnorm(100) + c(rep(0, 50), rep(2, 50))
+    A <- c(rep(0, 50), rep(1, 50))
+
+  var_int <- variance_ancova(Y ~ A)
+  var_noint <- variance_ancova(Y ~ A - 1)
   expect_equal(var_int, var_noint)
 })

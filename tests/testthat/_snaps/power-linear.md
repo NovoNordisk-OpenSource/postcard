@@ -57,3 +57,22 @@
       attr(,"alpha")
       [1] 0.05
 
+---
+
+    Code
+      pnc
+    Output
+      [1] 0.2723615
+      attr(,"samplesize")
+      [1] 200
+      attr(,"target_effect")
+      [1] 1
+      attr(,"exposure_prob")
+      [1] 0.6666667
+      attr(,"estimand_fun")
+      psi1 - psi0
+      attr(,"margin")
+      [1] 0.5
+      attr(,"alpha")
+      [1] 0.05
+
