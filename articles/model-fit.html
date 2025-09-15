@@ -74,7 +74,7 @@
     
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://novonordisk-opensource.github.io/postcard/">postcard</a></span><span class="op">)</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://magrittr.tidyverse.org" class="external-link">magrittr</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span>
 <span><span class="fu">withr</span><span class="fu">::</span><span class="fu"><a href="https://withr.r-lib.org/reference/with_seed.html" class="external-link">local_seed</a></span><span class="op">(</span><span class="fl">1395878</span><span class="op">)</span></span>
 <span><span class="fu">withr</span><span class="fu">::</span><span class="fu"><a href="https://withr.r-lib.org/reference/with_options.html" class="external-link">local_options</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>postcard.verbose <span class="op">=</span> <span class="fl">0</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p>For introductory examples on how to use the package, see
@@ -94,19 +94,19 @@ of the model fitting functions <code><a href="../reference/rctglm.html">rctglm()
 <span><span class="va">b2</span> <span class="op">&lt;-</span> <span class="fl">2</span></span>
 <span></span>
 <span><span class="va">dat_gaus</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/glm_data.html">glm_data</a></span><span class="op">(</span></span>
-<span>  <span class="va">Y</span> <span class="op">~</span> <span class="va">b0</span><span class="op">+</span><span class="va">b1</span><span class="op">*</span><span class="fu"><a href="https://rdrr.io/r/base/Trig.html" class="external-link">sin</a></span><span class="op">(</span><span class="va">W</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span><span class="op">+</span><span class="va">b2</span><span class="op">*</span><span class="va">A</span>,</span>
-<span>  W <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span><span class="va">n</span>, min <span class="op">=</span> <span class="op">-</span><span class="fl">2</span>, max <span class="op">=</span> <span class="fl">2</span><span class="op">)</span>,</span>
+<span>  <span class="va">Y</span> <span class="op">~</span> <span class="va">b0</span><span class="op">+</span><span class="va">b1</span><span class="op">*</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="va">W</span><span class="op">)</span><span class="op">+</span><span class="va">b2</span><span class="op">*</span><span class="va">A</span>,</span>
+<span>  W <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span><span class="va">n</span>, min <span class="op">=</span> <span class="fl">1</span>, max <span class="op">=</span> <span class="fl">10</span><span class="op">)</span>,</span>
 <span>  A <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Binomial.html" class="external-link">rbinom</a></span><span class="op">(</span><span class="va">n</span>, <span class="fl">1</span>, prob <span class="op">=</span> <span class="fl">1</span><span class="op">/</span><span class="fl">2</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">dat_gaus_hist</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/glm_data.html">glm_data</a></span><span class="op">(</span></span>
-<span>  <span class="va">Y</span> <span class="op">~</span> <span class="va">b0</span><span class="op">+</span><span class="va">b1</span><span class="op">*</span><span class="fu"><a href="https://rdrr.io/r/base/Trig.html" class="external-link">sin</a></span><span class="op">(</span><span class="va">W</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span>,</span>
-<span>  W <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span><span class="va">n</span>, min <span class="op">=</span> <span class="op">-</span><span class="fl">2</span>, max <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span>
+<span>  <span class="va">Y</span> <span class="op">~</span> <span class="va">b0</span><span class="op">+</span><span class="va">b1</span><span class="op">*</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="va">W</span><span class="op">)</span>,</span>
+<span>  W <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span><span class="va">n</span>, min <span class="op">=</span> <span class="fl">1</span>, max <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">dat_pois</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/glm_data.html">glm_data</a></span><span class="op">(</span></span>
-<span>  <span class="va">Y</span> <span class="op">~</span> <span class="va">b0</span><span class="op">+</span><span class="va">b1</span><span class="op">*</span><span class="fu"><a href="https://rdrr.io/r/base/Trig.html" class="external-link">sin</a></span><span class="op">(</span><span class="va">W</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span><span class="op">+</span><span class="va">b2</span><span class="op">*</span><span class="va">A</span>,</span>
-<span>  W <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span><span class="va">n</span>, min <span class="op">=</span> <span class="op">-</span><span class="fl">2</span>, max <span class="op">=</span> <span class="fl">2</span><span class="op">)</span>,</span>
+<span>  <span class="va">Y</span> <span class="op">~</span> <span class="va">b0</span><span class="op">+</span><span class="va">b1</span><span class="op">*</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="va">W</span><span class="op">)</span><span class="op">+</span><span class="va">b2</span><span class="op">*</span><span class="va">A</span>,</span>
+<span>  W <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span><span class="va">n</span>, min <span class="op">=</span> <span class="fl">1</span>, max <span class="op">=</span> <span class="fl">10</span><span class="op">)</span>,</span>
 <span>  A <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Binomial.html" class="external-link">rbinom</a></span><span class="op">(</span><span class="va">n</span>, <span class="fl">1</span>, <span class="fl">1</span><span class="op">/</span><span class="fl">2</span><span class="op">)</span>,</span>
 <span>  family <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/family.html" class="external-link">poisson</a></span><span class="op">(</span>link <span class="op">=</span> <span class="st">"log"</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
@@ -158,12 +158,12 @@ specifications of verbosity.</p>
 <span><span class="co">#&gt; • mod_gbt</span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB;">i</span>  <span style="color: #000000;">No tuning parameters. `fit_resamples()` will be attempted</span></span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">1 of 3 resampling: mod_mars</span></span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> <span style="color: #000000;">1 of 3 resampling: mod_mars (197ms)</span></span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> <span style="color: #000000;">1 of 3 resampling: mod_mars (414ms)</span></span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB;">i</span>  <span style="color: #000000;">No tuning parameters. `fit_resamples()` will be attempted</span></span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">2 of 3 resampling: mod_lm</span></span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> <span style="color: #000000;">2 of 3 resampling: mod_lm (96ms)</span></span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> <span style="color: #000000;">2 of 3 resampling: mod_lm (291ms)</span></span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">3 of 3 tuning:     mod_gbt</span></span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> <span style="color: #000000;">3 of 3 tuning:     mod_gbt (1.3s)</span></span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> <span style="color: #000000;">3 of 3 tuning:     mod_gbt (6.4s)</span></span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Model with lowest RMSE: mod_mars</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Investigate trained learners and fitted model in `prognostic_info` list element</span></span>
 <span><span class="co">#&gt; </span></span>
@@ -206,7 +206,7 @@ specifications of verbosity.</p>
 <span><span class="co">#&gt; • mod_mars</span></span>
 <span><span class="co">#&gt; • mod_lm</span></span>
 <span><span class="co">#&gt; • mod_gbt</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Model with lowest RMSE: mod_gbt</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Model with lowest RMSE: mod_mars</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; ── <span style="font-weight: bold;">Symbolic differentiation of estimand function</span> ──</span></span>
 <span><span class="co">#&gt; </span></span>
@@ -287,18 +287,18 @@ to use the estimand function <code>psi1 / psi0</code> as seen below:</p>
 <span><span class="co">#&gt; $f</span></span>
 <span><span class="co">#&gt; function (psi1, psi0) </span></span>
 <span><span class="co">#&gt; psi1/psi0</span></span>
-<span><span class="co">#&gt; &lt;bytecode: 0x55955a42eed8&gt;</span></span>
-<span><span class="co">#&gt; &lt;environment: 0x559565f53af0&gt;</span></span>
+<span><span class="co">#&gt; &lt;bytecode: 0x55f9b56a39a8&gt;</span></span>
+<span><span class="co">#&gt; &lt;environment: 0x55f9c2ab98e8&gt;</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $d0</span></span>
 <span><span class="co">#&gt; function (psi1, psi0) </span></span>
 <span><span class="co">#&gt; -(psi1/psi0^2)</span></span>
-<span><span class="co">#&gt; &lt;environment: 0x559565f53af0&gt;</span></span>
+<span><span class="co">#&gt; &lt;environment: 0x55f9c2ab98e8&gt;</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $d1</span></span>
 <span><span class="co">#&gt; function (psi1, psi0) </span></span>
 <span><span class="co">#&gt; 1/psi0</span></span>
-<span><span class="co">#&gt; &lt;environment: 0x559565f53af0&gt;</span></span></code></pre></div>
+<span><span class="co">#&gt; &lt;environment: 0x55f9c2ab98e8&gt;</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="specifying-any-estimand">Specifying any estimand<a class="anchor" aria-label="anchor" href="#specifying-any-estimand"></a>
@@ -306,7 +306,7 @@ to use the estimand function <code>psi1 / psi0</code> as seen below:</p>
 <p>Below is an example showing the specification of a custom defined
 function with arguments <code>psi0</code> and <code>psi1</code>.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">nonsense_estimand_fun</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">psi1</span>, <span class="va">psi0</span><span class="op">)</span> <span class="op">{</span></span>
+<code class="sourceCode R"><span><span class="va">est_fun</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">psi1</span>, <span class="va">psi0</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="va">psi1</span> <span class="op">/</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="va">psi0</span><span class="op">)</span> <span class="op">*</span> <span class="fl">2</span> <span class="op">-</span> <span class="fl">1</span></span>
 <span><span class="op">}</span></span>
 <span></span>
@@ -316,7 +316,7 @@ function with arguments <code>psi0</code> and <code>psi1</code>.</p>
 <span>  exposure_prob <span class="op">=</span> <span class="fl">1</span><span class="op">/</span><span class="fl">2</span>,</span>
 <span>  data <span class="op">=</span> <span class="va">dat_pois</span>,</span>
 <span>  family <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/family.html" class="external-link">poisson</a></span><span class="op">(</span><span class="op">)</span>,</span>
-<span>  estimand_fun <span class="op">=</span> <span class="va">nonsense_estimand_fun</span>,</span>
+<span>  estimand_fun <span class="op">=</span> <span class="va">est_fun</span>,</span>
 <span>  verbose <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; ── <span style="font-weight: bold;">Symbolic differentiation of estimand function</span> ──</span></span>
@@ -387,13 +387,13 @@ it can be seen below how the list of models can look like.</p>
 <div class="section level4">
 <h4 id="default-learners">Default learners<a class="anchor" aria-label="anchor" href="#default-learners"></a>
 </h4>
-<p>Below we show the code of the unexported
-<code>default_learners</code> function, which creates a list of default
-learners that are used in <code><a href="../reference/fit_best_learner.html">fit_best_learner()</a></code> and
+<p>Below we show the code of the <code>default_learners</code> function,
+which creates a list of default learners that are used in
+<code><a href="../reference/fit_best_learner.html">fit_best_learner()</a></code> and
 <code><a href="../reference/rctglm_with_prognosticscore.html">rctglm_with_prognosticscore()</a></code>.</p>
 <blockquote>
-<p>The body of the function thus represents a valid way of specifying
-the <code>learners</code> argument.</p>
+<p>The body of the function thus represents a valid way of specifying a
+list as the <code>learners</code> argument.</p>
 </blockquote>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">default_learners</span></span>
@@ -407,7 +407,7 @@ the <code>learners</code> argument.</p>
 <span><span class="co">#&gt;         grid = data.frame(trees = seq(from = 25, to = 500, by = 25), </span></span>
 <span><span class="co">#&gt;             tree_depth = 3)))</span></span>
 <span><span class="co">#&gt; }</span></span>
-<span><span class="co">#&gt; &lt;bytecode: 0x55955a8b6470&gt;</span></span>
+<span><span class="co">#&gt; &lt;bytecode: 0x55f9b5b0dcd8&gt;</span></span>
 <span><span class="co">#&gt; &lt;environment: namespace:postcard&gt;</span></span></code></pre></div>
 </div>
 <div class="section level4">
@@ -491,7 +491,7 @@ not take up too much space when printing in the vignette.</p>
 <span><span class="va">prog_info</span></span>
 <span><span class="co">#&gt; $formula</span></span>
 <span><span class="co">#&gt; Y ~ .</span></span>
-<span><span class="co">#&gt; &lt;environment: 0x559568f2f7b8&gt;</span></span>
+<span><span class="co">#&gt; &lt;environment: 0x55f9c29471b0&gt;</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $model_fit</span></span>
 <span><span class="co">#&gt; ══ Workflow [trained] ══════════════════════════════════════════════════════════</span></span>
@@ -515,8 +515,8 @@ not take up too much space when printing in the vignette.</p>
 <span><span class="co">#&gt; Target node size:                 10 </span></span>
 <span><span class="co">#&gt; Variable importance mode:         none </span></span>
 <span><span class="co">#&gt; Splitrule:                        variance </span></span>
-<span><span class="co">#&gt; OOB prediction error (MSE):       1.383821 </span></span>
-<span><span class="co">#&gt; R squared (OOB):                  0.3918115 </span></span>
+<span><span class="co">#&gt; OOB prediction error (MSE):       1.381527 </span></span>
+<span><span class="co">#&gt; R squared (OOB):                  0.6751407 </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $learners</span></span>
 <span><span class="co">#&gt; $learners$rf</span></span>
@@ -569,13 +569,13 @@ not take up too much space when printing in the vignette.</p>
 <span><span class="co">#&gt; [1] 5</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $data</span></span>
-<span><span class="co">#&gt;           Y          W</span></span>
-<span><span class="co">#&gt; 1 4.0429142  1.8336410</span></span>
-<span><span class="co">#&gt; 2 5.1553821  1.8259065</span></span>
-<span><span class="co">#&gt; 3 4.5318651 -1.0377573</span></span>
-<span><span class="co">#&gt; 4 4.1458895 -1.5460878</span></span>
-<span><span class="co">#&gt; 5 2.2437462  0.3011256</span></span>
-<span><span class="co">#&gt; 6 0.5276273  0.5514324</span></span></code></pre></div>
+<span><span class="co">#&gt;          Y        W</span></span>
+<span><span class="co">#&gt; 1 8.038754 9.625692</span></span>
+<span><span class="co">#&gt; 2 9.134305 9.608290</span></span>
+<span><span class="co">#&gt; 3 5.763027 3.165046</span></span>
+<span><span class="co">#&gt; 4 3.258947 2.021302</span></span>
+<span><span class="co">#&gt; 5 7.442597 6.177533</span></span>
+<span><span class="co">#&gt; 6 5.428690 6.740723</span></span></code></pre></div>
 </div>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

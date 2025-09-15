@@ -90,8 +90,7 @@ given under ‘Details’ in the <a href="https://rdrr.io/r/stats/glm.html" clas
 
 <dt id="arg-exposure-indicator">exposure_indicator<a class="anchor" aria-label="anchor" href="#arg-exposure-indicator"></a></dt>
 <dd><p>(name of) the <em>binary</em> variable in <code>data</code> that
-identifies randomisation groups. The variable is required to be binary to
-make the "orientation" of the <code>estimand_fun</code> clear.</p></dd>
+identifies randomisation groups. The variable is required to be binary currently.</p></dd>
 
 
 <dt id="arg-exposure-prob">exposure_prob<a class="anchor" aria-label="anchor" href="#arg-exposure-prob"></a></dt>
@@ -234,7 +233,7 @@ the <code>estimand_fun</code>.</p>
 <span class="r-in"><span><span class="co"># Pull information on estimand</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="rctglm_methods.html">estimand</a></span><span class="op">(</span><span class="va">ate</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Estimate Std. Error</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1 2.124698  0.2074621</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1 2.132519  0.2067388</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## Another example with different family and specification of estimand_fun</span></span></span>
 <span class="r-in"><span><span class="va">dat_binom</span> <span class="op">&lt;-</span> <span class="fu"><a href="glm_data.html">glm_data</a></span><span class="op">(</span></span></span>

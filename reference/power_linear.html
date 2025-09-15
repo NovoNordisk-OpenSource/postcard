@@ -80,13 +80,13 @@ non-centrality parameter and the exact t-distributions.</p>
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">variance_ancova</span><span class="op">(</span><span class="va">formula</span>, <span class="va">data</span>, inflation <span class="op">=</span> <span class="fl">1</span>, deflation <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">variance_ancova</span><span class="op">(</span><span class="va">formula</span>, <span class="va">data</span>, inflation <span class="op">=</span> <span class="fl">1</span>, deflation <span class="op">=</span> <span class="fl">1</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu">power_gs</span><span class="op">(</span><span class="va">variance</span>, <span class="va">ate</span>, <span class="va">n</span>, r <span class="op">=</span> <span class="fl">1</span>, margin <span class="op">=</span> <span class="fl">0</span>, alpha <span class="op">=</span> <span class="fl">0.05</span><span class="op">)</span></span>
+<span><span class="fu">power_gs</span><span class="op">(</span><span class="va">variance</span>, <span class="va">ate</span>, <span class="va">n</span>, r <span class="op">=</span> <span class="fl">1</span>, margin <span class="op">=</span> <span class="fl">0</span>, alpha <span class="op">=</span> <span class="fl">0.05</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu">samplesize_gs</span><span class="op">(</span><span class="va">variance</span>, <span class="va">ate</span>, r <span class="op">=</span> <span class="fl">1</span>, margin <span class="op">=</span> <span class="fl">0</span>, power <span class="op">=</span> <span class="fl">0.9</span>, alpha <span class="op">=</span> <span class="fl">0.05</span><span class="op">)</span></span>
+<span><span class="fu">samplesize_gs</span><span class="op">(</span><span class="va">variance</span>, <span class="va">ate</span>, r <span class="op">=</span> <span class="fl">1</span>, margin <span class="op">=</span> <span class="fl">0</span>, power <span class="op">=</span> <span class="fl">0.9</span>, alpha <span class="op">=</span> <span class="fl">0.05</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu">power_nc</span><span class="op">(</span><span class="va">variance</span>, <span class="va">df</span>, <span class="va">ate</span>, <span class="va">n</span>, r <span class="op">=</span> <span class="fl">1</span>, margin <span class="op">=</span> <span class="fl">0</span>, alpha <span class="op">=</span> <span class="fl">0.05</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu">power_nc</span><span class="op">(</span><span class="va">variance</span>, <span class="va">df</span>, <span class="va">ate</span>, <span class="va">n</span>, r <span class="op">=</span> <span class="fl">1</span>, margin <span class="op">=</span> <span class="fl">0</span>, alpha <span class="op">=</span> <span class="fl">0.05</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -120,6 +120,11 @@ below <code>1</code> to obtain a more conservative estimate of the coefficient o
 See details about how \(R^2\) related to the estimation.</p></dd>
 
 
+<dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
+<dd><p>Not currently used. Here to accomodate implementation of <code>...</code> for the
+<code><a href="repeat_power_linear.html">repeat_power_linear()</a></code> function.</p></dd>
+
+
 <dt id="arg-variance">variance<a class="anchor" aria-label="anchor" href="#arg-variance"></a></dt>
 <dd><p>a <code>numeric</code> variance to use for the approximation. See more details
 in documentation sections of each power approximating function.</p></dd>
@@ -132,7 +137,7 @@ in documentation sections of each power approximating function.</p></dd>
 <dt id="arg-n">n<a class="anchor" aria-label="anchor" href="#arg-n"></a></dt>
 <dd><p>a <code>numeric</code> with number of participants in total.
 From this number of participants in the treatment group is \(n1=(r/(1+r))n\)
-and the control group is \(n1=(1/(1+r))n\).</p></dd>
+and the control group is \(n0=(1/(1+r))n\).</p></dd>
 
 
 <dt id="arg-r">r<a class="anchor" aria-label="anchor" href="#arg-r"></a></dt>
@@ -231,20 +236,43 @@ the non-centrality parameter as in the univariate case where \(\rho^2\) is repla
 <p>Then the power for ANCOVA with <code>d</code> degrees of freedom can be estimated as</p>
 <p>$$1-\beta = 1 - F_{t,d,nc}\left(F_{t, d,0), 0}^{-1}(1-\alpha/2)\right).$$</p>
     </div>
+    <div class="section level2">
+    <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
+    <div class="dont-index"><p>See <a href="power_marginaleffect.html">power_marginaleffect</a> for a power approximation function that works for a larger
+class of models.</p></div>
+    </div>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># Generate a data set to use as an example</span></span></span>
+<span class="r-in"><span><span class="va">n_train</span> <span class="op">&lt;-</span> <span class="fl">1e3</span></span></span>
+<span class="r-in"><span><span class="va">n_test</span> <span class="op">&lt;-</span> <span class="fl">100</span></span></span>
+<span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">dat_gaus</span> <span class="op">&lt;-</span> <span class="fu"><a href="glm_data.html">glm_data</a></span><span class="op">(</span><span class="va">Y</span> <span class="op">~</span> <span class="fl">1</span><span class="op">+</span><span class="fl">2</span><span class="op">*</span><span class="va">X1</span><span class="op">-</span><span class="va">X2</span><span class="op">+</span><span class="fl">3</span><span class="op">*</span><span class="va">A</span>,</span></span>
-<span class="r-in"><span>                X1 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">100</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>                X2 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/GammaDist.html" class="external-link">rgamma</a></span><span class="op">(</span><span class="fl">100</span>, shape <span class="op">=</span> <span class="fl">2</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>                A <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Binomial.html" class="external-link">rbinom</a></span><span class="op">(</span><span class="fl">100</span>, size <span class="op">=</span> <span class="fl">1</span>, prob <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>                X1 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="va">n_train</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>                X2 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/GammaDist.html" class="external-link">rgamma</a></span><span class="op">(</span><span class="va">n_train</span>, shape <span class="op">=</span> <span class="fl">2</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>                A <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Binomial.html" class="external-link">rbinom</a></span><span class="op">(</span><span class="va">n_train</span>, size <span class="op">=</span> <span class="fl">1</span>, prob <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>                family <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/family.html" class="external-link">gaussian</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Approximate the power using no adjustment covariates</span></span></span>
 <span class="r-in"><span><span class="va">va_nocov</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/cor.html" class="external-link">var</a></span><span class="op">(</span><span class="va">dat_gaus</span><span class="op">$</span><span class="va">Y</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu">power_gs</span><span class="op">(</span>n <span class="op">=</span> <span class="fl">200</span>, variance <span class="op">=</span> <span class="va">va_nocov</span>, ate <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.6532264</span>
+<span class="r-in"><span><span class="fu">power_gs</span><span class="op">(</span>n <span class="op">=</span> <span class="va">n_test</span>, variance <span class="op">=</span> <span class="va">va_nocov</span>, ate <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.3895988</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"samplesize")</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 100</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"target_effect")</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"exposure_prob")</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"estimand_fun")</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> function (psi1, psi0) </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> psi1 - psi0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;bytecode: 0x561c9f486848&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;environment: 0x561c9f486b90&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"margin")</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"alpha")</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.05</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Approximate the power with a model adjusting for both variables in the</span></span></span>
 <span class="r-in"><span><span class="co"># data generating process</span></span></span>
@@ -252,23 +280,86 @@ the non-centrality parameter as in the univariate case where \(\rho^2\) is repla
 <span class="r-in"><span><span class="co">## First estimate the variance sigma^2 * (1-R^2)</span></span></span>
 <span class="r-in"><span><span class="va">va_cov</span> <span class="op">&lt;-</span> <span class="fu">variance_ancova</span><span class="op">(</span><span class="va">Y</span> <span class="op">~</span> <span class="va">X1</span> <span class="op">+</span> <span class="va">X2</span> <span class="op">+</span> <span class="va">A</span>, <span class="va">dat_gaus</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="co">## Then estimate the power using this variance</span></span></span>
-<span class="r-in"><span><span class="fu">power_gs</span><span class="op">(</span>n <span class="op">=</span> <span class="fl">100</span>, variance <span class="op">=</span> <span class="va">va_cov</span>, ate <span class="op">=</span> <span class="fl">1.8</span>, margin <span class="op">=</span> <span class="fl">1</span>, r <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.9818013</span>
+<span class="r-in"><span><span class="fu">power_gs</span><span class="op">(</span>n <span class="op">=</span> <span class="va">n_test</span>, variance <span class="op">=</span> <span class="va">va_cov</span>, ate <span class="op">=</span> <span class="fl">1.8</span>, margin <span class="op">=</span> <span class="fl">1</span>, r <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.9536545</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"samplesize")</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 100</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"target_effect")</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1.8</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"exposure_prob")</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.6666667</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"estimand_fun")</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> function (psi1, psi0) </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> psi1 - psi0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;bytecode: 0x561c9f486848&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;environment: 0x561c9f35a1d0&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"margin")</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"alpha")</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.05</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Approximate the sample size needed to obtain 90% power with same model as</span></span></span>
 <span class="r-in"><span><span class="co"># above</span></span></span>
 <span class="r-in"><span><span class="fu">samplesize_gs</span><span class="op">(</span></span></span>
 <span class="r-in"><span>  variance <span class="op">=</span> <span class="va">va_cov</span>, ate <span class="op">=</span> <span class="fl">1.8</span>, power <span class="op">=</span> <span class="fl">0.9</span>, margin <span class="op">=</span> <span class="fl">1</span>, r <span class="op">=</span> <span class="fl">2</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 64.67507</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 79.64423</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"power")</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.9</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"target_effect")</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1.8</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"exposure_prob")</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.6666667</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"estimand_fun")</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> function (psi1, psi0) </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> psi1 - psi0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;bytecode: 0x561c9f486848&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;environment: 0x561c9f30a268&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"margin")</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"alpha")</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.05</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># No adjustment covariates</span></span></span>
-<span class="r-in"><span><span class="fu">power_nc</span><span class="op">(</span>n <span class="op">=</span> <span class="fl">200</span>, variance <span class="op">=</span> <span class="va">va_nocov</span>, df <span class="op">=</span> <span class="fl">199</span>, ate <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.6532108</span>
+<span class="r-in"><span><span class="fu">power_nc</span><span class="op">(</span>n <span class="op">=</span> <span class="va">n_test</span>, variance <span class="op">=</span> <span class="va">va_nocov</span>, df <span class="op">=</span> <span class="fl">199</span>, ate <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.3927406</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"samplesize")</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 100</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"target_effect")</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"exposure_prob")</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"estimand_fun")</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> function (psi1, psi0) </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> psi1 - psi0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;bytecode: 0x561c9f486848&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;environment: 0x561c9f2c4568&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"margin")</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"alpha")</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.05</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"df")</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 199</span>
 <span class="r-in"><span><span class="co"># Adjusting for all covariates in data generating process</span></span></span>
-<span class="r-in"><span><span class="fu">power_nc</span><span class="op">(</span>n <span class="op">=</span> <span class="fl">200</span>, variance <span class="op">=</span> <span class="va">va_cov</span>, df <span class="op">=</span> <span class="fl">196</span>, ate <span class="op">=</span> <span class="fl">1.8</span>, margin <span class="op">=</span> <span class="fl">1</span>, r <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.9999272</span>
-<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu">power_nc</span><span class="op">(</span>n <span class="op">=</span> <span class="va">n_test</span>, variance <span class="op">=</span> <span class="va">va_cov</span>, df <span class="op">=</span> <span class="fl">196</span>, ate <span class="op">=</span> <span class="fl">1.8</span>, margin <span class="op">=</span> <span class="fl">1</span>, r <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.9553194</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"samplesize")</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 100</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"target_effect")</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1.8</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"exposure_prob")</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.6666667</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"estimand_fun")</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> function (psi1, psi0) </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> psi1 - psi0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;bytecode: 0x561c9f486848&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;environment: 0x561c9f28bc98&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"margin")</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"alpha")</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.05</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"df")</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 196</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

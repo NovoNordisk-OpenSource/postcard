@@ -110,8 +110,8 @@ a GLM with linear predictor given by the expression provided.</p>
 <span></span>
 <span><span class="co"># Simulate data with a non-linear effect</span></span>
 <span><span class="va">dat_treat</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/glm_data.html">glm_data</a></span><span class="op">(</span></span>
-<span>  <span class="va">Y</span> <span class="op">~</span> <span class="va">b0</span><span class="op">+</span><span class="va">b1</span><span class="op">*</span><span class="fu"><a href="https://rdrr.io/r/base/Trig.html" class="external-link">sin</a></span><span class="op">(</span><span class="va">W</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span><span class="op">+</span><span class="va">b2</span><span class="op">*</span><span class="va">A</span>,</span>
-<span>  W <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span><span class="va">n</span>, min <span class="op">=</span> <span class="op">-</span><span class="fl">2</span>, max <span class="op">=</span> <span class="fl">2</span><span class="op">)</span>,</span>
+<span>  <span class="va">Y</span> <span class="op">~</span> <span class="va">b0</span><span class="op">+</span><span class="va">b1</span><span class="op">*</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="va">W</span><span class="op">)</span><span class="op">+</span><span class="va">b2</span><span class="op">*</span><span class="va">A</span>,</span>
+<span>  W <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span><span class="va">n</span>, min <span class="op">=</span> <span class="fl">1</span>, max <span class="op">=</span> <span class="fl">100</span><span class="op">)</span>,</span>
 <span>  A <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Binomial.html" class="external-link">rbinom</a></span><span class="op">(</span><span class="va">n</span>, <span class="fl">1</span>, prob <span class="op">=</span> <span class="fl">1</span><span class="op">/</span><span class="fl">2</span><span class="op">)</span>,</span>
 <span>  family <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/family.html" class="external-link">gaussian</a></span><span class="op">(</span><span class="op">)</span> <span class="co"># Default value</span></span>
 <span><span class="op">)</span></span></code></pre></div>
@@ -168,22 +168,23 @@ we suppress this behavior. See more in
 <span><span class="co">#&gt; Call:  rctglm(formula = Y ~ A * W, exposure_indicator = A, exposure_prob = 1/2, </span></span>
 <span><span class="co">#&gt;     data = dat_treat, family = "gaussian")</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Counterfactual control mean (psi_0=E[Y|X, A=0]) estimate: 2.776</span></span>
-<span><span class="co">#&gt; Counterfactual active mean (psi_1=E[Y|X, A=1]) estimate: 4.867</span></span>
+<span><span class="co">#&gt; Counterfactual control mean (psi_0=E[Y|X, A=0]) estimate: 12</span></span>
+<span><span class="co">#&gt; Counterfactual active mean (psi_1=E[Y|X, A=1]) estimate: 13.93</span></span>
 <span><span class="co">#&gt; Estimand function r: psi1 - psi0</span></span>
-<span><span class="co">#&gt; Estimand (r(psi_1, psi_0)) estimate (SE): 2.091 (0.09209)</span></span></code></pre></div>
+<span><span class="co">#&gt; Estimand (r(psi_1, psi_0)) estimate (SE): 1.932 (0.09479)</span></span></code></pre></div>
 <p>The structure of such an <code>rctglm</code> object is broken down in
 the <strong><code>Value</code></strong> section of the documentation in
 <code><a href="../reference/rctglm.html">rctglm()</a></code>.</p>
 <p>Methods available are <code>estimand</code> (or the shorthand
 <code>est</code>) which prints a <code>data.frame</code> with and
-estimate of the estimand and its standard error. A method for
-<code>coef</code> is also available to extract coefficients from the
+estimate of the estimand and its standard error. A method for the
+generics <code>coef</code> and <code>predict</code> are also available
+that are “shortcuts” to applying the corresponding methods to the
 underlying <code>glm</code> fit.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/rctglm_methods.html">est</a></span><span class="op">(</span><span class="va">ate</span><span class="op">)</span></span>
 <span><span class="co">#&gt;   Estimate Std. Error</span></span>
-<span><span class="co">#&gt; 1 2.091095 0.09209306</span></span></code></pre></div>
+<span><span class="co">#&gt; 1 1.931923 0.09478538</span></span></code></pre></div>
 <p>See more info in the documentation page
 <code><a href="../reference/rctglm_methods.html">rctglm_methods()</a></code>.</p>
 </div>
@@ -206,8 +207,8 @@ information in the GLM model using a single covariate adjustment.</p>
 as well:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">dat_notreat</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/glm_data.html">glm_data</a></span><span class="op">(</span></span>
-<span>  <span class="va">Y</span> <span class="op">~</span> <span class="va">b0</span><span class="op">+</span><span class="va">b1</span><span class="op">*</span><span class="fu"><a href="https://rdrr.io/r/base/Trig.html" class="external-link">sin</a></span><span class="op">(</span><span class="va">W</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span>,</span>
-<span>  W <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span><span class="va">n</span>, min <span class="op">=</span> <span class="op">-</span><span class="fl">2</span>, max <span class="op">=</span> <span class="fl">2</span><span class="op">)</span>,</span>
+<span>  <span class="va">Y</span> <span class="op">~</span> <span class="va">b0</span><span class="op">+</span><span class="va">b1</span><span class="op">*</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="va">W</span><span class="op">)</span>,</span>
+<span>  W <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span><span class="va">n</span>, min <span class="op">=</span> <span class="fl">1</span>, max <span class="op">=</span> <span class="fl">100</span><span class="op">)</span>,</span>
 <span>  family <span class="op">=</span> <span class="va">gaussian</span> <span class="co"># Default value</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <p>The call to <code><a href="../reference/rctglm_with_prognosticscore.html">rctglm_with_prognosticscore()</a></code> is the same as
@@ -244,10 +245,10 @@ adjusting for a prognostic score, is seen below:</p>
 <span><span class="co">#&gt;     exposure_prob = 1/2, data = dat_treat, family = gaussian(link = "identity"), </span></span>
 <span><span class="co">#&gt;     data_hist = dat_notreat)</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Counterfactual control mean (psi_0=E[Y|X, A=0]) estimate: 2.827</span></span>
-<span><span class="co">#&gt; Counterfactual active mean (psi_1=E[Y|X, A=1]) estimate: 4.821</span></span>
+<span><span class="co">#&gt; Counterfactual control mean (psi_0=E[Y|X, A=0]) estimate: 11.98</span></span>
+<span><span class="co">#&gt; Counterfactual active mean (psi_1=E[Y|X, A=1]) estimate: 13.94</span></span>
 <span><span class="co">#&gt; Estimand function r: psi1 - psi0</span></span>
-<span><span class="co">#&gt; Estimand (r(psi_1, psi_0)) estimate (SE): 1.994 (0.06405)</span></span></code></pre></div>
+<span><span class="co">#&gt; Estimand (r(psi_1, psi_0)) estimate (SE): 1.961 (0.06525)</span></span></code></pre></div>
 <p>It’s evident that in this case where there is a non-linear
 relationship between the covariate we observe and the response,
 adjusting for the prognostic score reduces the standard error of our
@@ -264,12 +265,12 @@ be used to extract. A breakdown of what this list includes, see the
 </div>
 </div>
 <div class="section level2">
-<h2 id="power-approximation">Power approximation<a class="anchor" aria-label="anchor" href="#power-approximation"></a>
+<h2 id="prospective-power-approximation">Prospective power approximation<a class="anchor" aria-label="anchor" href="#prospective-power-approximation"></a>
 </h2>
 <p>In cases of seeking to conduct new studies, sample size/power
 analyses are vital to the successful planning of such studies. Here, we
 present implementations in this package that take advantage of power
-approximation formulas to perform such analyses.</p>
+approximation formulas to perform analyses.</p>
 <p>See a more detailed walkthrough of a use case in
 <code><a href="../articles/prospective-power.html">vignette("prospective-power")</a></code>.</p>
 <div class="section level3">
@@ -277,74 +278,202 @@ approximation formulas to perform such analyses.</p>
 </h3>
 <p>The method proposed in <a href="https://arxiv.org/abs/2503.22284" class="external-link">Powering RCTs for marginal
 effects with GLMs using prognostic score adjustment</a> by
-Højbjerre-Frandsen et. al (2025), which can be used to estimate the
-power when estimating any marginal effect, is implemented in the
-function <code><a href="../reference/power_marginaleffect.html">power_marginaleffect()</a></code>.</p>
+Højbjerre-Frandsen et. al (2025) is a method to estimate the power of
+any marginal effect, which is robust to misspecification. The method
+works for prospective power estimation, performing an analysis only
+using data of control participants. This is implemented in the function
+<code><a href="../reference/power_marginaleffect.html">power_marginaleffect()</a></code>.</p>
 <p>According to the conservative approach in the article, if wanting to
 conduct power analyses to figure out how many participants is needed for
-an upcoming trial, where you are planning to use <em>prognostic
-covariate adjustment</em>, predictions should be obtained from a
-discrete super learner identical to the one planned to use for
-generating prognostic scores when adjusting in the analysis when
-estimating the marginal effect.</p>
-<blockquote>
-<p>Here we showcase a simple use of a <code><a href="https://rdrr.io/r/stats/glm.html" class="external-link">glm()</a></code>, but fx.
-<code><a href="../reference/fit_best_learner.html">fit_best_learner()</a></code> could be used to fit a discrete super
-learner as the prediction model. Could also add steps to get
+an upcoming trial, where you are planning to use <em>prognostic score
+adjustment</em>, predictions should be obtained from a discrete super
+learner identical to the one planned to use for generating prognostic
+scores when adjusting in the analysis when estimating the marginal
+effect.</p>
+<p>Here we showcase the use of a <code><a href="https://rdrr.io/r/stats/glm.html" class="external-link">glm()</a></code> as well as a
+discrete super learner prognostic model fit with
+<code><a href="../reference/fit_best_learner.html">fit_best_learner()</a></code>. We create the model and predict on the
+same data for simplicity of the example, but you could add steps to get
 out-of-sample (OOS) predictions (see examples).</p>
-</blockquote>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">pred_mod</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/glm.html" class="external-link">glm</a></span><span class="op">(</span><span class="va">Y</span> <span class="op">~</span> <span class="va">W</span> <span class="op">+</span> <span class="va">A</span>, data <span class="op">=</span> <span class="va">dat_treat</span><span class="op">)</span></span>
-<span><span class="va">preds</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">pred_mod</span>, <span class="va">dat_treat</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">ancova</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/glm.html" class="external-link">glm</a></span><span class="op">(</span><span class="va">Y</span> <span class="op">~</span> <span class="va">W</span>, data <span class="op">=</span> <span class="va">dat_notreat</span><span class="op">)</span></span>
+<span><span class="va">preds_anc</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">ancova</span>, <span class="va">dat_notreat</span><span class="op">)</span></span>
+<span><span class="va">lrnr</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/fit_best_learner.html">fit_best_learner</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mod <span class="op">=</span> <span class="va">Y</span> <span class="op">~</span> <span class="va">W</span><span class="op">)</span>, data <span class="op">=</span> <span class="va">dat_notreat</span><span class="op">)</span></span>
+<span><span class="va">preds_dsl</span> <span class="op">&lt;-</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/pull.html" class="external-link">pull</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">lrnr</span>, new_data <span class="op">=</span> <span class="va">dat_notreat</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="../reference/power_marginaleffect.html">power_marginaleffect</a></span><span class="op">(</span></span>
-<span>  response <span class="op">=</span> <span class="va">dat_treat</span><span class="op">$</span><span class="va">Y</span>,</span>
-<span>  predictions <span class="op">=</span> <span class="va">preds</span>,</span>
-<span>  target_effect <span class="op">=</span> <span class="fl">0.4</span>,</span>
+<span>  response <span class="op">=</span> <span class="va">dat_notreat</span><span class="op">$</span><span class="va">Y</span>,</span>
+<span>  predictions <span class="op">=</span> <span class="va">preds_anc</span>,</span>
+<span>  target_effect <span class="op">=</span> <span class="fl">0.3</span>,</span>
 <span>  exposure_prob <span class="op">=</span> <span class="fl">1</span><span class="op">/</span><span class="fl">2</span></span>
 <span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] 0.9056303</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] 0.471485</span></span>
+<span><span class="co">#&gt; attr(,"samplesize")</span></span>
+<span><span class="co">#&gt; [1] 1000</span></span>
+<span><span class="co">#&gt; attr(,"target_effect")</span></span>
+<span><span class="co">#&gt; [1] 0.3</span></span>
+<span><span class="co">#&gt; attr(,"exposure_prob")</span></span>
+<span><span class="co">#&gt; [1] 0.5</span></span>
+<span><span class="co">#&gt; attr(,"estimand_fun")</span></span>
+<span><span class="co">#&gt; function (psi1, psi0) </span></span>
+<span><span class="co">#&gt; psi1 - psi0</span></span>
+<span><span class="co">#&gt; &lt;bytecode: 0x55acc2b60108&gt;</span></span>
+<span><span class="co">#&gt; &lt;environment: 0x55accea7ecc8&gt;</span></span>
+<span><span class="co">#&gt; attr(,"margin")</span></span>
+<span><span class="co">#&gt; [1] 0</span></span>
+<span><span class="co">#&gt; attr(,"alpha")</span></span>
+<span><span class="co">#&gt; [1] 0.05</span></span>
+<span><span class="fu"><a href="../reference/power_marginaleffect.html">power_marginaleffect</a></span><span class="op">(</span></span>
+<span>  response <span class="op">=</span> <span class="va">dat_notreat</span><span class="op">$</span><span class="va">Y</span>,</span>
+<span>  predictions <span class="op">=</span> <span class="va">preds_dsl</span>,</span>
+<span>  target_effect <span class="op">=</span> <span class="fl">0.3</span>,</span>
+<span>  exposure_prob <span class="op">=</span> <span class="fl">1</span><span class="op">/</span><span class="fl">2</span></span>
+<span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] 0.5477086</span></span>
+<span><span class="co">#&gt; attr(,"samplesize")</span></span>
+<span><span class="co">#&gt; [1] 1000</span></span>
+<span><span class="co">#&gt; attr(,"target_effect")</span></span>
+<span><span class="co">#&gt; [1] 0.3</span></span>
+<span><span class="co">#&gt; attr(,"exposure_prob")</span></span>
+<span><span class="co">#&gt; [1] 0.5</span></span>
+<span><span class="co">#&gt; attr(,"estimand_fun")</span></span>
+<span><span class="co">#&gt; function (psi1, psi0) </span></span>
+<span><span class="co">#&gt; psi1 - psi0</span></span>
+<span><span class="co">#&gt; &lt;bytecode: 0x55acc2b60108&gt;</span></span>
+<span><span class="co">#&gt; &lt;environment: 0x55acce6e1b68&gt;</span></span>
+<span><span class="co">#&gt; attr(,"margin")</span></span>
+<span><span class="co">#&gt; [1] 0</span></span>
+<span><span class="co">#&gt; attr(,"alpha")</span></span>
+<span><span class="co">#&gt; [1] 0.05</span></span></code></pre></div>
+<p>Note that the power is greater for the model that can account for the
+non-linear effect of the covariate on the response.</p>
 </div>
 <div class="section level3">
-<h3 id="specific-to-linear-models">Specific to linear models<a class="anchor" aria-label="anchor" href="#specific-to-linear-models"></a>
+<h3 id="for-linear-models">For linear models<a class="anchor" aria-label="anchor" href="#for-linear-models"></a>
 </h3>
-<div class="section level4">
-<h4 id="estimating-the-assumed-variance">Estimating the assumed variance<a class="anchor" aria-label="anchor" href="#estimating-the-assumed-variance"></a>
-</h4>
-<p>Finding the assumed variance to use for your power analysis with an
-ANCOVA model can be done using the <code>variance_ancova</code>
-function, which estimates the term <span class="math inline">\(\sigma^2(1-R^2)\)</span> given a
-<code>formula</code> and <code>data</code>.</p>
+<p>The functions described in the help page <code><a href="../reference/power_linear.html">power_linear()</a></code>
+provide utilities for prospective power calculations using linear
+models. We conduct sample size calculations by constructing power curves
+using a <strong>standard ANCOVA method</strong> as described in
+(Guenther WC. Sample Size Formulas for Normal Theory T Tests. The
+American Statistician. 1981;35(4):243–244) and (Schouten HJA. Sample
+size formula with a continuous outcome for unequal group sizes and
+unequal variances. Statistics in Medicine. 1999;18(1):87–91).</p>
+<p>We compare the resulting power for ANCOVA models that leverage
+prognostic covariate adjustment and ones that don’t. We use the function
+<code>variance_ancova</code> to estimate the entity <span class="math inline">\(\sigma^2(1-R^2)\)</span> in case of a “standard”
+ANCOVA model adjusting for covariates in data, and in case of an ANCOVA
+utilising <strong>prognostic score adjustment</strong> by adjusting for
+the prognostic score as a covariate.</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">vanc</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/power_linear.html">variance_ancova</a></span><span class="op">(</span><span class="va">Y</span> <span class="op">~</span> <span class="va">A</span> <span class="op">+</span> <span class="va">W</span>, data <span class="op">=</span> <span class="va">dat_treat</span><span class="op">)</span></span>
-<span><span class="va">vanc</span></span>
-<span><span class="co">#&gt; [1] 2.120278</span></span></code></pre></div>
-</div>
-<div class="section level4">
-<h4 id="finding-the-power-or-sample-size">Finding the power (or sample size)<a class="anchor" aria-label="anchor" href="#finding-the-power-or-sample-size"></a>
-</h4>
-<p>Functions <code><a href="../reference/power_linear.html">power_gs()</a></code> and <code><a href="../reference/power_linear.html">power_nc()</a></code> exist,
-which estimate the power given a sample size <code>n</code> using
-approximation formulas. The functions are the results of two different
-approximation formulas but behave exactly the same except for a
-mandatory specification of a <code>df</code> argument for the
-<code>power_nc</code> function, which gives the degrees of freedom in
-the t-distribution used.</p>
-<blockquote>
-<p>Details about the formulas are available in the documentation</p>
-</blockquote>
-<p>For the Guenther-Schouten approximation, the formula directly gives
-us a sample size as a function of the power, so getting the required
-sample size as a function of the power is available in the function
-<code><a href="../reference/power_linear.html">samplesize_gs()</a></code>.</p>
+<code class="sourceCode R"><span><span class="va">dat_notreat</span> <span class="op">&lt;-</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span><span class="va">dat_notreat</span>, .pred <span class="op">=</span> <span class="va">preds_dsl</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">var_bound_ancova</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/power_linear.html">variance_ancova</a></span><span class="op">(</span><span class="va">Y</span> <span class="op">~</span> <span class="va">W</span>, data <span class="op">=</span> <span class="va">dat_notreat</span><span class="op">)</span></span>
+<span><span class="va">var_bound_prog</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/power_linear.html">variance_ancova</a></span><span class="op">(</span><span class="va">Y</span> <span class="op">~</span> <span class="va">W</span> <span class="op">+</span> <span class="va">.pred</span>, data <span class="op">=</span> <span class="va">dat_notreat</span><span class="op">)</span></span></code></pre></div>
+<p>We can then estimate the power for a certain sample size using
+<code><a href="../reference/power_linear.html">power_gs()</a></code> or <code><a href="../reference/power_linear.html">power_nc()</a></code> with an
+<code>n</code> specified, or we can use <code><a href="../reference/power_linear.html">samplesize_gs()</a></code> to
+estimate the sample size needed to obtain a certain
+<code>power</code>.</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/power_linear.html">power_gs</a></span><span class="op">(</span>variance <span class="op">=</span> <span class="va">vanc</span>, n <span class="op">=</span> <span class="fl">100</span>, ate <span class="op">=</span> <span class="fl">0.8</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] 0.7765394</span></span>
-<span><span class="fu"><a href="../reference/power_linear.html">power_nc</a></span><span class="op">(</span>variance <span class="op">=</span> <span class="va">vanc</span>, n <span class="op">=</span> <span class="fl">100</span>, df <span class="op">=</span> <span class="fl">97</span>, ate <span class="op">=</span> <span class="fl">0.8</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] 0.7763057</span></span>
-<span><span class="fu"><a href="../reference/power_linear.html">samplesize_gs</a></span><span class="op">(</span>variance <span class="op">=</span> <span class="va">vanc</span>, ate <span class="op">=</span> <span class="fl">0.8</span>, power <span class="op">=</span> <span class="fl">0.9</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] 141.1623</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/power_linear.html">samplesize_gs</a></span><span class="op">(</span>variance <span class="op">=</span> <span class="va">var_bound_ancova</span>,</span>
+<span>              power <span class="op">=</span> <span class="fl">0.9</span>, r <span class="op">=</span> <span class="fl">1</span>, ate <span class="op">=</span> <span class="fl">.8</span>, margin <span class="op">=</span> <span class="fl">0</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] 148.6439</span></span>
+<span><span class="co">#&gt; attr(,"power")</span></span>
+<span><span class="co">#&gt; [1] 0.9</span></span>
+<span><span class="co">#&gt; attr(,"target_effect")</span></span>
+<span><span class="co">#&gt; [1] 0.8</span></span>
+<span><span class="co">#&gt; attr(,"exposure_prob")</span></span>
+<span><span class="co">#&gt; [1] 0.5</span></span>
+<span><span class="co">#&gt; attr(,"estimand_fun")</span></span>
+<span><span class="co">#&gt; function (psi1, psi0) </span></span>
+<span><span class="co">#&gt; psi1 - psi0</span></span>
+<span><span class="co">#&gt; &lt;bytecode: 0x55acc2b60108&gt;</span></span>
+<span><span class="co">#&gt; &lt;environment: 0x55accd9a5420&gt;</span></span>
+<span><span class="co">#&gt; attr(,"margin")</span></span>
+<span><span class="co">#&gt; [1] 0</span></span>
+<span><span class="co">#&gt; attr(,"alpha")</span></span>
+<span><span class="co">#&gt; [1] 0.05</span></span>
+<span><span class="fu"><a href="../reference/power_linear.html">samplesize_gs</a></span><span class="op">(</span>variance <span class="op">=</span> <span class="va">var_bound_prog</span>,</span>
+<span>              power <span class="op">=</span> <span class="fl">0.9</span>, r <span class="op">=</span> <span class="fl">1</span>, ate <span class="op">=</span> <span class="fl">.8</span>, margin <span class="op">=</span> <span class="fl">0</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] 75.81512</span></span>
+<span><span class="co">#&gt; attr(,"power")</span></span>
+<span><span class="co">#&gt; [1] 0.9</span></span>
+<span><span class="co">#&gt; attr(,"target_effect")</span></span>
+<span><span class="co">#&gt; [1] 0.8</span></span>
+<span><span class="co">#&gt; attr(,"exposure_prob")</span></span>
+<span><span class="co">#&gt; [1] 0.5</span></span>
+<span><span class="co">#&gt; attr(,"estimand_fun")</span></span>
+<span><span class="co">#&gt; function (psi1, psi0) </span></span>
+<span><span class="co">#&gt; psi1 - psi0</span></span>
+<span><span class="co">#&gt; &lt;bytecode: 0x55acc2b60108&gt;</span></span>
+<span><span class="co">#&gt; &lt;environment: 0x55accd919398&gt;</span></span>
+<span><span class="co">#&gt; attr(,"margin")</span></span>
+<span><span class="co">#&gt; [1] 0</span></span>
+<span><span class="co">#&gt; attr(,"alpha")</span></span>
+<span><span class="co">#&gt; [1] 0.05</span></span></code></pre></div>
 </div>
+</div>
+<div class="section level2">
+<h2 id="creating-a-plot-of-prospective-power-curves">Creating a plot of prospective power curves<a class="anchor" aria-label="anchor" href="#creating-a-plot-of-prospective-power-curves"></a>
+</h2>
+<p>To easily visualise how the estimated power behaves as a function of
+the total sample size compared between models, functions
+<code><a href="../reference/repeat_power_marginaleffect.html">repeat_power_marginaleffect()</a></code> and
+<code><a href="../reference/repeat_power_linear.html">repeat_power_linear()</a></code> are available, which both produce S3
+class objects with associated plot methods.</p>
+<blockquote>
+<p>We will here describe and show an example for
+<code><a href="../reference/repeat_power_marginaleffect.html">repeat_power_marginaleffect()</a></code>. While the arguments are
+slightly different, the idea behind <code><a href="../reference/repeat_power_linear.html">repeat_power_linear()</a></code>
+is exactly the same.</p>
+</blockquote>
+<div class="section level3">
+<h3 id="using-repeat_power_marginaleffect-and-plotting-the-results">Using <code>repeat_power_marginaleffect()</code> and plotting the
+results<a class="anchor" aria-label="anchor" href="#using-repeat_power_marginaleffect-and-plotting-the-results"></a>
+</h3>
+<p>The function has two arguments with non-default values. Like in
+<code><a href="../reference/power_marginaleffect.html">power_marginaleffect()</a></code>, we need to specify our
+<code>target_effect</code> and an <code>exposure_prob</code>. Arguments
+<code>model_list</code> and <code>test_data_fun</code> do have default
+values just to enable an easy way for the user to inspect the output of
+the function, but these are arguments the user will typically want to
+specified. These arguments give a list of fitted models, which are used
+to create predictions on the test data created for each sample size,
+which are then passed to <code><a href="../reference/power_marginaleffect.html">power_marginaleffect()</a></code>.</p>
+<p>The function also has arguments <code>ns</code>,
+<code>desired_power</code> and <code>n_iter</code>, which are a vector
+of sample sizes to estimate the power for, the power that is trying to
+be achieved, and a number of iterations to average the results over,
+respectively.</p>
+<p>Running the function specifying nothing but arguments with
+non-default values, we estimate the power on data with the same
+structure as has been used earlier in this vignette, with the response
+modelled by a non-linear effect of a single covariate. We use a simple
+ANCOVA and a prognostic model fitted with
+<code><a href="../reference/fit_best_learner.html">fit_best_learner()</a></code> as our models.</p>
+<p>Thus, a simple use of <code><a href="../reference/repeat_power_marginaleffect.html">repeat_power_marginaleffect()</a></code>
+could look like this:</p>
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">rpm</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/repeat_power_marginaleffect.html">repeat_power_marginaleffect</a></span><span class="op">(</span></span>
+<span>  target_effect <span class="op">=</span> <span class="fl">1.3</span>, exposure_prob <span class="op">=</span> <span class="fl">1</span><span class="op">/</span><span class="fl">2</span>,</span>
+<span>  ns <span class="op">=</span> <span class="fl">10</span><span class="op">:</span><span class="fl">200</span>, n_iter <span class="op">=</span> <span class="fl">10</span></span>
+<span><span class="op">)</span></span>
+<span><span class="co">#&gt; Estimating power across sample sizes `n_iter` times <span style="color: #00BB00;">■■■■                       </span>…</span></span>
+<span><span class="co">#&gt; Estimating power across sample sizes `n_iter` times <span style="color: #00BB00;">■■■■■■■                    </span>…</span></span>
+<span><span class="co">#&gt; Estimating power across sample sizes `n_iter` times <span style="color: #00BB00;">■■■■■■■■■■                 </span>…</span></span>
+<span><span class="co">#&gt; Estimating power across sample sizes `n_iter` times <span style="color: #00BB00;">■■■■■■■■■■■■■■■■           </span>…</span></span>
+<span><span class="co">#&gt; Estimating power across sample sizes `n_iter` times <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■        </span>…</span></span>
+<span><span class="co">#&gt; Estimating power across sample sizes `n_iter` times <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■     </span>…</span></span>
+<span><span class="co">#&gt; Estimating power across sample sizes `n_iter` times <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■■■</span>…</span></span>
+<span><span class="co">#&gt; Estimating power across sample sizes `n_iter` times <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■■■</span>…</span></span></code></pre></div>
+<p><code>rpm</code> is then a <code>data.frame</code> containing
+information on the estimated power across the list of models for
+different sample sizes. It has the class <code>postcard_rpm</code>,
+which has a plot method, enabling us to easily plot the results.</p>
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">rpm</span><span class="op">)</span></span></code></pre></div>
+<p><img src="postcard_files/figure-html/unnamed-chunk-7-1.png" width="700"></p>
 </div>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
