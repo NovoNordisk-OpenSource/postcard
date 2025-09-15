@@ -107,7 +107,7 @@ test_pois_fun <- function(n) {
 rpm_rr <- repeat_power_marginaleffect(
   model_list = ancova_prog_list,
   test_data_fun = test_pois_fun,
-  ns = seq(20, 500, by = 10), n_iter = 20,
+  ns = seq(20, 500, by = 10), n_iter = 3,
   var1 = function(var0) 1.1 * var0,
   kappa1_squared = function(kap0) 1.1 * kap0,
   estimand_fun = "rate_ratio",
