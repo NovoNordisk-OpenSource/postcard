@@ -1,25 +1,48 @@
-# `repeat_power_marginaleffect` works
+# `repeat_power_marginaleffect` and plot snapshot tests
 
     Code
       rpm
     Output
       # A tibble: 10 x 11
-         power     n model   flag_achieve_power desired_power samplesize target_effect
-       * <dbl> <dbl> <chr>   <lgl>                      <dbl>      <int>         <dbl>
-       1 0.466   100 ANCOVA  FALSE                        0.9         10           0.9
-       2 0.622   100 ANCOVA~ FALSE                        0.9         10           0.9
-       3 0.792   200 ANCOVA  FALSE                        0.9         10           0.9
-       4 0.849   200 ANCOVA~ FALSE                        0.9         10           0.9
-       5 0.917   300 ANCOVA  TRUE                         0.9         10           0.9
-       6 0.955   300 ANCOVA~ TRUE                         0.9         10           0.9
-       7 0.955   400 ANCOVA  TRUE                         0.9         10           0.9
-       8 0.983   400 ANCOVA~ TRUE                         0.9         10           0.9
-       9 0.986   500 ANCOVA  TRUE                         0.9         10           0.9
-      10 0.997   500 ANCOVA~ TRUE                         0.9         10           0.9
+          power     n model  flag_achieve_power desired_power samplesize target_effect
+       *  <dbl> <dbl> <chr>  <lgl>                      <dbl>      <int>         <dbl>
+       1 0.0791   100 ANCOVA FALSE                        0.9         10           0.9
+       2 0.0782   100 ANCOV~ FALSE                        0.9         10           0.9
+       3 0.121    200 ANCOVA FALSE                        0.9         10           0.9
+       4 0.123    200 ANCOV~ FALSE                        0.9         10           0.9
+       5 0.171    300 ANCOVA FALSE                        0.9         10           0.9
+       6 0.158    300 ANCOV~ FALSE                        0.9         10           0.9
+       7 0.210    400 ANCOVA FALSE                        0.9         10           0.9
+       8 0.223    400 ANCOV~ FALSE                        0.9         10           0.9
+       9 0.238    500 ANCOVA FALSE                        0.9         10           0.9
+      10 0.251    500 ANCOV~ FALSE                        0.9         10           0.9
       # i 4 more variables: exposure_prob <dbl>, margin <dbl>, alpha <dbl>,
       #   power_fun <chr>
 
-# `repeat_power_linear` works
+---
+
+    Code
+      rpm_cars
+    Output
+      # A tibble: 12 x 11
+          power     n model  flag_achieve_power desired_power samplesize target_effect
+       *  <dbl> <dbl> <chr>  <lgl>                      <dbl>      <int>         <dbl>
+       1 0.0662     5 ANCOVA FALSE                        0.9         12           0.9
+       2 0.0763     5 NullM~ FALSE                        0.9         12           0.9
+       3 0.0781    10 ANCOVA FALSE                        0.9         12           0.9
+       4 0.0609    10 NullM~ FALSE                        0.9         12           0.9
+       5 0.0825    15 ANCOVA FALSE                        0.9         12           0.9
+       6 0.0564    15 NullM~ FALSE                        0.9         12           0.9
+       7 0.0577    20 ANCOVA FALSE                        0.9         12           0.9
+       8 0.0444    20 NullM~ FALSE                        0.9         12           0.9
+       9 0.0655    25 ANCOVA FALSE                        0.9         12           0.9
+      10 0.0492    25 NullM~ FALSE                        0.9         12           0.9
+      11 0.0714    30 ANCOVA FALSE                        0.9         12           0.9
+      12 0.0516    30 NullM~ FALSE                        0.9         12           0.9
+      # i 4 more variables: exposure_prob <dbl>, margin <dbl>, alpha <dbl>,
+      #   power_fun <chr>
+
+# `repeat_power_linear` and plot snapshot tests
 
     Code
       rpl
