@@ -202,7 +202,7 @@ To easily visualise how the estimated power behaves as a function of the total s
 
 ## Using `repeat_power_marginaleffect()` and plotting the results
 
-The function has two arguments with non-default values. Like in `power_marginaleffect()`, we need to specify our `target_effect` and an `exposure_prob`. Arguments `model_list` and `test_data_fun` do have default values just to enable an easy way for the user to inspect the output of the function, but these are arguments the user will typically want to specified. These arguments give a list of fitted models, which are used to create predictions on the test data created for each sample size using the function provided in `test_data_fun`.
+The function has two arguments with non-default values. Like in `power_marginaleffect()`, we need to specify our `target_effect` and an `exposure_prob`. Arguments `model_list` and `test_data_fun` do have default values just to enable an easy way for the user to inspect the output of the function, but these are arguments the user will typically want to specified. These arguments give a list of fitted models, which are used to create predictions on the test data created for each sample size, which are then passed to `power_marginaleffect()`.
 
 The function also has arguments `ns`, `desired_power` and `n_iter`, which are a vector of sample sizes to estimate the power for, the power that is trying to be achieved, and a number of iterations to average the results over, respectively.
 
