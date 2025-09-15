@@ -26,8 +26,7 @@ a symbolic description of the model to be fitted. The details of model specifica
 given under ‘Details’ in the \link{glm} documentation.}
 
 \item{exposure_indicator}{(name of) the \emph{binary} variable in \code{data} that
-identifies randomisation groups. The variable is required to be binary to
-make the "orientation" of the \code{estimand_fun} clear.}
+identifies randomisation groups. The variable is required to be binary currently.}
 
 \item{exposure_prob}{a \code{numeric} with the probability of being in
 "group 1" (rather than group 0) in groups defined by \code{exposure_indicator}.}

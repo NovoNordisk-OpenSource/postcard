@@ -5,16 +5,16 @@ test_that("`rctglm_with_prognosticscore` snapshot tests", {
   b0 <- 1
   b1 <- 1.5
   b2 <- 2
-  W1 <- runif(n, min = -2, max = 2)
+  W1 <- runif(n, min = 1, max = 10)
   exposure_prob <- .5
 
   dat_treat <- glm_data(
-    Y ~ b0+b1*abs(sin(W1))+b2*A,
+    Y ~ b0+b1*log(W1)+b2*A,
     W1 = W1,
     A = rbinom (n, 1, exposure_prob)
   )
   dat_notreat <- glm_data(
-    Y ~ b0+b1*abs(sin(W1)),
+    Y ~ b0+b1*log(W1),
     W1 = W1
   )
 
@@ -72,15 +72,15 @@ test_that("`rctglm_with_prognosticscore` snapshot tests", {
   b0 <- 1
   b1 <- 1.5
   b2 <- 2
-  W1 <- runif(n, min = -2, max = 2)
+  W1 <- runif(n, min = 1, max = 10)
   dat_treat_pois <- glm_data(
-    Y ~ b0+b1*abs(sin(W1))+b2*A,
+    Y ~ b0+b1*log(W1)+b2*A,
     W1 = W1,
     A = rbinom (n, 1, exposure_prob),
     family = poisson()
   )
   dat_notreat_pois <- glm_data(
-    Y ~ b0+b1*abs(sin(W1)),
+    Y ~ b0+b1*log(W1),
     W1 = W1,
     family = poisson()
   )
@@ -156,16 +156,16 @@ test_that("`cv_variance` produces same point estimates but different SE estimate
   b0 <- 1
   b1 <- 1.5
   b2 <- 2
-  W1 <- runif(n, min = -2, max = 2)
+  W1 <- runif(n, min = 1, max = 10)
   exposure_prob <- .5
 
   dat_treat <- glm_data(
-    Y ~ b0+b1*abs(sin(W1))+b2*A,
+    Y ~ b0+b1*log(W1)+b2*A,
     W1 = W1,
     A = rbinom (n, 1, exposure_prob)
   )
   dat_notreat <- glm_data(
-    Y ~ b0+b1*abs(sin(W1)),
+    Y ~ b0+b1*log(W1),
     W1 = W1
   )
 
@@ -228,16 +228,16 @@ test_that("`prog_formula` manual specification consistent with default behavior"
   b0 <- 1
   b1 <- 1.5
   b2 <- 2
-  W1 <- runif(n, min = -2, max = 2)
+  W1 <- runif(n, min = 1, max = 10)
   exposure_prob <- .5
 
   dat_treat <- glm_data(
-    Y ~ b0+b1*abs(sin(W1))+b2*A,
+    Y ~ b0+b1*log(W1)+b2*A,
     W1 = W1,
     A = rbinom (n, 1, exposure_prob)
   )
   dat_notreat <- glm_data(
-    Y ~ b0+b1*abs(sin(W1)),
+    Y ~ b0+b1*log(W1),
     W1 = W1
   )
 

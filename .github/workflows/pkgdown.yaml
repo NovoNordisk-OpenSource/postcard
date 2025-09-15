@@ -15,3 +15,5 @@ jobs:
   pkgdown:
     name: Pkgdown site
     uses: NovoNordisk-OpenSource/r.workflows/.github/workflows/pkgdown.yaml@main
+    with:
+      use_local_setup_action: true

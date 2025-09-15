@@ -8,13 +8,13 @@
 \alias{power_nc}
 \title{Power and sample size estimation for linear models}
 \usage{
-variance_ancova(formula, data, inflation = 1, deflation = 1)
+variance_ancova(formula, data, inflation = 1, deflation = 1, ...)
 
-power_gs(variance, ate, n, r = 1, margin = 0, alpha = 0.05)
+power_gs(variance, ate, n, r = 1, margin = 0, alpha = 0.05, ...)
 
-samplesize_gs(variance, ate, r = 1, margin = 0, power = 0.9, alpha = 0.05)
+samplesize_gs(variance, ate, r = 1, margin = 0, power = 0.9, alpha = 0.05, ...)
 
-power_nc(variance, df, ate, n, r = 1, margin = 0, alpha = 0.05)
+power_nc(variance, df, ate, n, r = 1, margin = 0, alpha = 0.05, ...)
 }
 \arguments{
 \item{formula}{an object of class "formula" (or one that can be coerced to that class):
@@ -36,6 +36,9 @@ Default is \code{1} which means the estimate of \eqn{R^2} is unchanged. Use valu
 below \code{1} to obtain a more conservative estimate of the coefficient of determination.
 See details about how \eqn{R^2} related to the estimation.}
 
+\item{...}{Not currently used. Here to accomodate implementation of \code{...} for the
+\code{\link[=repeat_power_linear]{repeat_power_linear()}} function.}
+
 \item{variance}{a \code{numeric} variance to use for the approximation. See more details
 in documentation sections of each power approximating function.}
 
@@ -43,7 +46,7 @@ in documentation sections of each power approximating function.}
 
 \item{n}{a \code{numeric} with number of participants in total.
 From this number of participants in the treatment group is \eqn{n1=(r/(1+r))n}
-and the control group is \eqn{n1=(1/(1+r))n}.}
+and the control group is \eqn{n0=(1/(1+r))n}.}
 
 \item{r}{a \code{numeric} allocation ratio \eqn{r=n1/n0}. For one-to-one randomisation \code{r=1}.}
 
@@ -161,15 +164,18 @@ Then the power for ANCOVA with \code{d} degrees of freedom can be estimated as
 
 \examples{
 # Generate a data set to use as an example
+n_train <- 1e3
+n_test <- 100
+
 dat_gaus <- glm_data(Y ~ 1+2*X1-X2+3*A,
-                X1 = rnorm(100),
-                X2 = rgamma(100, shape = 2),
-                A = rbinom(100, size = 1, prob = 0.5),
+                X1 = rnorm(n_train),
+                X2 = rgamma(n_train, shape = 2),
+                A = rbinom(n_train, size = 1, prob = 0.5),
                 family = gaussian())
 
 # Approximate the power using no adjustment covariates
 va_nocov <- var(dat_gaus$Y)
-power_gs(n = 200, variance = va_nocov, ate = 1)
+power_gs(n = n_test, variance = va_nocov, ate = 1)
 
 # Approximate the power with a model adjusting for both variables in the
 # data generating process
@@ -177,7 +183,7 @@ power_gs(n = 200, variance = va_nocov, ate = 1)
 ## First estimate the variance sigma^2 * (1-R^2)
 va_cov <- variance_ancova(Y ~ X1 + X2 + A, dat_gaus)
 ## Then estimate the power using this variance
-power_gs(n = 100, variance = va_cov, ate = 1.8, margin = 1, r = 2)
+power_gs(n = n_test, variance = va_cov, ate = 1.8, margin = 1, r = 2)
 
 # Approximate the sample size needed to obtain 90\% power with same model as
 # above
@@ -186,8 +192,11 @@ samplesize_gs(
 )
 
 # No adjustment covariates
-power_nc(n = 200, variance = va_nocov, df = 199, ate = 1)
+power_nc(n = n_test, variance = va_nocov, df = 199, ate = 1)
 # Adjusting for all covariates in data generating process
-power_nc(n = 200, variance = va_cov, df = 196, ate = 1.8, margin = 1, r = 2)
-
+power_nc(n = n_test, variance = va_cov, df = 196, ate = 1.8, margin = 1, r = 2)
+}
+\seealso{
+See \link{power_marginaleffect} for a power approximation function that works for a larger
+class of models.
 }

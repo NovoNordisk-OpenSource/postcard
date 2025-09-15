@@ -16,7 +16,7 @@ knitr::opts_chunk$set(
 
 ```{r setup, message = FALSE}
 library(postcard)
-library(magrittr)
+library(dplyr)
 withr::local_seed(1395878)
 withr::local_options(list(postcard.verbose = 0))
 ```
@@ -36,19 +36,19 @@ b1 <- 3
 b2 <- 2
 
 dat_gaus <- glm_data(
-  Y ~ b0+b1*sin(W)^2+b2*A,
-  W = runif(n, min = -2, max = 2),
+  Y ~ b0+b1*log(W)+b2*A,
+  W = runif(n, min = 1, max = 10),
   A = rbinom(n, 1, prob = 1/2)
 )
 
 dat_gaus_hist <- glm_data(
-  Y ~ b0+b1*sin(W)^2,
-  W = runif(n, min = -2, max = 2)
+  Y ~ b0+b1*log(W),
+  W = runif(n, min = 1, max = 10)
 )
 
 dat_pois <- glm_data(
-  Y ~ b0+b1*sin(W)^2+b2*A,
-  W = runif(n, min = -2, max = 2),
+  Y ~ b0+b1*log(W)+b2*A,
+  W = runif(n, min = 1, max = 10),
   A = rbinom(n, 1, 1/2),
   family = poisson(link = "log")
 )
@@ -138,7 +138,7 @@ rate_ratio$estimand_funs
 Below is an example showing the specification of a custom defined function with arguments `psi0` and `psi1`.
 
 ```{r nonsense-run-show}
-nonsense_estimand_fun <- function(psi1, psi0) {
+est_fun <- function(psi1, psi0) {
   psi1 / sqrt(psi0) * 2 - 1
 }
 
@@ -148,7 +148,7 @@ nonsense_estimand <- rctglm(
   exposure_prob = 1/2,
   data = dat_pois,
   family = poisson(),
-  estimand_fun = nonsense_estimand_fun,
+  estimand_fun = est_fun,
   verbose = 1)
 nonsense_estimand$estimand_funs
 ```
@@ -171,9 +171,9 @@ The behavior of `fit_best_learner()` and subsequently fitting the prognostic mod
 
 #### Default learners
 
-Below we show the code of the unexported `default_learners` function, which creates a list of default learners that are used in `fit_best_learner()` and `rctglm_with_prognosticscore()`. 
+Below we show the code of the `default_learners` function, which creates a list of default learners that are used in `fit_best_learner()` and `rctglm_with_prognosticscore()`. 
 
-> The body of the function thus represents a valid way of specifying the `learners` argument.
+> The body of the function thus represents a valid way of specifying a list as the `learners` argument.
 
 ```{r default-learners-show}
 default_learners

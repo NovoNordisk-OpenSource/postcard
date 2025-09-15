@@ -31,6 +31,10 @@ reference:
   contents:
   - power_marginaleffect
   - power_linear
+- subtitle: Plotting power curves
+  contents:
+  - repeat_power_marginaleffect
+  - repeat_power_linear
 - title: Generate data from GLM model with known mean
   desc: >
     Used in development for examples, vignettes and tests, but exported to enable users to perform

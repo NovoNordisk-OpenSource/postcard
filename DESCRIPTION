@@ -23,28 +23,28 @@ Imports:
     dplyr,
     earth,
     generics,
-    magrittr,
+    gggrid,
+    ggplot2,
     options,
     parsnip,
     rlang,
     rsample,
+    scales,
     stats,
     stringr,
-    tidyselect,
     tune,
     utils,
     workflowsets,
     xgboost,
     yardstick
 Suggests: 
-    gggrid,
-    ggplot2,
     knitr,
     LiblineaR,
     MASS,
     ranger,
     rmarkdown,
     testthat (>= 3.0.0),
+    vdiffr,
     withr
 Config/testthat/edition: 3
 Encoding: UTF-8

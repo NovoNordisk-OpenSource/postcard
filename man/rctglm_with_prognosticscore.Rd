@@ -29,8 +29,7 @@ a symbolic description of the model to be fitted. The details of model specifica
 given under ‘Details’ in the \link{glm} documentation.}
 
 \item{exposure_indicator}{(name of) the \emph{binary} variable in \code{data} that
-identifies randomisation groups. The variable is required to be binary to
-make the "orientation" of the \code{estimand_fun} clear.}
+identifies randomisation groups. The variable is required to be binary currently.}
 
 \item{exposure_prob}{a \code{numeric} with the probability of being in
 "group 1" (rather than group 0) in groups defined by \code{exposure_indicator}.}
@@ -140,17 +139,17 @@ n <- 100
 b0 <- 1
 b1 <- 1.5
 b2 <- 2
-W1 <- runif(n, min = -2, max = 2)
+W1 <- runif(n, min = 1, max = 10)
 exp_prob <- .5
 
 dat_treat <- glm_data(
-  Y ~ b0+b1*abs(sin(W1))+b2*A,
+  Y ~ b0+b1*log(W1)+b2*A,
   W1 = W1,
   A = rbinom (n, 1, exp_prob)
 )
 
 dat_notreat <- glm_data(
-  Y ~ b0+b1*abs(sin(W1)),
+  Y ~ b0+b1*log(W1),
   W1 = W1
 )
 

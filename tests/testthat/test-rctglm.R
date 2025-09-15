@@ -33,19 +33,19 @@ test_that("`rctglm` snapshot tests", {
   expect_snapshot(estimand(ate_wo_cv))
 
   rr_with_cv <- rctglm(formula = Y ~ .,
-               exposure_indicator = A,
-               exposure_prob = exposure_prob,
-               data = dat_pois,
-               family = poisson(),
-               cv_variance = TRUE)
-  expect_snapshot(estimand(rr_with_cv))
-
-  rr_wo_cv <- rctglm(formula = Y ~ .,
                        exposure_indicator = A,
                        exposure_prob = exposure_prob,
                        data = dat_pois,
                        family = poisson(),
-                       cv_variance = FALSE)
+                       cv_variance = TRUE)
+  expect_snapshot(estimand(rr_with_cv))
+
+  rr_wo_cv <- rctglm(formula = Y ~ .,
+                     exposure_indicator = A,
+                     exposure_prob = exposure_prob,
+                     data = dat_pois,
+                     family = poisson(),
+                     cv_variance = FALSE)
   expect_snapshot(estimand(rr_wo_cv))
 })
 
@@ -104,19 +104,19 @@ test_that("Different `cv_variance_folds` produces same estimate but different es
   )
 
   ate_with_cv <- rctglm(formula = Y ~ .,
-                      exposure_indicator = A,
-                      exposure_prob = exposure_prob,
-                      data = dat_gaus,
-                      family = gaussian,
-                      cv_variance = TRUE,
-                      cv_variance_folds = 2)
+                        exposure_indicator = A,
+                        exposure_prob = exposure_prob,
+                        data = dat_gaus,
+                        family = gaussian,
+                        cv_variance = TRUE,
+                        cv_variance_folds = 2)
   ate_with_cv_difffolds <- rctglm(formula = Y ~ .,
-                                exposure_indicator = A,
-                                exposure_prob = exposure_prob,
-                                data = dat_gaus,
-                                family = gaussian,
-                                cv_variance = TRUE,
-                                cv_variance_folds = 10)
+                                  exposure_indicator = A,
+                                  exposure_prob = exposure_prob,
+                                  data = dat_gaus,
+                                  family = gaussian,
+                                  cv_variance = TRUE,
+                                  cv_variance_folds = 10)
   expect_equal(
     estimand(ate_with_cv)$Estimate,
     estimand(ate_with_cv_difffolds)$Estimate

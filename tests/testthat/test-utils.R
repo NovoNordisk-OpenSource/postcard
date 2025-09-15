@@ -78,7 +78,7 @@ test_that("`formula_to_str` returns character of length 1", {
   expect_equal(formula_str, "Y ~ A + X")
 
   formula_str2 <- formula_to_str(Y ~ A1 + A2 + A3 + A4 + A5 + A6 + A7 + A8 + A9 +
-                                 A10 + A11 + A12 + A13 + A14 + A15 + A16 + A17)
+                                   A10 + A11 + A12 + A13 + A14 + A15 + A16 + A17)
   expect_length(formula_str2, 1)
   expect_equal(formula_str2, paste0("Y ~ ", paste("A", 1:17, sep = "", collapse = " + ")))
 })
@@ -159,5 +159,123 @@ cli::test_that_cli("`print_symbolic_differentiation` provides message", {
       add_string = "test string add"
     ),
     transform = function(x) gsub("^<environment:.*>$", "", x)
+  )
+})
+
+test_that("`get_predict_method` works for different model types", {
+  lm_mod <- lm(mpg ~ wt + cyl, data = mtcars)
+  glm_mod <- glm(vs ~ wt + cyl, data = mtcars, family = binomial())
+  dsl_mod <- fit_best_learner(list(vs ~ wt + cyl), data = mtcars)
+
+  expect_equal(get_predict_method(lm_mod), predict.lm)
+  expect_equal(get_predict_method(glm_mod), predict.glm)
+  expect_equal(get_predict_method(dsl_mod), getS3method("predict", "workflow"))
+})
+
+test_that("`get_predict_method` fails for object with no predict method", {
+  expect_error(get_predict_method(5),
+               regexp = "Could not find predict method for object of class")
+})
+
+test_that("`get_newdata_arg_name` works for different model types", {
+  lm_mod <- lm(mpg ~ wt + cyl, data = mtcars)
+  glm_mod <- glm(vs ~ wt + cyl, data = mtcars, family = binomial())
+  dsl_mod <- fit_best_learner(list(vs ~ wt + cyl), data = mtcars)
+
+  expect_equal(get_newdata_arg_name(lm_mod), "newdata")
+  expect_equal(get_newdata_arg_name(glm_mod), "newdata")
+  expect_equal(get_newdata_arg_name(dsl_mod), "new_data")
+})
+
+test_that("`r_to_exposure_prob` calculates correctly", {
+  expect_equal(r_to_exposure_prob(2), 2/3)
+  expect_equal(r_to_exposure_prob(1/2), 1/3)
+})
+
+test_that("`add_power_assumption_params_to_data` works correctly", {
+  dat <- data.frame(A = c(0, 1, 1, 0, 1),
+                    W = rnorm(5),
+                    Y = rnorm(5))
+
+  ep <- 1/2
+  te <- 1.3
+  margin <- 0.5
+  alpha <- 0.1
+  # Test with default parameters
+  result1 <- add_power_assumption_params_to_data(
+    .data = dat, power_fun = "power_marginaleffect",
+    exposure_prob = ep, target_effect = te, margin = margin, alpha = alpha
+  )
+  expect_true(all(c("samplesize", "target_effect", "exposure_prob", "margin",
+                    "alpha", "power_fun") %in% colnames(result1)))
+  expect_equal(nrow(result1), nrow(dat))
+  expect_equal(nrow(result1), unique(result1$samplesize))
+  expect_equal(ep, unique(result1$exposure_prob))
+  expect_equal(te, unique(result1$target_effect))
+  expect_equal(margin, unique(result1$margin))
+  expect_equal(alpha, unique(result1$alpha))
+
+  # Test with custom parameters
+  result2 <- add_power_assumption_params_to_data(
+    .data = dat, power_fun = "power_gs", ate = 1.3, margin = margin, alpha = alpha
+  )
+  expect_true(all(c("samplesize", "target_effect", "exposure_prob", "margin",
+                    "alpha", "power_fun") %in% colnames(result2)))
+  expect_equal(nrow(result2), nrow(dat))
+  expect_equal(nrow(result2), unique(result2$samplesize))
+  expect_equal(ep, unique(result2$exposure_prob))
+  expect_equal(te, unique(result2$target_effect))
+  expect_equal(margin, unique(result2$margin))
+  expect_equal(alpha, unique(result2$alpha))
+})
+
+test_that("`get_formula_from_model` gives correct type of output", {
+  lm <- lm(cyl ~ wt + mpg, data = mtcars)
+  lm_formula <- get_formula_from_model(lm)
+
+  dsl <- fit_best_learner(list(cyl ~ wt + mpg), data = mtcars)
+  dsl_formula <- get_formula_from_model(dsl)
+
+  expect_type(lm_formula, "language")
+  expect_equal(dsl_formula, lm_formula)
+})
+
+test_that("`get_formula_from_model` gives error when no method exists", {
+  expect_error(
+    get_formula_from_model(list(a = 2)),
+    regexp = "Tried extracting the formula of an element in"
+  )
+})
+
+test_that("`get_response_name_from_model_list` correctly returns response name when it's given as the same in models", {
+  lm1 <- lm(cyl ~ wt + mpg, data = mtcars)
+  glm1 <- glm(cyl ~ wt + mpg, data = mtcars, family = poisson())
+  expect_equal(
+    "cyl",
+    get_response_name_from_model_list(list(lm1, glm1), .data = mtcars)
+  )
+})
+
+test_that("`get_response_name_from_model_list` gives error when response names different in models", {
+  lm1 <- lm(cyl ~ wt + mpg, data = mtcars)
+  glm2 <- glm(gear ~ wt + mpg, data = mtcars, family = poisson())
+  expect_error(
+    get_response_name_from_model_list(list(lm1, glm2), .data = mtcars),
+    regexp = "Could not extract a unique response"
+  )
+})
+
+test_that("`get_response_name_from_model_list` gives response name if one model has response name and other doesn't specify", {
+  lm1 <- lm(cyl ~ wt + mpg, data = mtcars)
+  expect_equal(
+    "cyl",
+    get_response_name_from_model_list(list(lm1, 5), .data = mtcars)
+  )
+})
+
+test_that("`get_response_name_from_model_list` gives error if response name cannot be extracted from any model", {
+  expect_error(
+    get_response_name_from_model_list(list(2, 5), .data = mtcars),
+    regexp = "No method exists. Define a method get_formula_from_model.numeric"
   )
 })

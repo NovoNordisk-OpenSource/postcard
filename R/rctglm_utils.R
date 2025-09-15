@@ -61,7 +61,7 @@ oos_fitted.values_counterfactual <- function(
   folds <- rsample::vfold_cv(
     data,
     v = cv_variance_folds,
-    strata = tidyselect::all_of(exposure_indicator_name)
+    strata = dplyr::all_of(exposure_indicator_name)
   )
   train_test_folds <- lapply(
     folds$splits,
@@ -114,7 +114,7 @@ get_indicator_name <- function(exposure_indicator) {
 }
 
 check_exposure_indicator <- function(data, exposure_indicator_name) {
-  group_vals <- dplyr::pull(data, tidyselect::all_of(exposure_indicator_name))
+  group_vals <- dplyr::pull(data, dplyr::all_of(exposure_indicator_name))
   group_vals_unique <- unique(group_vals)
   if (!all(c(0,1) %in% group_vals)) cli::cli_abort("{.var exposure_indicator} column can only have 1's and 0's")
   return(invisible())

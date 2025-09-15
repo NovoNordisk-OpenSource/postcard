@@ -1,7 +1,13 @@
 # postcard (development version)
 
-* Fixed print method for `rctglm` and `rctglm_with_prognosticscore` correctly
+* Added functions `repeat_power_marginaleffect()` and `repeat_power_linear()` along with
+plotting methods for the resulting objects to easily create data and plot power curves
+from a range of sample sizes and models (#72).
+* Fixed print method for `rctglm()` and `rctglm_with_prognosticscore()` correctly
 say "active" for the counterfactual mean estimate for group A=1 (#67).
+* Added a `predict` method for objects of class `rctglm`.
+* Added attributes with information about assumptions for the power calculation to output
+of `power_xx` functions.
 
 # postcard 1.0.1
 

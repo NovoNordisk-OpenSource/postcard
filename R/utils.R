@@ -14,26 +14,20 @@ deparse_fun_body <- function(fun) {
 
 # Transform character or family function to a call
 check_formula <- function(formula) {
-  tryCatch(
+  out <- tryCatch(
     formula(formula),
     error = function(e) {
       sym_formula <- rlang::as_label(rlang::enquo(formula))
       cli::cli_abort(
-      c(
-        "`{sym_formula}` is not of class `formula` or could not be coerced to one.",
-        i = "This usually means you did not include a response followed by a `~`."
+        c(
+          "`{sym_formula}` is not of class `formula` or could not be coerced to one.",
+          i = "This usually means you did not include a response followed by a `~`."
+        )
       )
-    )
     }
   )
-  if (is.character(formula)) {
-    formula <- formula(formula)
-  }
-  if (!inherits(formula, "formula")) {
-    cli::cli_abort("{.arg formula} needs to have class `formula` or `character`")
-  }
 
-  return(formula)
+  return(out)
 }
 
 formula_to_str <- function(formula) {
@@ -94,4 +88,112 @@ print_symbolic_differentiation <- function(fun, arg, add_string = "", verbose = 
   }
 
   return(derivative)
+}
+
+#' Use the r<family_name> function to generate data from family
+#' @noRd
+get_formula_from_model <- function(object, ...) {
+  UseMethod("get_formula_from_model", object = object)
+}
+
+#' @noRd
+#' @export
+get_formula_from_model.default <- function(object, ...) {
+  has_terms <- tryCatch(!is.null(object$terms),
+                        error = function(e) FALSE)
+  if (has_terms) {
+    return(formula(object$terms))
+  }
+  cli::cli_abort(
+    c("Tried extracting the formula of an element in `model_list` with class: {class(object)}.",
+      i = "No method exists. Define a method get_formula_from_model.{class(object)}.",
+      i = "OR name the response variable as `response` in your data.")
+  )
+}
+
+#' @noRd
+#' @export
+get_formula_from_model.workflow <- function(object, ...) {
+  return(object$pre$actions$formula$formula)
+}
+
+get_response_name_from_model_list <- function(model_list, .data) {
+  if ("response" %in% colnames(.data)) return("response")
+  model_response_names <- lapply(model_list, function(x) {
+    mod_form <- tryCatch(get_formula_from_model(x),
+                         error = function(e) NULL)
+    if (is.null(mod_form)) return(NULL)
+    get_response_from_formula(mod_form)
+  })
+  model_response_names <- unlist(model_response_names[!sapply(model_response_names, function(x) is.null(x))])
+  response_name <- unique(model_response_names)
+  if (length(response_name) == 0) {
+    get_formula_from_model(model_list[[1]])
+  }
+  if (length(response_name) > 1) {
+    cli::cli_abort(
+      c("Could not extract a unique response variable name from the models in `model_list`.",
+        i = "Please ensure all models have the same response variable.")
+    )
+  }
+  return(response_name)
+}
+
+
+# Utility to get the name of the newdata/new_data argument of a predict method
+get_predict_method <- function(object) {
+  for (cls in class(object)) {
+    pred_method <- tryCatch({
+      pred_method <- utils::getS3method("predict", cls)
+      return(pred_method)
+    }, error = function(e) NULL)
+    if (!is.null(pred_method)) return(pred_method)
+  }
+  cli::cli_abort(paste0("Could not find predict method for object of class: ", class(object)))
+}
+
+get_newdata_arg_name <- function(object) {
+  pred_method <- get_predict_method(object)
+
+  arg_names <- names(formals(pred_method))
+  newdata_arg_name <- arg_names[grepl("new.*data", arg_names)]
+  if (length(newdata_arg_name) == 0) {
+    cli::cli_abort(
+      paste0("Could not find an argument like 'new.*data' in predict method dispatched on
+             object of class: ",
+             class(object))
+    )
+  }
+  newdata_arg_name[1]
+}
+
+# Convert the r parameter in power_linear to exposure_prob from power_marginaleffect
+r_to_exposure_prob <- function(r) {
+  r / (r+1)
+}
+
+# Used to add power assumption parameters to data
+add_power_assumption_params_to_data <- function(
+    .data, power_fun = c("power_marginaleffect", "power_gs", "power_nc"), ...) {
+  power_fun <- match.arg(power_fun)
+  power_fun_function <- utils::getFromNamespace(power_fun, ns = "postcard")
+  n <- nrow(.data)
+  if (power_fun == "power_marginaleffect") {
+    dummy_power <- power_fun_function(
+      response = rep(1, n),
+      predictions = rep(1, n),
+      verbose = 0,
+      ...
+    )
+  } else {
+    dummy_power <- power_fun_function(
+      variance = 1, n = n,
+      ...
+    )
+  }
+
+  assumptions <- attributes(dummy_power)
+  assumptions_add_to_data <- assumptions[names(assumptions) != "estimand_fun"]
+  .data %>%
+    dplyr::mutate(!!!c(assumptions_add_to_data, list(power_fun = power_fun)))
 }

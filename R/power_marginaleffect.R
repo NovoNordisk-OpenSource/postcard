@@ -79,7 +79,7 @@
 #' - `exposure_prob`: \eqn{\pi_1}
 #'
 #' @seealso
-#' See [power_linear] for power approximation functionalities for linear models.
+#' See [power_linear] for power approximation functionalities specific to linear models.
 #'
 #' @examples
 #' # Generate a data set to use as an example
@@ -168,6 +168,11 @@ power_marginaleffect <- function(
     verbose = options::opt("verbose"),
     ...
 ) {
+  any_missing <- any(is.na(response))
+  if (any_missing) cli::cli_abort(c(
+    "The `response` contains missing values.",
+    i = "Remove them before using this function.")
+  )
   check_exposure_prob(exposure_prob = exposure_prob)
 
   n_resp <- length(response)
@@ -219,7 +224,16 @@ power_marginaleffect <- function(
   sd <- sqrt(v_bound / n_resp)
   f0 <- qnorm(1 - alpha / 2, mean = margin, sd = sd)
   f1 <- pnorm(f0, mean = target_effect, sd = sd)
-  1 - f1
+  out <- 1 - f1
+  structure(
+    out,
+    samplesize = n_pred,
+    target_effect = target_effect,
+    exposure_prob = exposure_prob,
+    estimand_fun = estimand_fun,
+    margin = margin,
+    alpha = alpha
+  )
 }
 
 var_bound_marginaleffect <- function(
