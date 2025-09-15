@@ -29,6 +29,7 @@ test_that("snapshot tests", {
   # `transform` argument causes problems with CI
   attr(pnc, "estimand_fun") <- body(attr(pnc, "estimand_fun"))
   expect_snapshot(pnc)
+  expect_type(pnc, "double")
 })
 
 test_that("`power_gs` and `samplesize_gs` agree", {
