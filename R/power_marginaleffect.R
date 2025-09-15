@@ -168,6 +168,11 @@ power_marginaleffect <- function(
     verbose = options::opt("verbose"),
     ...
 ) {
+  any_missing <- any(is.na(response))
+  if (any_missing) cli::cli_abort(c(
+    "The `response` contains missing values.",
+    i = "Remove them before using this function.")
+  )
   check_exposure_prob(exposure_prob = exposure_prob)
 
   n_resp <- length(response)

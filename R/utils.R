@@ -105,8 +105,9 @@ get_formula_from_model.default <- function(object, ...) {
     return(formula(object$terms))
   }
   cli::cli_abort(
-    c("Tried extracting the formula of an element in `model_list` with class: {class(object)}",
-      i = "No method exists. Define a method get_formula_from_model.{class(object)}")
+    c("Tried extracting the formula of an element in `model_list` with class: {class(object)}.",
+      i = "No method exists. Define a method get_formula_from_model.{class(object)}.",
+      i = "OR name the response variable as `response` in your data.")
   )
 }
 
@@ -116,7 +117,8 @@ get_formula_from_model.workflow <- function(object, ...) {
   return(object$pre$actions$formula$formula)
 }
 
-get_response_name_from_model_list <- function(model_list) {
+get_response_name_from_model_list <- function(model_list, .data) {
+  if ("response" %in% colnames(.data)) return("response")
   model_response_names <- lapply(model_list, function(x) {
     mod_form <- tryCatch(get_formula_from_model(x),
                          error = function(e) NULL)

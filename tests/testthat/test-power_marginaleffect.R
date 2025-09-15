@@ -58,6 +58,17 @@ test_that("`power_marginaleffect` gives errors", {
     ),
     regexp = "Specify `margin` explicitly as a `numeric`"
   )
+
+  Y[seq(5, 100, 5)] <- NA
+  expect_error(
+    power_marginaleffect(
+      response = Y,
+      predictions = preds,
+      target_effect = 2,
+      exposure_prob = 2/3
+    ),
+    regexp = "contains missing values"
+  )
 })
 
 #inverse

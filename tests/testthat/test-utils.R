@@ -252,7 +252,7 @@ test_that("`get_response_name_from_model_list` correctly returns response name w
   glm1 <- glm(cyl ~ wt + mpg, data = mtcars, family = poisson())
   expect_equal(
     "cyl",
-    get_response_name_from_model_list(list(lm1, glm1))
+    get_response_name_from_model_list(list(lm1, glm1), .data = mtcars)
   )
 })
 
@@ -260,7 +260,7 @@ test_that("`get_response_name_from_model_list` gives error when response names d
   lm1 <- lm(cyl ~ wt + mpg, data = mtcars)
   glm2 <- glm(gear ~ wt + mpg, data = mtcars, family = poisson())
   expect_error(
-    get_response_name_from_model_list(list(lm1, glm2)),
+    get_response_name_from_model_list(list(lm1, glm2), .data = mtcars),
     regexp = "Could not extract a unique response"
   )
 })
@@ -269,13 +269,13 @@ test_that("`get_response_name_from_model_list` gives response name if one model 
   lm1 <- lm(cyl ~ wt + mpg, data = mtcars)
   expect_equal(
     "cyl",
-    get_response_name_from_model_list(list(lm1, 5))
+    get_response_name_from_model_list(list(lm1, 5), .data = mtcars)
   )
 })
 
 test_that("`get_response_name_from_model_list` gives error if response name cannot be extracted from any model", {
   expect_error(
-    get_response_name_from_model_list(list(2, 5)),
+    get_response_name_from_model_list(list(2, 5), .data = mtcars),
     regexp = "No method exists. Define a method get_formula_from_model.numeric"
   )
 })

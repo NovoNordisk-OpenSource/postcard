@@ -172,7 +172,9 @@ iterate_n_power_marginaleffect <- function(
 # Iterate over index of model list
 iterate_models_power_marginaleffect <- function(model_list, ...) {
 
-  response_name <- get_response_name_from_model_list(model_list)
+  args <- list(...)
+  test_data <- args$test_data_fun(args$ns[1])
+  response_name <- get_response_name_from_model_list(model_list, .data = test_data)
 
   lapply(1:length(model_list), function(k) {
     cur_model <- model_list[[k]]
