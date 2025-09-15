@@ -179,12 +179,12 @@ of approximating power with the functions in <code><a href="power_linear.html">p
 <span class="r-msg co"><span class="r-pr">#&gt;</span> • mod_gbt</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB;">i</span>	<span style="color: #000000;">No tuning parameters. `fit_resamples()` will be attempted</span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB;">i</span> <span style="color: #000000;">1 of 3 resampling: mod_mars</span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> <span style="color: #000000;">1 of 3 resampling: mod_mars (328ms)</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> <span style="color: #000000;">1 of 3 resampling: mod_mars (327ms)</span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB;">i</span>	<span style="color: #000000;">No tuning parameters. `fit_resamples()` will be attempted</span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB;">i</span> <span style="color: #000000;">2 of 3 resampling: mod_lm</span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> <span style="color: #000000;">2 of 3 resampling: mod_lm (270ms)</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> <span style="color: #000000;">2 of 3 resampling: mod_lm (261ms)</span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB;">i</span> <span style="color: #000000;">3 of 3 tuning:     mod_gbt</span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> <span style="color: #000000;">3 of 3 tuning:     mod_gbt (6.6s)</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> <span style="color: #000000;">3 of 3 tuning:     mod_gbt (6.5s)</span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Model with lowest RMSE: mod_mars</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Create a function that produces data to predict on</span></span></span>
@@ -201,7 +201,7 @@ of approximating power with the functions in <code><a href="power_linear.html">p
 <span class="r-in"><span><span class="va">rpm_rr</span> <span class="op">&lt;-</span> <span class="fu">repeat_power_marginaleffect</span><span class="op">(</span></span></span>
 <span class="r-in"><span>  model_list <span class="op">=</span> <span class="va">ancova_prog_list</span>,</span></span>
 <span class="r-in"><span>  test_data_fun <span class="op">=</span> <span class="va">test_pois_fun</span>,</span></span>
-<span class="r-in"><span>  ns <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">20</span>, <span class="fl">500</span>, by <span class="op">=</span> <span class="fl">10</span><span class="op">)</span>, n_iter <span class="op">=</span> <span class="fl">20</span>,</span></span>
+<span class="r-in"><span>  ns <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">20</span>, <span class="fl">500</span>, by <span class="op">=</span> <span class="fl">10</span><span class="op">)</span>, n_iter <span class="op">=</span> <span class="fl">3</span>,</span></span>
 <span class="r-in"><span>  var1 <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">var0</span><span class="op">)</span> <span class="fl">1.1</span> <span class="op">*</span> <span class="va">var0</span>,</span></span>
 <span class="r-in"><span>  kappa1_squared <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">kap0</span><span class="op">)</span> <span class="fl">1.1</span> <span class="op">*</span> <span class="va">kap0</span>,</span></span>
 <span class="r-in"><span>  estimand_fun <span class="op">=</span> <span class="st">"rate_ratio"</span>,</span></span>
@@ -209,13 +209,6 @@ of approximating power with the functions in <code><a href="power_linear.html">p
 <span class="r-in"><span>  exposure_prob <span class="op">=</span> <span class="fl">1</span><span class="op">/</span><span class="fl">2</span>,</span></span>
 <span class="r-in"><span>  margin <span class="op">=</span> <span class="fl">0.8</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Estimating power across sample sizes `n_iter` times <span style="color: #00BB00;">■■■■                       </span>…</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Estimating power across sample sizes `n_iter` times <span style="color: #00BB00;">■■■■■■■                    </span>…</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Estimating power across sample sizes `n_iter` times <span style="color: #00BB00;">■■■■■■■■■■■                </span>…</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Estimating power across sample sizes `n_iter` times <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■          </span>…</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Estimating power across sample sizes `n_iter` times <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■    </span>…</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Estimating power across sample sizes `n_iter` times <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■■■</span>…</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Estimating power across sample sizes `n_iter` times <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■■■</span>…</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span> <span class="co"># \dontrun{</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">rpm_rr</span><span class="op">)</span></span></span>
