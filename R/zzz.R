@@ -14,6 +14,12 @@ options::define_option(
   execution"
 )
 
+# See https://stackoverflow.com/questions/77323811/r-package-to-cran-had-cpu-time-5-times-elapsed-time
+.onLoad <- function(libname, pkgname) {
+  # CRAN OMP THREAD LIMIT
+  Sys.setenv("OMP_THREAD_LIMIT" = 2)
+}
+
 #' @noRd
 dummy <- function() {
   earth::earth
