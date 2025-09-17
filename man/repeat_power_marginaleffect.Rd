@@ -63,12 +63,17 @@ across a number of sample sizes \code{ns} and iterations \code{n_iter}. The resu
 and used to create a plot of the resulting power curves.
 }
 \examples{
-# A simple use case with default models and test data
-rpm <- repeat_power_marginaleffect(target_effect = 0.9, exposure_prob = 0.5)
-
+# Note everything is wrapped in dontrun to avoid long runtimes of examples (tests are
+# still in place). Reduce the number of sample sizes and/or iterations to avoid long
+# runtimes
 \dontrun{
+# A simple use case with default models and test data (we run only with a few sample
+# sizes to reduce runtime of examples)
+rpm <- repeat_power_marginaleffect(
+  target_effect = 0.9,
+  exposure_prob = 0.5
+)
 plot(rpm)
-}
 
 ################################
 # Create model from a poisson family and estimate the power of rate ratio with
@@ -104,10 +109,12 @@ test_pois_fun <- function(n) {
  )
 }
 
+# Specify a bunch of different arguments that are passed to power_marginaleffect()
+## Run for 2 sample sizes to reduce runtime
 rpm_rr <- repeat_power_marginaleffect(
   model_list = ancova_prog_list,
   test_data_fun = test_pois_fun,
-  ns = seq(20, 500, by = 10), n_iter = 3,
+  ns = seq(100, 200), n_iter = 1,
   var1 = function(var0) 1.1 * var0,
   kappa1_squared = function(kap0) 1.1 * kap0,
   estimand_fun = "rate_ratio",
@@ -115,9 +122,7 @@ rpm_rr <- repeat_power_marginaleffect(
   exposure_prob = 1/2,
   margin = 0.8
 )
-
-\dontrun{
-plot(rpm_rr)
+plot(rpm_rr2)
 }
 }
 \seealso{

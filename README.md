@@ -23,17 +23,16 @@ al (2025).
 examples of its usage in `vignette("postcard")` and more details in
 `vignette("model-fit")`.
 
-**Marginal effects** are causal effects of the form
-$`r(\Psi_1, \Psi_0)`$, where $`\Psi_a=\mathbb{E}[Y(a)]`$ are population
-mean outcomes under exposure $`a=0, 1`$, respectively, and $`r`$ is the
-*estimand* (function). $`\Psi_a`$ are sometimes referred to as
-*counterfactual means*. The package uses **plug-in estimation** for
-robust estimation of any marginal effect estimand as well as **influence
-functions** for robust estimation of the variance of the estimand
-(Rosenblum, M. and M. J. van der Laan, 2010: Simple, efficient
-estimators of treatment effects in randomized trials using generalized
-linear models to leverage baseline variables. The International Journal
-of Biostatistics, 6, no. 1).
+**Marginal effects** are causal effects of the form $r(\Psi_1, \Psi_0)$,
+where $\Psi_a=\mathbb{E}[Y(a)]$ are population mean outcomes under
+exposure $a=0, 1$, respectively, and $r$ is the *estimand* (function).
+$\Psi_a$ are sometimes referred to as *counterfactual means*. The
+package uses **plug-in estimation** for robust estimation of any
+marginal effect estimand as well as **influence functions** for robust
+estimation of the variance of the estimand (Rosenblum, M. and M. J. van
+der Laan, 2010: Simple, efficient estimators of treatment effects in
+randomized trials using generalized linear models to leverage baseline
+variables. The International Journal of Biostatistics, 6, no. 1).
 
 ### Prognostic covariate adjustment
 
