@@ -1,4 +1,4 @@
-# postcard (development version)
+# postcard 1.1.0
 
 * Added functions `repeat_power_marginaleffect()` and `repeat_power_linear()` along with
 plotting methods for the resulting objects to easily create data and plot power curves

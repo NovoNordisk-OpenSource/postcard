@@ -1,7 +1,7 @@
 Type: Package
 Package: postcard
 Title: Estimating Marginal Effects with Prognostic Covariate Adjustment
-Version: 1.0.1.9000
+Version: 1.1.0
 Authors@R: c(
     person("Mathias Lerbech", "Jeppesen", ,
            "mathiasljeppesen@outlook.com", role = c("aut", "cre")),
