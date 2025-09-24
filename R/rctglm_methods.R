@@ -90,19 +90,20 @@ predict.rctglm <- function(object, ...) {
 print.rctglm <- function(x,
                          digits = max(3L, getOption("digits") - 3L),
                          ...) {
+  mc_formatted <- format(x$means_counterfactual, digits = digits)
   cat("\nObject of class", class(x)[1], "\n\n")
   cat("Call:  ",
       paste(deparse(x$call), sep = "\n", collapse = "\n"), "\n\n", sep = "")
   cat("Counterfactual control mean (psi_0=E[Y|X, A=0]) estimate: ",
-      format(x$means_counterfactual["psi0"], digits = digits),
+      mc_formatted["psi0"],
       "\n",
       sep = "")
   cat("Counterfactual active mean (psi_1=E[Y|X, A=1]) estimate: ",
-      format(x$means_counterfactual["psi1"], digits = digits),
+      mc_formatted["psi1"],
       "\n",
       sep = "")
   print_estimand_info(x,
-                      digits = max(3L, getOption("digits") - 3L),
+                      digits = digits,
                       ...)
 
   return(invisible())
@@ -111,14 +112,15 @@ print.rctglm <- function(x,
 print_estimand_info <- function(x,
                                 digits = max(3L, getOption("digits") - 3L),
                                 ...) {
+  est_formatted <- format(est(x), digits = digits)
   cat("Estimand function r: ",
       deparse_fun_body(x$estimand_funs$f),
       "\n",
       sep = "")
   cat("Estimand (r(psi_1, psi_0)) estimate (SE): ",
-      format(est(x)[, "Estimate"], digits = digits),
+      est_formatted[, "Estimate"],
       " (",
-      format(est(x)[, "Std. Error"], digits = digits),
+      est_formatted[, "Std. Error"],
       ")\n",
       sep = "")
   return(invisible())
