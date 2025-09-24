@@ -56,8 +56,8 @@
           estimand_fun = "rate_ratio", cv_variance = FALSE, data_hist = dat_notreat_pois, 
           learners = learners, verbose = 0)
       
-      Counterfactual control mean (psi_0=E[Y|X, A=0]) estimate: 37.45
-      Counterfactual active mean (psi_1=E[Y|X, A=1]) estimate: 274.4
+      Counterfactual control mean (psi_0=E[Y|X, A=0]) estimate:  37.45
+      Counterfactual active mean (psi_1=E[Y|X, A=1]) estimate: 274.39
       Estimand function r: psi1/psi0
       Estimand (r(psi_1, psi_0)) estimate (SE): 7.327 (0.206)
 
@@ -74,8 +74,8 @@
           estimand_fun = "rate_ratio", cv_variance = TRUE, data_hist = dat_notreat_pois, 
           learners = learners, verbose = 0)
       
-      Counterfactual control mean (psi_0=E[Y|X, A=0]) estimate: 37.45
-      Counterfactual active mean (psi_1=E[Y|X, A=1]) estimate: 274.4
+      Counterfactual control mean (psi_0=E[Y|X, A=0]) estimate:  37.45
+      Counterfactual active mean (psi_1=E[Y|X, A=1]) estimate: 274.39
       Estimand function r: psi1/psi0
       Estimand (r(psi_1, psi_0)) estimate (SE): 7.327 (0.2111)
 
@@ -92,8 +92,8 @@
           estimand_fun = "rate_ratio", cv_variance = FALSE, data_hist = dat_notreat_pois, 
           learners = learners, verbose = 0)
       
-      Counterfactual control mean (psi_0=E[Y|X, A=0]) estimate: 36.66
-      Counterfactual active mean (psi_1=E[Y|X, A=1]) estimate: 282.9
+      Counterfactual control mean (psi_0=E[Y|X, A=0]) estimate:  36.66
+      Counterfactual active mean (psi_1=E[Y|X, A=1]) estimate: 282.92
       Estimand function r: psi1/psi0
       Estimand (r(psi_1, psi_0)) estimate (SE): 7.717 (0.2389)
 
@@ -110,8 +110,8 @@
           estimand_fun = "rate_ratio", cv_variance = TRUE, data_hist = dat_notreat_pois, 
           learners = learners, verbose = 0)
       
-      Counterfactual control mean (psi_0=E[Y|X, A=0]) estimate: 36.66
-      Counterfactual active mean (psi_1=E[Y|X, A=1]) estimate: 282.9
+      Counterfactual control mean (psi_0=E[Y|X, A=0]) estimate:  36.66
+      Counterfactual active mean (psi_1=E[Y|X, A=1]) estimate: 282.92
       Estimand function r: psi1/psi0
       Estimand (r(psi_1, psi_0)) estimate (SE): 7.717 (0.2446)
 
