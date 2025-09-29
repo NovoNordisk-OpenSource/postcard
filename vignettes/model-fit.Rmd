@@ -128,8 +128,7 @@ rate_ratio <- rctglm(
   exposure_prob = 1/2,
   data = dat_pois,
   family = "poisson",
-  estimand_fun = "rate_ratio",
-  verbose = 1)
+  estimand_fun = "rate_ratio")
 rate_ratio$estimand_funs
 ```
 
@@ -148,8 +147,7 @@ nonsense_estimand <- rctglm(
   exposure_prob = 1/2,
   data = dat_pois,
   family = poisson(),
-  estimand_fun = est_fun,
-  verbose = 1)
+  estimand_fun = est_fun)
 nonsense_estimand$estimand_funs
 ```
 

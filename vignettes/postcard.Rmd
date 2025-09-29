@@ -42,8 +42,8 @@ b2 <- 2
 
 # Simulate data with a non-linear effect
 dat_treat <- glm_data(
-  Y ~ b0+b1*log(W)+b2*A,
-  W = runif(n, min = 1, max = 100),
+  Y ~ b0+b1*log(X)+b2*A,
+  X = runif(n, min = 1, max = 100),
   A = rbinom(n, 1, prob = 1/2),
   family = gaussian() # Default value
 )
@@ -66,11 +66,14 @@ Thus, we can estimate the ATE by simply writing the below:
 > Note that as a default, `verbose = 2`, meaning that information about the algorithm is printed to the console. However, here we suppress this behavior. See more in `vignette("model-fit")`.
 
 ```{r noprog-run}
-ate <- rctglm(formula = Y ~ A * W,
-              exposure_indicator = A,
-              exposure_prob = 1/2,
-              data = dat_treat,
-              family = "gaussian") # Default value
+ate <- rctglm(
+  formula = Y ~ A * X,
+  exposure_indicator = A,
+  exposure_prob = 1/2,
+  data = dat_treat,
+  family = "gaussian", # Default value
+  estimand_fun = "ate" # Default value
+)
 ```
 
 This creates an `rctglm` object which prints as
@@ -101,8 +104,8 @@ Allowing the use of complex non-linear models to create such a prognostic score 
 We simulate some historical data to showcase the use of this function as well:
 ```{r hist-data}
 dat_notreat <- glm_data(
-  Y ~ b0+b1*log(W),
-  W = runif(n, min = 1, max = 100),
+  Y ~ b0+b1*log(X),
+  X = runif(n, min = 1, max = 100),
   family = gaussian # Default value
 )
 ```
@@ -112,18 +115,30 @@ The call to `rctglm_with_prognosticscore()` is the same as to `rctglm()` but wit
 -   (Historical) data to fit the prognostic model using `fit_best_learner()`
 -   A formula used when fitting the prognostic model
     -   Default uses all covariates in the data.
--   (Optionally) number folds in cross validation and a list of learners for fitting the best learner
+-   A list of learners to fit, among which the best learner in regards to RMSE is found
+-   Number folds in cross validation when testing models
 
 Thus, a simple call which estimates the average treatment effect, adjusting for a prognostic score, is seen below:
 ```{r prog-run}
 ate_prog <- rctglm_with_prognosticscore(
-  formula = Y ~ A * W,
+  formula = Y ~ A * X,
   exposure_indicator = A,
   exposure_prob = 1/2,
   data = dat_treat,
-  family = gaussian(link = "identity"), # Default value
   data_hist = dat_notreat)
 ```
+
+As already described, this process fits a discrete super learner to the historical data with the code
+```{r, eval = FALSE}
+fit_best_learner(
+  preproc = list(mod = Y ~ .),
+  data = dat_notreat,
+  cv_folds = 5,
+  learners = default_learners()
+)
+```
+
+and uses the resulting model to find prognostic scores that are then adjusted for in the analysis run by `rctglm()`.
 
 Quick results of the fit can be seen by printing the object:
 ```{r prog-show}
@@ -151,9 +166,9 @@ According to the conservative approach in the article, if wanting to conduct pow
 Here we showcase the use of a `glm()` as well as a discrete super learner prognostic model fit with `fit_best_learner()`. We create the model and predict on the same data for simplicity of the example, but you could add steps to get out-of-sample (OOS) predictions (see examples).
 
 ```{r}
-ancova <- glm(Y ~ W, data = dat_notreat)
+ancova <- glm(Y ~ X, data = dat_notreat)
 preds_anc <- predict(ancova, dat_notreat)
-lrnr <- fit_best_learner(list(mod = Y ~ W), data = dat_notreat)
+lrnr <- fit_best_learner(list(mod = Y ~ X), data = dat_notreat)
 preds_dsl <- dplyr::pull(predict(lrnr, new_data = dat_notreat))
 
 power_marginaleffect(
@@ -181,8 +196,8 @@ We compare the resulting power for ANCOVA models that leverage prognostic covari
 ```{r}
 dat_notreat <- dplyr::mutate(dat_notreat, .pred = preds_dsl)
 
-var_bound_ancova <- variance_ancova(Y ~ W, data = dat_notreat)
-var_bound_prog <- variance_ancova(Y ~ W + .pred, data = dat_notreat)
+var_bound_ancova <- variance_ancova(Y ~ X, data = dat_notreat)
+var_bound_prog <- variance_ancova(Y ~ X + .pred, data = dat_notreat)
 ```
 
 We can then estimate the power for a certain sample size using `power_gs()` or `power_nc()` with an `n` specified, or we can use `samplesize_gs()` to estimate the sample size needed to obtain a certain `power`.
