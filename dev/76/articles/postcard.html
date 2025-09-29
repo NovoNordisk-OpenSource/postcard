@@ -225,8 +225,9 @@ to <code><a href="../reference/rctglm.html">rctglm()</a></code> but with an adde
 <li>Default uses all covariates in the data.</li>
 </ul>
 </li>
-<li>(Optionally) number folds in cross validation and a list of learners
-for fitting the best learner</li>
+<li>A list of learners to fit, among which the best learner in regards
+to RMSE is found</li>
+<li>Number folds in cross validation when testing models</li>
 </ul>
 <p>Thus, a simple call which estimates the average treatment effect,
 adjusting for a prognostic score, is seen below:</p>
@@ -237,8 +238,19 @@ adjusting for a prognostic score, is seen below:</p>
 <span>  exposure_prob <span class="op">=</span> <span class="fl">1</span><span class="op">/</span><span class="fl">2</span>,</span>
 <span>  data <span class="op">=</span> <span class="va">dat_treat</span>,</span>
 <span>  data_hist <span class="op">=</span> <span class="va">dat_notreat</span><span class="op">)</span></span></code></pre></div>
-<p>Quick results of the fit can be seen by printing the object:</p>
+<p>As already described, this process fits a discrete super learner to
+the historical data with the code</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/fit_best_learner.html">fit_best_learner</a></span><span class="op">(</span></span>
+<span>  preproc <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mod <span class="op">=</span> <span class="va">Y</span> <span class="op">~</span> <span class="va">.</span><span class="op">)</span>,</span>
+<span>  data <span class="op">=</span> <span class="va">dat_notreat</span>,</span>
+<span>  cv_folds <span class="op">=</span> <span class="fl">5</span>,</span>
+<span>  learners <span class="op">=</span> <span class="fu"><a href="../reference/default_learners.html">default_learners</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<p>and uses the resulting model to find prognostic scores that are then
+adjusted for in the analysis run by <code><a href="../reference/rctglm.html">rctglm()</a></code>.</p>
+<p>Quick results of the fit can be seen by printing the object:</p>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">ate_prog</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Object of class rctglm_prog </span></span>
@@ -296,7 +308,7 @@ discrete super learner prognostic model fit with
 <code><a href="../reference/fit_best_learner.html">fit_best_learner()</a></code>. We create the model and predict on the
 same data for simplicity of the example, but you could add steps to get
 out-of-sample (OOS) predictions (see examples).</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">ancova</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/glm.html" class="external-link">glm</a></span><span class="op">(</span><span class="va">Y</span> <span class="op">~</span> <span class="va">X</span>, data <span class="op">=</span> <span class="va">dat_notreat</span><span class="op">)</span></span>
 <span><span class="va">preds_anc</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">ancova</span>, <span class="va">dat_notreat</span><span class="op">)</span></span>
 <span><span class="va">lrnr</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/fit_best_learner.html">fit_best_learner</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mod <span class="op">=</span> <span class="va">Y</span> <span class="op">~</span> <span class="va">X</span><span class="op">)</span>, data <span class="op">=</span> <span class="va">dat_notreat</span><span class="op">)</span></span>
@@ -318,8 +330,8 @@ out-of-sample (OOS) predictions (see examples).</p>
 <span><span class="co">#&gt; attr(,"estimand_fun")</span></span>
 <span><span class="co">#&gt; function (psi1, psi0) </span></span>
 <span><span class="co">#&gt; psi1 - psi0</span></span>
-<span><span class="co">#&gt; &lt;bytecode: 0x556dfe5c2908&gt;</span></span>
-<span><span class="co">#&gt; &lt;environment: 0x556e0b40be98&gt;</span></span>
+<span><span class="co">#&gt; &lt;bytecode: 0x55e118e3b8f0&gt;</span></span>
+<span><span class="co">#&gt; &lt;environment: 0x55e128b5c4a8&gt;</span></span>
 <span><span class="co">#&gt; attr(,"margin")</span></span>
 <span><span class="co">#&gt; [1] 0</span></span>
 <span><span class="co">#&gt; attr(,"alpha")</span></span>
@@ -340,8 +352,8 @@ out-of-sample (OOS) predictions (see examples).</p>
 <span><span class="co">#&gt; attr(,"estimand_fun")</span></span>
 <span><span class="co">#&gt; function (psi1, psi0) </span></span>
 <span><span class="co">#&gt; psi1 - psi0</span></span>
-<span><span class="co">#&gt; &lt;bytecode: 0x556dfe5c2908&gt;</span></span>
-<span><span class="co">#&gt; &lt;environment: 0x556e0ab88230&gt;</span></span>
+<span><span class="co">#&gt; &lt;bytecode: 0x55e118e3b8f0&gt;</span></span>
+<span><span class="co">#&gt; &lt;environment: 0x55e1285c92c8&gt;</span></span>
 <span><span class="co">#&gt; attr(,"margin")</span></span>
 <span><span class="co">#&gt; [1] 0</span></span>
 <span><span class="co">#&gt; attr(,"alpha")</span></span>
@@ -366,7 +378,7 @@ prognostic covariate adjustment and ones that don’t. We use the function
 ANCOVA model adjusting for covariates in data, and in case of an ANCOVA
 utilising <strong>prognostic score adjustment</strong> by adjusting for
 the prognostic score as a covariate.</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">dat_notreat</span> <span class="op">&lt;-</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span><span class="va">dat_notreat</span>, .pred <span class="op">=</span> <span class="va">preds_dsl</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">var_bound_ancova</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/power_linear.html">variance_ancova</a></span><span class="op">(</span><span class="va">Y</span> <span class="op">~</span> <span class="va">X</span>, data <span class="op">=</span> <span class="va">dat_notreat</span><span class="op">)</span></span>
@@ -376,7 +388,7 @@ the prognostic score as a covariate.</p>
 <code>n</code> specified, or we can use <code><a href="../reference/power_linear.html">samplesize_gs()</a></code> to
 estimate the sample size needed to obtain a certain
 <code>power</code>.</p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/power_linear.html">samplesize_gs</a></span><span class="op">(</span>variance <span class="op">=</span> <span class="va">var_bound_ancova</span>,</span>
 <span>              power <span class="op">=</span> <span class="fl">0.9</span>, r <span class="op">=</span> <span class="fl">1</span>, ate <span class="op">=</span> <span class="fl">.8</span>, margin <span class="op">=</span> <span class="fl">0</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] 148.6439</span></span>
@@ -389,8 +401,8 @@ estimate the sample size needed to obtain a certain
 <span><span class="co">#&gt; attr(,"estimand_fun")</span></span>
 <span><span class="co">#&gt; function (psi1, psi0) </span></span>
 <span><span class="co">#&gt; psi1 - psi0</span></span>
-<span><span class="co">#&gt; &lt;bytecode: 0x556dfe5c2908&gt;</span></span>
-<span><span class="co">#&gt; &lt;environment: 0x556e09a3e1d0&gt;</span></span>
+<span><span class="co">#&gt; &lt;bytecode: 0x55e118e3b8f0&gt;</span></span>
+<span><span class="co">#&gt; &lt;environment: 0x55e1272e2838&gt;</span></span>
 <span><span class="co">#&gt; attr(,"margin")</span></span>
 <span><span class="co">#&gt; [1] 0</span></span>
 <span><span class="co">#&gt; attr(,"alpha")</span></span>
@@ -407,8 +419,8 @@ estimate the sample size needed to obtain a certain
 <span><span class="co">#&gt; attr(,"estimand_fun")</span></span>
 <span><span class="co">#&gt; function (psi1, psi0) </span></span>
 <span><span class="co">#&gt; psi1 - psi0</span></span>
-<span><span class="co">#&gt; &lt;bytecode: 0x556dfe5c2908&gt;</span></span>
-<span><span class="co">#&gt; &lt;environment: 0x556e09a00508&gt;</span></span>
+<span><span class="co">#&gt; &lt;bytecode: 0x55e118e3b8f0&gt;</span></span>
+<span><span class="co">#&gt; &lt;environment: 0x55e12729b7b0&gt;</span></span>
 <span><span class="co">#&gt; attr(,"margin")</span></span>
 <span><span class="co">#&gt; [1] 0</span></span>
 <span><span class="co">#&gt; attr(,"alpha")</span></span>
@@ -455,14 +467,14 @@ ANCOVA and a prognostic model fitted with
 <code><a href="../reference/fit_best_learner.html">fit_best_learner()</a></code> as our models.</p>
 <p>Thus, a simple use of <code><a href="../reference/repeat_power_marginaleffect.html">repeat_power_marginaleffect()</a></code>
 could look like this:</p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">rpm</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/repeat_power_marginaleffect.html">repeat_power_marginaleffect</a></span><span class="op">(</span></span>
 <span>  target_effect <span class="op">=</span> <span class="fl">1.3</span>, exposure_prob <span class="op">=</span> <span class="fl">1</span><span class="op">/</span><span class="fl">2</span>,</span>
 <span>  ns <span class="op">=</span> <span class="fl">10</span><span class="op">:</span><span class="fl">200</span>, n_iter <span class="op">=</span> <span class="fl">10</span></span>
 <span><span class="op">)</span></span>
 <span><span class="co">#&gt; Estimating power across sample sizes `n_iter` times <span style="color: #00BB00;">■■■■                       </span>…</span></span>
 <span><span class="co">#&gt; Estimating power across sample sizes `n_iter` times <span style="color: #00BB00;">■■■■■■■                    </span>…</span></span>
-<span><span class="co">#&gt; Estimating power across sample sizes `n_iter` times <span style="color: #00BB00;">■■■■■■■■■■                 </span>…</span></span>
+<span><span class="co">#&gt; Estimating power across sample sizes `n_iter` times <span style="color: #00BB00;">■■■■■■■■■■■■■              </span>…</span></span>
 <span><span class="co">#&gt; Estimating power across sample sizes `n_iter` times <span style="color: #00BB00;">■■■■■■■■■■■■■■■■           </span>…</span></span>
 <span><span class="co">#&gt; Estimating power across sample sizes `n_iter` times <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■        </span>…</span></span>
 <span><span class="co">#&gt; Estimating power across sample sizes `n_iter` times <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■  </span>…</span></span>
@@ -472,9 +484,9 @@ could look like this:</p>
 information on the estimated power across the list of models for
 different sample sizes. It has the class <code>postcard_rpm</code>,
 which has a plot method, enabling us to easily plot the results.</p>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">rpm</span><span class="op">)</span></span></code></pre></div>
-<p><img src="postcard_files/figure-html/unnamed-chunk-7-1.png" width="700"></p>
+<p><img src="postcard_files/figure-html/unnamed-chunk-8-1.png" width="700"></p>
 </div>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
