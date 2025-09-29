@@ -115,7 +115,8 @@ The call to `rctglm_with_prognosticscore()` is the same as to `rctglm()` but wit
 -   (Historical) data to fit the prognostic model using `fit_best_learner()`
 -   A formula used when fitting the prognostic model
     -   Default uses all covariates in the data.
--   (Optionally) number folds in cross validation and a list of learners for fitting the best learner
+-   A list of learners to fit, among which the best learner in regards to RMSE is found
+-   Number folds in cross validation when testing models
 
 Thus, a simple call which estimates the average treatment effect, adjusting for a prognostic score, is seen below:
 ```{r prog-run}
@@ -126,6 +127,18 @@ ate_prog <- rctglm_with_prognosticscore(
   data = dat_treat,
   data_hist = dat_notreat)
 ```
+
+As already described, this process fits a discrete super learner to the historical data with the code
+```{r, eval = FALSE}
+fit_best_learner(
+  preproc = list(mod = Y ~ .),
+  data = dat_notreat,
+  cv_folds = 5,
+  learners = default_learners()
+)
+```
+
+and uses the resulting model to find prognostic scores that are then adjusted for in the analysis run by `rctglm()`.
 
 Quick results of the fit can be seen by printing the object:
 ```{r prog-show}
