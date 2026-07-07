@@ -15,16 +15,12 @@ jobs:
     permissions:
       contents: read
     uses: NovoNordisk-OpenSource/r.workflows/.github/workflows/check_current_version.yaml@fa1f70cce8b5544ddb31d8ea31dc2b917af1a4b3 # v0.1.0
-    with:
-      use_local_setup_action: true
   pkgdown:
     name: Pkgdown site
     permissions:
       contents: write
       pull-requests: write
     uses: NovoNordisk-OpenSource/r.workflows/.github/workflows/pkgdown.yaml@fa1f70cce8b5544ddb31d8ea31dc2b917af1a4b3 # v0.1.0
-    with:
-      use_local_setup_action: true
   coverage:
     name: Coverage report
     permissions:
