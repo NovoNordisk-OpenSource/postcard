@@ -103,7 +103,7 @@ fit <- fit_best_learner(
 #> • mod_mars
 #> i   No tuning parameters. `fit_resamples()` will be attempted
 #> i 1 of 1 resampling: mod_mars
-#> ✔ 1 of 1 resampling: mod_mars (327ms)
+#> ✔ 1 of 1 resampling: mod_mars (345ms)
 #> ℹ Model with lowest RMSE: mod_mars
 
 # Use it fx. to predict the "control outcome" in the 2-armed RCT

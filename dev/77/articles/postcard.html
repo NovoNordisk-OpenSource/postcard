@@ -317,8 +317,8 @@ out-of-sample (OOS) predictions (see examples).</p>
 <span><span class="co">#&gt; attr(,"estimand_fun")</span></span>
 <span><span class="co">#&gt; function (psi1, psi0) </span></span>
 <span><span class="co">#&gt; psi1 - psi0</span></span>
-<span><span class="co">#&gt; &lt;bytecode: 0x5650823edca0&gt;</span></span>
-<span><span class="co">#&gt; &lt;environment: 0x5650896a5cd0&gt;</span></span>
+<span><span class="co">#&gt; &lt;bytecode: 0x5568dfa1db40&gt;</span></span>
+<span><span class="co">#&gt; &lt;environment: 0x5568e6cd6070&gt;</span></span>
 <span><span class="co">#&gt; attr(,"margin")</span></span>
 <span><span class="co">#&gt; [1] 0</span></span>
 <span><span class="co">#&gt; attr(,"alpha")</span></span>
@@ -339,8 +339,8 @@ out-of-sample (OOS) predictions (see examples).</p>
 <span><span class="co">#&gt; attr(,"estimand_fun")</span></span>
 <span><span class="co">#&gt; function (psi1, psi0) </span></span>
 <span><span class="co">#&gt; psi1 - psi0</span></span>
-<span><span class="co">#&gt; &lt;bytecode: 0x5650823edca0&gt;</span></span>
-<span><span class="co">#&gt; &lt;environment: 0x5650895f2638&gt;</span></span>
+<span><span class="co">#&gt; &lt;bytecode: 0x5568dfa1db40&gt;</span></span>
+<span><span class="co">#&gt; &lt;environment: 0x5568e6c229a0&gt;</span></span>
 <span><span class="co">#&gt; attr(,"margin")</span></span>
 <span><span class="co">#&gt; [1] 0</span></span>
 <span><span class="co">#&gt; attr(,"alpha")</span></span>
@@ -388,8 +388,8 @@ estimate the sample size needed to obtain a certain
 <span><span class="co">#&gt; attr(,"estimand_fun")</span></span>
 <span><span class="co">#&gt; function (psi1, psi0) </span></span>
 <span><span class="co">#&gt; psi1 - psi0</span></span>
-<span><span class="co">#&gt; &lt;bytecode: 0x5650823edca0&gt;</span></span>
-<span><span class="co">#&gt; &lt;environment: 0x565087cf3cb0&gt;</span></span>
+<span><span class="co">#&gt; &lt;bytecode: 0x5568dfa1db40&gt;</span></span>
+<span><span class="co">#&gt; &lt;environment: 0x5568e5322398&gt;</span></span>
 <span><span class="co">#&gt; attr(,"margin")</span></span>
 <span><span class="co">#&gt; [1] 0</span></span>
 <span><span class="co">#&gt; attr(,"alpha")</span></span>
@@ -406,8 +406,8 @@ estimate the sample size needed to obtain a certain
 <span><span class="co">#&gt; attr(,"estimand_fun")</span></span>
 <span><span class="co">#&gt; function (psi1, psi0) </span></span>
 <span><span class="co">#&gt; psi1 - psi0</span></span>
-<span><span class="co">#&gt; &lt;bytecode: 0x5650823edca0&gt;</span></span>
-<span><span class="co">#&gt; &lt;environment: 0x565087ca1188&gt;</span></span>
+<span><span class="co">#&gt; &lt;bytecode: 0x5568dfa1db40&gt;</span></span>
+<span><span class="co">#&gt; &lt;environment: 0x5568e52cf8e0&gt;</span></span>
 <span><span class="co">#&gt; attr(,"margin")</span></span>
 <span><span class="co">#&gt; [1] 0</span></span>
 <span><span class="co">#&gt; attr(,"alpha")</span></span>
@@ -460,11 +460,13 @@ could look like this:</p>
 <span>  ns <span class="op">=</span> <span class="fl">10</span><span class="op">:</span><span class="fl">200</span>, n_iter <span class="op">=</span> <span class="fl">10</span></span>
 <span><span class="op">)</span></span>
 <span><span class="co">#&gt; Estimating power across sample sizes `n_iter` times <span style="color: #00BB00;">■■■■                       </span>…</span></span>
+<span><span class="co">#&gt; Estimating power across sample sizes `n_iter` times <span style="color: #00BB00;">■■■■■■■                    </span>…</span></span>
 <span><span class="co">#&gt; Estimating power across sample sizes `n_iter` times <span style="color: #00BB00;">■■■■■■■■■■                 </span>…</span></span>
 <span><span class="co">#&gt; Estimating power across sample sizes `n_iter` times <span style="color: #00BB00;">■■■■■■■■■■■■■              </span>…</span></span>
 <span><span class="co">#&gt; Estimating power across sample sizes `n_iter` times <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■        </span>…</span></span>
 <span><span class="co">#&gt; Estimating power across sample sizes `n_iter` times <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■     </span>…</span></span>
 <span><span class="co">#&gt; Estimating power across sample sizes `n_iter` times <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■  </span>…</span></span>
+<span><span class="co">#&gt; Estimating power across sample sizes `n_iter` times <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■■■</span>…</span></span>
 <span><span class="co">#&gt; Estimating power across sample sizes `n_iter` times <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■■■</span>…</span></span></code></pre></div>
 <p><code>rpm</code> is then a <code>data.frame</code> containing
 information on the estimated power across the list of models for

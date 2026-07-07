@@ -101,10 +101,10 @@ ate_prog <- rctglm_with_prognosticscore(
 #> • mod_gbt
 #> i  No tuning parameters. `fit_resamples()` will be attempted
 #> i 1 of 3 resampling: mod_mars
-#> ✔ 1 of 3 resampling: mod_mars (371ms)
+#> ✔ 1 of 3 resampling: mod_mars (338ms)
 #> i  No tuning parameters. `fit_resamples()` will be attempted
 #> i 2 of 3 resampling: mod_lm
-#> ✔ 2 of 3 resampling: mod_lm (236ms)
+#> ✔ 2 of 3 resampling: mod_lm (233ms)
 #> i 3 of 3 tuning:     mod_gbt
 #> ✔ 3 of 3 tuning:     mod_gbt (1.7s)
 #> ℹ Model with lowest RMSE: mod_mars
@@ -233,18 +233,18 @@ rate_ratio$estimand_funs
 #> $f
 #> function (psi1, psi0) 
 #> psi1/psi0
-#> <bytecode: 0x562f31a2d830>
-#> <environment: 0x562f37ea7690>
+#> <bytecode: 0x55a93ab6dfe0>
+#> <environment: 0x55a940fe75e0>
 #> 
 #> $d0
 #> function (psi1, psi0) 
 #> -(psi1/psi0^2)
-#> <environment: 0x562f37ea7690>
+#> <environment: 0x55a940fe75e0>
 #> 
 #> $d1
 #> function (psi1, psi0) 
 #> 1/psi0
-#> <environment: 0x562f37ea7690>
+#> <environment: 0x55a940fe75e0>
 ```
 
 ### Specifying any estimand
@@ -362,7 +362,7 @@ default_learners
 #>         grid = data.frame(trees = seq(from = 25, to = 500, by = 25), 
 #>             tree_depth = 3)))
 #> }
-#> <bytecode: 0x562f348fd710>
+#> <bytecode: 0x55a93da3e9a0>
 #> <environment: namespace:postcard>
 ```
 
@@ -442,7 +442,7 @@ prog_info$data <- head(prog_info$data)
 prog_info
 #> $formula
 #> Y ~ .
-#> <environment: 0x562f39651f30>
+#> <environment: 0x55a948b63740>
 #> 
 #> $model_fit
 #> ══ Workflow [trained] ══════════════════════════════════════════════════════════

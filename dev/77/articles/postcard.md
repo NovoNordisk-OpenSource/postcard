@@ -283,8 +283,8 @@ power_marginaleffect(
 #> attr(,"estimand_fun")
 #> function (psi1, psi0) 
 #> psi1 - psi0
-#> <bytecode: 0x5650823edca0>
-#> <environment: 0x5650896a5cd0>
+#> <bytecode: 0x5568dfa1db40>
+#> <environment: 0x5568e6cd6070>
 #> attr(,"margin")
 #> [1] 0
 #> attr(,"alpha")
@@ -305,8 +305,8 @@ power_marginaleffect(
 #> attr(,"estimand_fun")
 #> function (psi1, psi0) 
 #> psi1 - psi0
-#> <bytecode: 0x5650823edca0>
-#> <environment: 0x5650895f2638>
+#> <bytecode: 0x5568dfa1db40>
+#> <environment: 0x5568e6c229a0>
 #> attr(,"margin")
 #> [1] 0
 #> attr(,"alpha")
@@ -365,8 +365,8 @@ samplesize_gs(variance = var_bound_ancova,
 #> attr(,"estimand_fun")
 #> function (psi1, psi0) 
 #> psi1 - psi0
-#> <bytecode: 0x5650823edca0>
-#> <environment: 0x565087cf3cb0>
+#> <bytecode: 0x5568dfa1db40>
+#> <environment: 0x5568e5322398>
 #> attr(,"margin")
 #> [1] 0
 #> attr(,"alpha")
@@ -383,8 +383,8 @@ samplesize_gs(variance = var_bound_prog,
 #> attr(,"estimand_fun")
 #> function (psi1, psi0) 
 #> psi1 - psi0
-#> <bytecode: 0x5650823edca0>
-#> <environment: 0x565087ca1188>
+#> <bytecode: 0x5568dfa1db40>
+#> <environment: 0x5568e52cf8e0>
 #> attr(,"margin")
 #> [1] 0
 #> attr(,"alpha")
@@ -444,11 +444,13 @@ rpm <- repeat_power_marginaleffect(
   ns = 10:200, n_iter = 10
 )
 #> Estimating power across sample sizes `n_iter` times ■■■■                       …
+#> Estimating power across sample sizes `n_iter` times ■■■■■■■                    …
 #> Estimating power across sample sizes `n_iter` times ■■■■■■■■■■                 …
 #> Estimating power across sample sizes `n_iter` times ■■■■■■■■■■■■■              …
 #> Estimating power across sample sizes `n_iter` times ■■■■■■■■■■■■■■■■■■■        …
 #> Estimating power across sample sizes `n_iter` times ■■■■■■■■■■■■■■■■■■■■■■     …
 #> Estimating power across sample sizes `n_iter` times ■■■■■■■■■■■■■■■■■■■■■■■■■  …
+#> Estimating power across sample sizes `n_iter` times ■■■■■■■■■■■■■■■■■■■■■■■■■■■…
 #> Estimating power across sample sizes `n_iter` times ■■■■■■■■■■■■■■■■■■■■■■■■■■■…
 ```
 
