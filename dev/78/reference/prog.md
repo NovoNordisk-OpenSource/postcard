@@ -82,7 +82,7 @@ ate <- rctglm_with_prognosticscore(
 #> • mod_mars
 #> i   No tuning parameters. `fit_resamples()` will be attempted
 #> i 1 of 1 resampling: mod_mars
-#> ✔ 1 of 1 resampling: mod_mars (255ms)
+#> ✔ 1 of 1 resampling: mod_mars (307ms)
 #> ℹ Model with lowest RMSE: mod_mars
 #> ℹ Investigate trained learners and fitted model in `prognostic_info` list element
 #> 
@@ -98,7 +98,7 @@ ate <- rctglm_with_prognosticscore(
 prog(ate)
 #> $formula
 #> Y ~ .
-#> <environment: 0x5589ed8327b8>
+#> <environment: 0x562c4165c040>
 #> 
 #> $model_fit
 #> ══ Workflow [trained] ══════════════════════════════════════════════════════════

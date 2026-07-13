@@ -234,8 +234,8 @@ power_marginaleffect(
 #> attr(,"estimand_fun")
 #> function (psi1, psi0) 
 #> psi1 - psi0
-#> <bytecode: 0x5589e9b58368>
-#> <environment: 0x5589ede6b0d0>
+#> <bytecode: 0x562c3d965500>
+#> <environment: 0x562c41c78180>
 #> attr(,"margin")
 #> [1] 0
 #> attr(,"alpha")
@@ -268,10 +268,10 @@ lrnr1 <- fit_best_learner(preproc = list(mod = Y ~ X1 + X2 + A),
 #> • mod_lm
 #> i   No tuning parameters. `fit_resamples()` will be attempted
 #> i 1 of 2 resampling: mod_mars
-#> ✔ 1 of 2 resampling: mod_mars (284ms)
+#> ✔ 1 of 2 resampling: mod_mars (283ms)
 #> i   No tuning parameters. `fit_resamples()` will be attempted
 #> i 2 of 2 resampling: mod_lm
-#> ✔ 2 of 2 resampling: mod_lm (239ms)
+#> ✔ 2 of 2 resampling: mod_lm (249ms)
 #> ℹ Model with lowest RMSE: mod_mars
 lrnr2 <- fit_best_learner(preproc = list(mod = Y ~ X1 + X2 + A),
                           data = gaus2,
@@ -281,10 +281,10 @@ lrnr2 <- fit_best_learner(preproc = list(mod = Y ~ X1 + X2 + A),
 #> • mod_lm
 #> i   No tuning parameters. `fit_resamples()` will be attempted
 #> i 1 of 2 resampling: mod_mars
-#> ✔ 1 of 2 resampling: mod_mars (270ms)
+#> ✔ 1 of 2 resampling: mod_mars (284ms)
 #> i   No tuning parameters. `fit_resamples()` will be attempted
 #> i 2 of 2 resampling: mod_lm
-#> ✔ 2 of 2 resampling: mod_lm (236ms)
+#> ✔ 2 of 2 resampling: mod_lm (244ms)
 #> ℹ Model with lowest RMSE: mod_mars
 preds_lrnr1 <- dplyr::pull(predict(lrnr2, new_data = gaus1))
 preds_lrnr2 <- dplyr::pull(predict(lrnr1, new_data = gaus2))
@@ -318,8 +318,8 @@ power_marginaleffect(
 #> attr(,"estimand_fun")
 #> function (psi1, psi0) 
 #> psi1 - psi0
-#> <bytecode: 0x5589e9b58368>
-#> <environment: 0x5589e7f700c8>
+#> <bytecode: 0x562c3d965500>
+#> <environment: 0x562c3d8e6470>
 #> attr(,"margin")
 #> [1] 0
 #> attr(,"alpha")

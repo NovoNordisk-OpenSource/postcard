@@ -283,8 +283,8 @@ power_marginaleffect(
 #> attr(,"estimand_fun")
 #> function (psi1, psi0) 
 #> psi1 - psi0
-#> <bytecode: 0x55b383a2e598>
-#> <environment: 0x55b38b8a72c8>
+#> <bytecode: 0x5638dc10f588>
+#> <environment: 0x5638e3f8a8e0>
 #> attr(,"margin")
 #> [1] 0
 #> attr(,"alpha")
@@ -305,8 +305,8 @@ power_marginaleffect(
 #> attr(,"estimand_fun")
 #> function (psi1, psi0) 
 #> psi1 - psi0
-#> <bytecode: 0x55b383a2e598>
-#> <environment: 0x55b38acdacf0>
+#> <bytecode: 0x5638dc10f588>
+#> <environment: 0x5638df2eef88>
 #> attr(,"margin")
 #> [1] 0
 #> attr(,"alpha")
@@ -365,8 +365,8 @@ samplesize_gs(variance = var_bound_ancova,
 #> attr(,"estimand_fun")
 #> function (psi1, psi0) 
 #> psi1 - psi0
-#> <bytecode: 0x55b383a2e598>
-#> <environment: 0x55b38954aaf0>
+#> <bytecode: 0x5638dc10f588>
+#> <environment: 0x5638e1c28660>
 #> attr(,"margin")
 #> [1] 0
 #> attr(,"alpha")
@@ -383,8 +383,8 @@ samplesize_gs(variance = var_bound_prog,
 #> attr(,"estimand_fun")
 #> function (psi1, psi0) 
 #> psi1 - psi0
-#> <bytecode: 0x55b383a2e598>
-#> <environment: 0x55b38935df40>
+#> <bytecode: 0x5638dc10f588>
+#> <environment: 0x5638e1a3bab0>
 #> attr(,"margin")
 #> [1] 0
 #> attr(,"alpha")
