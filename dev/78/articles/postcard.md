@@ -283,8 +283,8 @@ power_marginaleffect(
 #> attr(,"estimand_fun")
 #> function (psi1, psi0) 
 #> psi1 - psi0
-#> <bytecode: 0x5638dc10f588>
-#> <environment: 0x5638e3f8a8e0>
+#> <bytecode: 0x55deb0b9d588>
+#> <environment: 0x55deb89ea860>
 #> attr(,"margin")
 #> [1] 0
 #> attr(,"alpha")
@@ -305,8 +305,8 @@ power_marginaleffect(
 #> attr(,"estimand_fun")
 #> function (psi1, psi0) 
 #> psi1 - psi0
-#> <bytecode: 0x5638dc10f588>
-#> <environment: 0x5638df2eef88>
+#> <bytecode: 0x55deb0b9d588>
+#> <environment: 0x55deb3d6ea80>
 #> attr(,"margin")
 #> [1] 0
 #> attr(,"alpha")
@@ -365,8 +365,8 @@ samplesize_gs(variance = var_bound_ancova,
 #> attr(,"estimand_fun")
 #> function (psi1, psi0) 
 #> psi1 - psi0
-#> <bytecode: 0x5638dc10f588>
-#> <environment: 0x5638e1c28660>
+#> <bytecode: 0x55deb0b9d588>
+#> <environment: 0x55deb66b9ab8>
 #> attr(,"margin")
 #> [1] 0
 #> attr(,"alpha")
@@ -383,8 +383,8 @@ samplesize_gs(variance = var_bound_prog,
 #> attr(,"estimand_fun")
 #> function (psi1, psi0) 
 #> psi1 - psi0
-#> <bytecode: 0x5638dc10f588>
-#> <environment: 0x5638e1a3bab0>
+#> <bytecode: 0x55deb0b9d588>
+#> <environment: 0x55deb64ccf08>
 #> attr(,"margin")
 #> [1] 0
 #> attr(,"alpha")
@@ -444,12 +444,12 @@ rpm <- repeat_power_marginaleffect(
   ns = 10:200, n_iter = 10
 )
 #> Estimating power across sample sizes `n_iter` times ■■■■                       …
-#> Estimating power across sample sizes `n_iter` times ■■■■■■■                    …
 #> Estimating power across sample sizes `n_iter` times ■■■■■■■■■■                 …
 #> Estimating power across sample sizes `n_iter` times ■■■■■■■■■■■■■              …
+#> Estimating power across sample sizes `n_iter` times ■■■■■■■■■■■■■■■■           …
 #> Estimating power across sample sizes `n_iter` times ■■■■■■■■■■■■■■■■■■■        …
 #> Estimating power across sample sizes `n_iter` times ■■■■■■■■■■■■■■■■■■■■■■     …
-#> Estimating power across sample sizes `n_iter` times ■■■■■■■■■■■■■■■■■■■■■■■■■  …
+#> Estimating power across sample sizes `n_iter` times ■■■■■■■■■■■■■■■■■■■■■■■■■■■…
 #> Estimating power across sample sizes `n_iter` times ■■■■■■■■■■■■■■■■■■■■■■■■■■■…
 ```
 
