@@ -1,13 +1,8 @@
 # predict_counterfactual_mean
 test_that("`predict_counterfactual_mean` predicts correctly", {
-  treat_diff <- 10
-  dat <- data.frame(
-    Y = 1:(2*treat_diff),
-    X = rep(1:treat_diff, 2),
-    A = c(rep(0, treat_diff), rep(1, treat_diff)
-    )
-  )
-  mod <- glm(Y ~ X + A, data = dat)
+  fixture <- fit_glm()
+  treat_diff <- fixture$treat_diff
+  mod <- fixture$mod
   pred0 <- predict_counterfactual_mean(
     model = mod,
     exposure_indicator_name = "A",
@@ -75,14 +70,9 @@ test_that("`predict_counterfactual_mean` works with and without data specificati
 
 # predict_counterfactual_means
 test_that("`predict_counterfactual_mean` predicts correctly", {
-  treat_diff <- 10
-  dat <- data.frame(
-    Y = 1:(2*treat_diff),
-    X = rep(1:treat_diff, 2),
-    A = c(rep(0, treat_diff), rep(1, treat_diff)
-    )
-  )
-  mod <- glm(Y ~ X + A, data = dat)
+  fixture <- fit_glm()
+  treat_diff <- fixture$treat_diff
+  mod <- fixture$mod
   preds <- predict_counterfactual_means(
     model = mod,
     exposure_indicator_name = "A")

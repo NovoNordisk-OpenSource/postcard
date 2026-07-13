@@ -66,21 +66,8 @@ test_that("`add_learners` returns data.frame with correct information", {
 # get_best_learner
 test_that("`get_best_learner` returns a workflow object", {
   withr::local_seed(42)
-  dat <- glm_data(
-    y ~ 1+2*x1,
-    x1 = rnorm(10)
-  )
-  learners <- list(
-    mars = list(
-      model = parsnip::mars(
-        mode = "regression", prod_degree = 3) %>%
-        parsnip::set_engine("earth")
-    ),
-    lm = list(
-      model = parsnip::linear_reg() %>%
-        parsnip::set_engine("lm")
-    )
-  )
+  dat <- sim_covariate_data()
+  learners <- example_learners()
   cv_folds <- rsample::vfold_cv(dat, v = 2)
   lrnr <- get_best_learner(resamples = cv_folds,
                            learners = learners,
@@ -114,21 +101,8 @@ cli::test_that_cli("`get_best_learner` print information when verbose > 0", {
   testthat::local_edition(3)
 
   withr::local_seed(42)
-  dat <- glm_data(
-    y ~ 1+2*x1,
-    x1 = rnorm(10)
-  )
-  learners <- list(
-    mars = list(
-      model = parsnip::mars(
-        mode = "regression", prod_degree = 3) %>%
-        parsnip::set_engine("earth")
-    ),
-    lm = list(
-      model = parsnip::linear_reg() %>%
-        parsnip::set_engine("lm")
-    )
-  )
+  dat <- sim_covariate_data()
+  learners <- example_learners()
   cv_folds <- rsample::vfold_cv(dat, v = 2)
   elapsed_time_pattern <- "\\d+\\.?\\d*m?s"
   testthat::expect_snapshot({
@@ -147,10 +121,7 @@ test_that("`fit_best_learner` returns a workflow object", {
     list(postcard.verbose = 0)
   )
 
-  dat <- glm_data(
-    y ~ 1+2*x1,
-    x1 = rnorm(10)
-  )
+  dat <- sim_covariate_data()
   learners <- list(
     lm = list(
       model = parsnip::linear_reg() %>%

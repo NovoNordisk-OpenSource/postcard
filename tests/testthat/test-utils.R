@@ -163,13 +163,11 @@ cli::test_that_cli("`print_symbolic_differentiation` provides message", {
 })
 
 test_that("`get_predict_method` works for different model types", {
-  lm_mod <- lm(mpg ~ wt + cyl, data = mtcars)
-  glm_mod <- glm(vs ~ wt + cyl, data = mtcars, family = binomial())
-  dsl_mod <- fit_best_learner(list(vs ~ wt + cyl), data = mtcars)
+  mods <- predict_method_models()
 
-  expect_equal(get_predict_method(lm_mod), predict.lm)
-  expect_equal(get_predict_method(glm_mod), predict.glm)
-  expect_equal(get_predict_method(dsl_mod), getS3method("predict", "workflow"))
+  expect_equal(get_predict_method(mods$lm_mod), predict.lm)
+  expect_equal(get_predict_method(mods$glm_mod), predict.glm)
+  expect_equal(get_predict_method(mods$dsl_mod), getS3method("predict", "workflow"))
 })
 
 test_that("`get_predict_method` fails for object with no predict method", {
@@ -178,13 +176,11 @@ test_that("`get_predict_method` fails for object with no predict method", {
 })
 
 test_that("`get_newdata_arg_name` works for different model types", {
-  lm_mod <- lm(mpg ~ wt + cyl, data = mtcars)
-  glm_mod <- glm(vs ~ wt + cyl, data = mtcars, family = binomial())
-  dsl_mod <- fit_best_learner(list(vs ~ wt + cyl), data = mtcars)
+  mods <- predict_method_models()
 
-  expect_equal(get_newdata_arg_name(lm_mod), "newdata")
-  expect_equal(get_newdata_arg_name(glm_mod), "newdata")
-  expect_equal(get_newdata_arg_name(dsl_mod), "new_data")
+  expect_equal(get_newdata_arg_name(mods$lm_mod), "newdata")
+  expect_equal(get_newdata_arg_name(mods$glm_mod), "newdata")
+  expect_equal(get_newdata_arg_name(mods$dsl_mod), "new_data")
 })
 
 test_that("`r_to_exposure_prob` calculates correctly", {

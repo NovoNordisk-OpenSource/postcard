@@ -2,18 +2,8 @@ test_that("`rctglm` snapshot tests", {
   withr::local_seed(42)
   n <- 100
   exposure_prob <- .5
-  dat_gaus <- glm_data(
-    Y ~ 1+1.5*X1+2*A,
-    X1 = rnorm(n),
-    A = rbinom(n, 1, exposure_prob),
-    family = gaussian()
-  )
-  dat_pois <- glm_data(
-    Y ~ 1+1.5*X1+2*A,
-    X1 = rnorm(n),
-    A = rbinom(n, 1, .5),
-    family = poisson()
-  )
+  dat_gaus <- sim_rct_data(n = n, exposure_prob = exposure_prob)
+  dat_pois <- sim_rct_data(n = n, exposure_prob = exposure_prob, family = poisson())
 
   ate_with_cv <- rctglm(formula = Y ~ .,
                         exposure_indicator = A,
@@ -57,12 +47,7 @@ test_that("`cv_variance` produces same point estimates but different SE estimate
 
   n <- 100
   exposure_prob <- .5
-  dat_gaus <- glm_data(
-    Y ~ 1+1.5*X1+2*A,
-    X1 = rnorm(n),
-    A = rbinom(n, 1, exposure_prob),
-    family = gaussian()
-  )
+  dat_gaus <- sim_rct_data(n = n, exposure_prob = exposure_prob)
 
   ate_with_cv <- rctglm(formula = Y ~ .,
                         exposure_indicator = A,
@@ -96,12 +81,7 @@ test_that("Different `cv_variance_folds` produces same estimate but different es
 
   n <- 100
   exposure_prob <- .5
-  dat_gaus <- glm_data(
-    Y ~ 1+1.5*X1+2*A,
-    X1 = rnorm(n),
-    A = rbinom(n, 1, exposure_prob),
-    family = gaussian()
-  )
+  dat_gaus <- sim_rct_data(n = n, exposure_prob = exposure_prob)
 
   ate_with_cv <- rctglm(formula = Y ~ .,
                         exposure_indicator = A,
@@ -137,12 +117,7 @@ test_that("`rctglm` fails when `exposure_indicator` is non-binary", {
 
   n <- 100
   exposure_prob <- .5
-  dat_gaus <- glm_data(
-    Y ~ 1+1.5*X1+2*A,
-    X1 = rnorm(n),
-    A = rbinom(n, 1, exposure_prob),
-    family = gaussian()
-  ) %>%
+  dat_gaus <- sim_rct_data(n = n, exposure_prob = exposure_prob) %>%
     dplyr::mutate(A_fac = factor(A, levels = 0:1, labels = c("A", "B")))
 
   # Fit the model
@@ -166,12 +141,7 @@ test_that("`estimand_fun` argument can be specified as function or character", {
 
   n <- 100
   exposure_prob <- .5
-  dat_gaus <- glm_data(
-    Y ~ 1+1.5*X1+2*A,
-    X1 = rnorm(n),
-    A = rbinom(n, 1, exposure_prob),
-    family = gaussian()
-  )
+  dat_gaus <- sim_rct_data(n = n, exposure_prob = exposure_prob)
 
   ate <- rctglm(formula = Y ~ .,
                 exposure_indicator = A,
@@ -218,12 +188,7 @@ test_that("`estimand_fun_derivX` can be left as NULL or specified manually", {
   n <- 100
   exposure_prob <- 0.5
   withr::with_seed(42, {
-    dat_gaus <- glm_data(
-      Y ~ 1+1.5*X1+2*A,
-      X1 = rnorm(n),
-      A = rbinom(n, 1, exposure_prob),
-      family = gaussian()
-    )
+    dat_gaus <- sim_rct_data(n = n, exposure_prob = exposure_prob)
   })
 
   # Also checking that message is output to console when left as NULL
@@ -263,12 +228,7 @@ test_that("`rctglm` provides error if `exposure_prob` is not a numeric between 0
   n <- 100
   exposure_prob <- 0.5
 
-  dat_gaus <- glm_data(
-    Y ~ 1+1.5*X1+2*A,
-    X1 = rnorm(n),
-    A = rbinom(n, 1, exposure_prob),
-    family = gaussian()
-  )
+  dat_gaus <- sim_rct_data(n = n, exposure_prob = exposure_prob)
 
   expect_error(
     rctglm(formula = Y ~ .,

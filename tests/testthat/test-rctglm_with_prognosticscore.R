@@ -1,34 +1,12 @@
 test_that("`rctglm_with_prognosticscore` snapshot tests", {
   withr::local_seed(42)
 
-  n <- 100
-  b0 <- 1
-  b1 <- 1.5
-  b2 <- 2
-  W1 <- runif(n, min = 1, max = 10)
   exposure_prob <- .5
+  dat <- sim_prognostic_data(exposure_prob = exposure_prob)
+  dat_treat <- dat$dat_treat
+  dat_notreat <- dat$dat_notreat
 
-  dat_treat <- glm_data(
-    Y ~ b0+b1*log(W1)+b2*A,
-    W1 = W1,
-    A = rbinom (n, 1, exposure_prob)
-  )
-  dat_notreat <- glm_data(
-    Y ~ b0+b1*log(W1),
-    W1 = W1
-  )
-
-  learners <- list(
-    mars = list(
-      model = parsnip::mars(
-        mode = "regression", prod_degree = 3) %>%
-        parsnip::set_engine("earth")
-    ),
-    lm = list(
-      model = parsnip::linear_reg() %>%
-        parsnip::set_engine("lm")
-    )
-  )
+  learners <- example_learners()
 
   elapsed_time_pattern <- "\\d+\\.?\\d*m?s"
   expect_snapshot({
@@ -68,22 +46,9 @@ test_that("`rctglm_with_prognosticscore` snapshot tests", {
   },
   transform = function(x) gsub(elapsed_time_pattern, "", x))
 
-  n <- 100
-  b0 <- 1
-  b1 <- 1.5
-  b2 <- 2
-  W1 <- runif(n, min = 1, max = 10)
-  dat_treat_pois <- glm_data(
-    Y ~ b0+b1*log(W1)+b2*A,
-    W1 = W1,
-    A = rbinom (n, 1, exposure_prob),
-    family = poisson()
-  )
-  dat_notreat_pois <- glm_data(
-    Y ~ b0+b1*log(W1),
-    W1 = W1,
-    family = poisson()
-  )
+  dat_pois <- sim_prognostic_data(exposure_prob = exposure_prob, family = poisson())
+  dat_treat_pois <- dat_pois$dat_treat
+  dat_notreat_pois <- dat_pois$dat_notreat
 
   rr_pois_wo_cvvariance <- withr::with_seed(42, {
     rctglm_with_prognosticscore(
@@ -152,59 +117,17 @@ test_that("`cv_variance` produces same point estimates but different SE estimate
     list(postcard.verbose = 0)
   )
 
-  n <- 100
-  b0 <- 1
-  b1 <- 1.5
-  b2 <- 2
-  W1 <- runif(n, min = 1, max = 10)
   exposure_prob <- .5
+  dat <- sim_prognostic_data(exposure_prob = exposure_prob)
+  dat_treat <- dat$dat_treat
+  dat_notreat <- dat$dat_notreat
 
-  dat_treat <- glm_data(
-    Y ~ b0+b1*log(W1)+b2*A,
-    W1 = W1,
-    A = rbinom (n, 1, exposure_prob)
-  )
-  dat_notreat <- glm_data(
-    Y ~ b0+b1*log(W1),
-    W1 = W1
-  )
+  learners <- example_learners()
 
-  learners <- list(
-    mars = list(
-      model = parsnip::mars(
-        mode = "regression", prod_degree = 3) %>%
-        parsnip::set_engine("earth")
-    ),
-    lm = list(
-      model = parsnip::linear_reg() %>%
-        parsnip::set_engine("lm")
-    )
-  )
-
-  ate_w_cvvariance <- withr::with_seed(42, {
-      rctglm_with_prognosticscore(
-        formula = Y ~ .,
-        exposure_indicator = A,
-        exposure_prob = exposure_prob,
-        data = dat_treat,
-        family = gaussian(),
-        estimand_fun = "ate",
-        data_hist = dat_notreat,
-        learners = learners,
-        cv_variance = TRUE)
-    })
-  ate_wo_cvvariance <- withr::with_seed(42, {
-      rctglm_with_prognosticscore(
-        formula = Y ~ .,
-        exposure_indicator = A,
-        exposure_prob = exposure_prob,
-        data = dat_treat,
-        family = gaussian(),
-        estimand_fun = "ate",
-        data_hist = dat_notreat,
-        learners = learners,
-        cv_variance = FALSE)
-    })
+  ate_w_cvvariance <- fit_prognostic_ate(
+    dat_treat, dat_notreat, exposure_prob, learners, cv_variance = TRUE)
+  ate_wo_cvvariance <- fit_prognostic_ate(
+    dat_treat, dat_notreat, exposure_prob, learners, cv_variance = FALSE)
 
   expect_equal(
     estimand(ate_wo_cvvariance)$Estimate,
@@ -224,62 +147,20 @@ test_that("`prog_formula` manual specification consistent with default behavior"
     list(postcard.verbose = 0)
   )
 
-  n <- 100
-  b0 <- 1
-  b1 <- 1.5
-  b2 <- 2
-  W1 <- runif(n, min = 1, max = 10)
   exposure_prob <- .5
+  dat <- sim_prognostic_data(exposure_prob = exposure_prob)
+  dat_treat <- dat$dat_treat
+  dat_notreat <- dat$dat_notreat
 
-  dat_treat <- glm_data(
-    Y ~ b0+b1*log(W1)+b2*A,
-    W1 = W1,
-    A = rbinom (n, 1, exposure_prob)
-  )
-  dat_notreat <- glm_data(
-    Y ~ b0+b1*log(W1),
-    W1 = W1
-  )
-
-  learners <- list(
-    mars = list(
-      model = parsnip::mars(
-        mode = "regression", prod_degree = 3) %>%
-        parsnip::set_engine("earth")
-    ),
-    lm = list(
-      model = parsnip::linear_reg() %>%
-        parsnip::set_engine("lm")
-    )
-  )
+  learners <- example_learners()
 
   # Note default behavior models response as all variables in data, in this case just W1
-  ate_wo_prog_formula <- withr::with_seed(42, {
-      rctglm_with_prognosticscore(
-        formula = Y ~ .,
-        exposure_indicator = A,
-        exposure_prob = exposure_prob,
-        data = dat_treat,
-        family = gaussian(),
-        estimand_fun = "ate",
-        data_hist = dat_notreat,
-        learners = learners,
-        cv_variance = FALSE)
-    })
+  ate_wo_prog_formula <- fit_prognostic_ate(
+    dat_treat, dat_notreat, exposure_prob, learners, cv_variance = FALSE)
 
-  ate_w_prog_formula <- withr::with_seed(42, {
-    rctglm_with_prognosticscore(
-      formula = Y ~ .,
-      exposure_indicator = A,
-      exposure_prob = exposure_prob,
-      data = dat_treat,
-      family = gaussian(),
-      estimand_fun = "ate",
-      data_hist = dat_notreat,
-      learners = learners,
-      cv_variance = FALSE,
-      prog_formula = "Y ~ W1")
-  })
+  ate_w_prog_formula <- fit_prognostic_ate(
+    dat_treat, dat_notreat, exposure_prob, learners, cv_variance = FALSE,
+    prog_formula = "Y ~ W1")
 
   expect_equal(est(ate_wo_prog_formula), est(ate_w_prog_formula))
 })

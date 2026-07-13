@@ -9,11 +9,7 @@ test_that("`default_power_model_list` returns list of models with predict method
 test_that("`repeat_power_marginaleffect` and plot snapshot tests", {
   withr::local_seed(42)
 
-  train_data <- glm_data(
-    Y ~ 1+1.5*log(W)+2*X,
-    W = runif(1e3, min = 1, max = 10),
-    X = rnorm(1e3, sd = 3)
-  )
+  train_data <- sim_power_train_data()
   model_list <- list(
     "ANCOVA" = glm(Y ~ W, data = train_data),
     "ANCOVA with prognostic score" = fit_best_learner(
@@ -46,11 +42,7 @@ test_that("`repeat_power_marginaleffect` and plot snapshot tests", {
 test_that("`repeat_power_linear` and plot snapshot tests", {
   withr::local_seed(42)
 
-  train_data <- glm_data(
-    Y ~ 1+1.5*log(W)+2*X,
-    W = runif(1e3, min = 1, max = 10),
-    X = rnorm(1e3, sd = 3)
-  )
+  train_data <- sim_power_train_data()
   rpl <- repeat_power_linear(
     ate = 0.5,
     formula_list = list("ANCOVA 1 covariate" = Y ~ X, "ANCOVA 2 covariates" = Y ~ W + X),
