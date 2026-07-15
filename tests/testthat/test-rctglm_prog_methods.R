@@ -1,34 +1,12 @@
 test_that("`rctglm_with_prognosticscore` returns object of correct class", {
   withr::local_seed(42)
   # Generate some data
-  n <- 100
-  b0 <- 1
-  b1 <- 1.5
-  b2 <- 2
-  W1 <- runif(n, min = 1, max = 10)
   exposure_prob <- .5
+  dat <- sim_prognostic_data(exposure_prob = exposure_prob)
+  dat_treat <- dat$dat_treat
+  dat_notreat <- dat$dat_notreat
 
-  dat_treat <- glm_data(
-    Y ~ b0+b1*log(W1)+b2*A,
-    W1 = W1,
-    A = rbinom (n, 1, exposure_prob)
-  )
-  dat_notreat <- glm_data(
-    Y ~ b0+b1*log(W1),
-    W1 = W1
-  )
-
-  learners <- list(
-    mars = list(
-      model = parsnip::mars(
-        mode = "regression", prod_degree = 3) %>%
-        parsnip::set_engine("earth")
-    ),
-    lm = list(
-      model = parsnip::linear_reg() %>%
-        parsnip::set_engine("lm")
-    )
-  )
+  learners <- example_learners()
 
   ate <- rctglm_with_prognosticscore(
     formula = Y ~ .,
