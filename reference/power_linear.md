@@ -254,8 +254,8 @@ power_gs(n = n_test, variance = va_nocov, ate = 1)
 #> attr(,"estimand_fun")
 #> function (psi1, psi0) 
 #> psi1 - psi0
-#> <bytecode: 0x564403147978>
-#> <environment: 0x564403147cc0>
+#> <bytecode: 0x55c578a47cd8>
+#> <environment: 0x55c578a48020>
 #> attr(,"margin")
 #> [1] 0
 #> attr(,"alpha")
@@ -278,8 +278,8 @@ power_gs(n = n_test, variance = va_cov, ate = 1.8, margin = 1, r = 2)
 #> attr(,"estimand_fun")
 #> function (psi1, psi0) 
 #> psi1 - psi0
-#> <bytecode: 0x564403147978>
-#> <environment: 0x564403062948>
+#> <bytecode: 0x55c578a47cd8>
+#> <environment: 0x55c578967768>
 #> attr(,"margin")
 #> [1] 1
 #> attr(,"alpha")
@@ -300,8 +300,8 @@ samplesize_gs(
 #> attr(,"estimand_fun")
 #> function (psi1, psi0) 
 #> psi1 - psi0
-#> <bytecode: 0x564403147978>
-#> <environment: 0x564403014458>
+#> <bytecode: 0x55c578a47cd8>
+#> <environment: 0x55c578915508>
 #> attr(,"margin")
 #> [1] 1
 #> attr(,"alpha")
@@ -319,8 +319,8 @@ power_nc(n = n_test, variance = va_nocov, df = 199, ate = 1)
 #> attr(,"estimand_fun")
 #> function (psi1, psi0) 
 #> psi1 - psi0
-#> <bytecode: 0x564403147978>
-#> <environment: 0x564402fcaa30>
+#> <bytecode: 0x55c578a47cd8>
+#> <environment: 0x55c5788cda00>
 #> attr(,"margin")
 #> [1] 0
 #> attr(,"alpha")
@@ -339,8 +339,8 @@ power_nc(n = n_test, variance = va_cov, df = 196, ate = 1.8, margin = 1, r = 2)
 #> attr(,"estimand_fun")
 #> function (psi1, psi0) 
 #> psi1 - psi0
-#> <bytecode: 0x564403147978>
-#> <environment: 0x564402f902b0>
+#> <bytecode: 0x55c578a47cd8>
+#> <environment: 0x55c578894c50>
 #> attr(,"margin")
 #> [1] 1
 #> attr(,"alpha")
