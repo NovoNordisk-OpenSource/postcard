@@ -23,21 +23,28 @@ predict_method_models <- function() {
 }
 
 # Fit an ATE `rctglm` model on simulated data, used to test rctglm methods.
-fit_rctglm_ate <- function(n = 10, exposure_prob = 0.5) {
-  dat_gaus <- sim_rct_data(n = n, exposure_prob = exposure_prob)
+fit_rctglm_ate <- function(data, exposure_prob = NULL,
+                           family = gaussian, cv_variance = FALSE, ...) {
+  if (is.null(exposure_prob)) exposure_prob <- unique(data$exposure_prob)
+  data <- data[, setdiff(names(data), "exposure_prob")]
   rctglm(
     formula = Y ~ .,
     exposure_indicator = A,
     exposure_prob = exposure_prob,
-    data = dat_gaus,
-    family = gaussian,
-    cv_variance = FALSE
+    data = data,
+    family = family,
+    cv_variance = cv_variance,
+    ...
   )
 }
 
 # Fit an ATE prognostic-score model with a fixed seed. Extra arguments are
 # forwarded to `rctglm_with_prognosticscore()`.
-fit_prognostic_ate <- function(dat_treat, dat_notreat, exposure_prob, learners,
+fit_prognostic_ate <- function(dat_treat, dat_notreat,
+                               exposure_prob = .5,
+                               learners = example_learners(),
+                               family = gaussian(),
+                               estimand_fun = "ate",
                                cv_variance = TRUE, ...) {
   withr::with_seed(42, {
     rctglm_with_prognosticscore(
@@ -45,8 +52,8 @@ fit_prognostic_ate <- function(dat_treat, dat_notreat, exposure_prob, learners,
       exposure_indicator = A,
       exposure_prob = exposure_prob,
       data = dat_treat,
-      family = gaussian(),
-      estimand_fun = "ate",
+      family = family,
+      estimand_fun = estimand_fun,
       data_hist = dat_notreat,
       learners = learners,
       cv_variance = cv_variance,

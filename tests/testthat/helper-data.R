@@ -7,6 +7,8 @@
 
 # Simulate treatment and historical data used to test prognostic-score models.
 sim_prognostic_data <- function(exposure_prob = 0.5, family = gaussian()) {
+  withr::local_seed(42)
+
   n <- 100
   W1 <- runif(n, min = 1, max = 10)
   dat_treat <- glm_data(
@@ -26,12 +28,16 @@ sim_prognostic_data <- function(exposure_prob = 0.5, family = gaussian()) {
 # Simulate randomised trial data with a single covariate `X1` and binary
 # exposure `A`.
 sim_rct_data <- function(n = 100, exposure_prob = 0.5, family = gaussian()) {
-  glm_data(
+  withr::local_seed(42)
+
+  out <- glm_data(
     Y ~ 1 + 1.5 * X1 + 2 * A,
     X1 = rnorm(n),
     A = rbinom(n, 1, exposure_prob),
     family = family
   )
+  out$exposure_prob <- exposure_prob
+  return(out)
 }
 
 # Simulate a simple data set with a single covariate `x1`.

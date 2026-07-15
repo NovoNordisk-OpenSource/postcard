@@ -1,6 +1,6 @@
 test_that("`estimand` method works", {
-  withr::local_seed(42)
-  ate <- fit_rctglm_ate()
+  dat <- sim_rct_data()
+  ate <- fit_rctglm_ate(dat)
 
   est1 <- estimand(ate)
   est2 <- est(ate)
@@ -10,15 +10,16 @@ test_that("`estimand` method works", {
 })
 
 test_that("`coef` method works", {
-  withr::local_seed(42)
-  ate <- fit_rctglm_ate()
+  dat <- sim_rct_data()
+  ate <- fit_rctglm_ate(dat)
 
   expect_equal(coef(ate$glm), coef(ate))
   expect_snapshot(coef(ate))
 })
 
 test_that("`print` method works", {
-  ate <- fit_rctglm_ate()
+  dat <- sim_rct_data()
+  ate <- fit_rctglm_ate(dat)
 
   expect_output(print(ate))
 })
