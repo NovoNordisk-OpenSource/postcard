@@ -222,5 +222,5 @@ rctglm <- function(formula,
     call = cal
   )
 
-  return(structure(out, class = c("rctglm", class(out))))
+  return(structure(out, class = "rctglm"))
 }

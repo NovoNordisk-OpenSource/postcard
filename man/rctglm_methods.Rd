@@ -5,9 +5,28 @@
 \alias{estimand}
 \alias{estimand.rctglm}
 \alias{est}
+\alias{est.rctglm}
 \alias{coef.rctglm}
 \alias{predict.rctglm}
 \alias{print.rctglm}
+\alias{summary.rctglm}
+\alias{print.summary.rctglm}
+\alias{plot.rctglm}
+\alias{formula.rctglm}
+\alias{family.rctglm}
+\alias{fitted.rctglm}
+\alias{model.frame.rctglm}
+\alias{model.matrix.rctglm}
+\alias{nobs.rctglm}
+\alias{residuals.rctglm}
+\alias{logLik.rctglm}
+\alias{deviance.rctglm}
+\alias{AIC.rctglm}
+\alias{terms.rctglm}
+\alias{weights.rctglm}
+\alias{vcov.rctglm}
+\alias{confint.rctglm}
+\alias{update.rctglm}
 \title{Methods for objects of class \code{rctglm}}
 \usage{
 estimand(object)
@@ -16,11 +35,49 @@ estimand(object)
 
 est(object)
 
+\method{est}{rctglm}(object)
+
 \method{coef}{rctglm}(object, ...)
 
 \method{predict}{rctglm}(object, ...)
 
 \method{print}{rctglm}(x, digits = max(3L, getOption("digits") - 3L), ...)
+
+\method{summary}{rctglm}(object, level = 0.95, ...)
+
+\method{print}{summary.rctglm}(x, digits = max(3L, getOption("digits") - 3L), ...)
+
+\method{plot}{rctglm}(x, level = 0.95, ...)
+
+\method{formula}{rctglm}(x, ...)
+
+\method{family}{rctglm}(object, ...)
+
+\method{fitted}{rctglm}(object, ...)
+
+\method{model.frame}{rctglm}(formula, ...)
+
+\method{model.matrix}{rctglm}(object, ...)
+
+\method{nobs}{rctglm}(object, ...)
+
+\method{residuals}{rctglm}(object, ...)
+
+\method{logLik}{rctglm}(object, ...)
+
+\method{deviance}{rctglm}(object, ...)
+
+\method{AIC}{rctglm}(object, ..., k = 2)
+
+\method{terms}{rctglm}(x, ...)
+
+\method{weights}{rctglm}(object, ...)
+
+\method{vcov}{rctglm}(object, type = c("coefficients", "estimand"), ...)
+
+\method{confint}{rctglm}(object, parm, level = 0.95, ...)
+
+\method{update}{rctglm}(object, formula., ..., evaluate = TRUE)
 }
 \arguments{
 \item{object}{an object of class \code{rctglm}}
@@ -30,27 +87,68 @@ est(object)
 \item{x}{an object of class \code{rctglm}}
 
 \item{digits}{a \code{numeric} with the number of digits to display when printing}
+
+\item{level}{a \code{numeric} confidence level in \eqn{(0, 1)}, used for the Wald
+interval on the estimand in \code{summary}, \code{plot}, and \code{confint}. Defaults to 0.95.}
+
+\item{type}{for \code{vcov}, one of \code{"coefficients"} (default) or \code{"estimand"}.
+\code{"coefficients"} returns \code{vcov(object$glm)} (the variance-covariance matrix
+of the GLM coefficient vector); \code{"estimand"} returns the estimated variance
+of the marginal-effect estimand as a 1x1 matrix.}
+
+\item{parm}{for \code{confint}, either omitted (returns the Wald CI for the
+estimand) or the character string \code{"coefficients"} (delegates to
+\code{stats::confint} on the underlying GLM).}
+
+\item{formula.}{for \code{update}, a formula, updated via
+\code{stats::update.formula}. See \code{\link[stats:update]{stats::update()}}.}
+
+\item{evaluate}{for \code{update}, if \code{TRUE} (default) the updated call is
+evaluated; if \code{FALSE} the unevaluated call is returned.}
 }
 \value{
-\code{estimand}/\code{est} returns a \code{data.frame} with columns \code{Estimate} and
+\code{estimand}/\code{est} return a \code{data.frame} with columns \code{Estimate} and
 \verb{Std. Error} with the estimate and standard error of the estimand.
 
-See \code{\link[=coef]{coef()}} and \code{\link[=predict.glm]{predict.glm()}} for details on what is returned by the corresponding
-methods.
+\code{summary} returns a \code{summary.rctglm} object. \code{plot} returns a \code{ggplot}
+object. \code{confint} returns a 1x2 matrix (or the GLM \code{confint} output).
+\code{vcov} returns a variance-covariance matrix (default) or a 1x1 matrix (for
+the estimand). \code{update} returns a new \code{rctglm} object (or an unevaluated
+call when \code{evaluate = FALSE}).
+
+See \code{\link[=coef]{coef()}} and \code{\link[=predict.glm]{predict.glm()}} for details on what is returned by the
+corresponding methods.
 }
 \description{
-Methods mostly to extract information from model fit and inference. See
-details for more information on each method.
+Methods for extracting information about the estimand and about the
+underlying GLM fit from an \code{rctglm} object. See details for information on
+each method.
 }
 \details{
-The function \link{estimand} (or short-hand version \link{est}) can be used to extract
-a \code{data.frame} with an estimated value and standard error of the estimand.
+The generics \link{estimand} (and its alias \link{est}) extract a one-row
+\code{data.frame} with the estimate and standard error of the estimand.
 
-A method for the generic \code{\link[=coef]{coef()}} has been added for class \code{rctglm}, which
-extracts coefficient information from the underlying \code{glm} fit
-in the procedure. The same is true for the method defined for the \code{\link[=predict]{predict()}} generic.
-The method for an \code{rctglm} class object calls \code{\link[=predict.glm]{predict.glm()}} on the \code{glm} fit
-contained within an \code{rctglm} object.
+\code{summary.rctglm} returns a \code{summary.rctglm} object printed with
+\code{print.summary.rctglm}. The object holds a coefficient-style table for the
+estimand with columns \code{Estimate}, \verb{Std. Error}, \verb{z value}, \verb{Pr(>|z|)}, and
+the lower/upper Wald CI bounds at the requested \code{level}. The Wald test uses
+the null value \eqn{r(\psi, \psi)} (which equals 0 for the ATE and 1 for
+rate/odds ratios). The underlying GLM summary is stored in the
+\code{glm_summary} element for full access to the GLM diagnostics.
+
+\code{plot.rctglm} returns a \code{ggplot2} object with the estimand estimate and its
+Wald CI drawn as a point and horizontal error bar, plus a dashed vertical
+reference line at the null value.
+
+Thin wrappers to the corresponding methods on the underlying \code{glm} are
+provided for \code{coef}, \code{predict}, \code{formula}, \code{family}, \code{fitted},
+\code{model.frame}, \code{model.matrix}, \code{nobs}, \code{residuals}, \code{logLik}, \code{deviance},
+\code{AIC}, \code{terms}, \code{weights}. \code{vcov.rctglm} returns the GLM coefficient
+variance-covariance matrix by default and the estimand variance when
+\code{type = "estimand"}. \code{confint.rctglm} returns the Wald CI for the estimand
+by default (or delegates to \code{confint(object$glm)} when
+\code{parm = "coefficients"}). \code{update.rctglm} re-runs \code{\link[=rctglm]{rctglm()}} with an updated
+call.
 }
 \examples{
 # Generate some data to showcase example
@@ -72,8 +170,14 @@ ate <- rctglm(formula = Y ~ .,
               estimand_fun = "ate")
 
 print(ate)
+summary(ate)
 estimand(ate)
+est(ate)
 coef(ate)
+confint(ate)
+\dontrun{
+plot(ate)
+}
 }
 \seealso{
 The generic \code{\link[=rctglm]{rctglm()}} which produces \code{rctglm} class objects.

@@ -14,10 +14,12 @@ test_that("`power_marginaleffect` snapshot tests", {
     target_effect = 2,
     exposure_prob = exp_prob
   )
-  # Extract the body of the estimand_fun to avoid the environment in the snapshot test
-  # `transform` argument causes problems with CI
-  attr(pow, "estimand_fun") <- body(attr(pow, "estimand_fun"))
+  # Extract the body of the estimand_fun to avoid the environment in the
+  # snapshot test. Drop `call` (varies across environments).
+  pow$estimand_fun <- body(pow$estimand_fun)
+  pow$call <- NULL
   expect_snapshot(pow)
+  expect_s3_class(pow, "postcard_power")
 
   spec_var_kappa <- power_marginaleffect(
     response = dat$Y,
@@ -27,9 +29,8 @@ test_that("`power_marginaleffect` snapshot tests", {
     target_effect = 2,
     exposure_prob = exp_prob
   )
-  # Extract the body of the estimand_fun to avoid the environment in the snapshot test
-  # `transform` argument causes problems with CI
-  attr(spec_var_kappa, "estimand_fun") <- body(attr(spec_var_kappa, "estimand_fun"))
+  spec_var_kappa$estimand_fun <- body(spec_var_kappa$estimand_fun)
+  spec_var_kappa$call <- NULL
   expect_snapshot(spec_var_kappa)
 })
 

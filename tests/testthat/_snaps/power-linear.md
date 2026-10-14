@@ -24,57 +24,47 @@
     Code
       pgs
     Output
-      [1] 0.2723615
-      attr(,"samplesize")
-      [1] 200
-      attr(,"target_effect")
-      [1] 1
-      attr(,"exposure_prob")
-      [1] 0.6666667
-      attr(,"estimand_fun")
-      psi1 - psi0
-      attr(,"margin")
-      [1] 0.5
-      attr(,"alpha")
-      [1] 0.05
+      
+      Power approximation (class postcard_power)
+      
+      Call:  NULL
+      Estimated power:      0.2724
+      Sample size:          200
+      Target effect:        1
+      Superiority margin:   0.5
+      Exposure probability: 0.6667
+      Significance level:   0.05
 
 ---
 
     Code
       ssgs2
     Output
-      [1] 134.7229
-      attr(,"power")
-      [1] 0.9
-      attr(,"target_effect")
-      [1] 2
-      attr(,"exposure_prob")
-      [1] 0.4
-      attr(,"estimand_fun")
-      psi1 - psi0
-      attr(,"margin")
-      [1] -1
-      attr(,"alpha")
-      [1] 0.05
+      
+      Sample size approximation (class postcard_samplesize)
+      
+      Call:  NULL
+      Estimated sample size: 134.7
+      Desired power:         0.9
+      Target effect:         2
+      Superiority margin:    -1
+      Exposure probability:  0.4
+      Significance level:    0.05
 
 ---
 
     Code
       pnc
     Output
-      [1] 0.2700725
-      attr(,"samplesize")
-      [1] 200
-      attr(,"target_effect")
-      [1] 1
-      attr(,"exposure_prob")
-      [1] 0.6666667
-      attr(,"estimand_fun")
-      psi1 - psi0
-      attr(,"margin")
-      [1] 0.5
-      attr(,"alpha")
-      [1] 0.05
-      attr(,"df")
-      [1] 97
+      
+      Power approximation (class postcard_power)
+      
+      Call:  NULL
+      Estimated power:      0.2701
+      Sample size:          200
+      Target effect:        1
+      Superiority margin:   0.5
+      Exposure probability: 0.6667
+      Significance level:   0.05
+      Degrees of freedom:   97
 

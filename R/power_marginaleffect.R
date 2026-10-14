@@ -168,6 +168,7 @@ power_marginaleffect <- function(
     verbose = options::opt("verbose"),
     ...
 ) {
+  call <- match.call()
   any_missing <- any(is.na(response))
   if (any_missing) cli::cli_abort(c(
     "The `response` contains missing values.",
@@ -226,13 +227,17 @@ power_marginaleffect <- function(
   f1 <- pnorm(f0, mean = target_effect, sd = sd)
   out <- 1 - f1
   structure(
-    out,
-    samplesize = n_pred,
-    target_effect = target_effect,
-    exposure_prob = exposure_prob,
-    estimand_fun = estimand_fun,
-    margin = margin,
-    alpha = alpha
+    list(
+      power = as.numeric(out),
+      samplesize = n_pred,
+      target_effect = target_effect,
+      exposure_prob = exposure_prob,
+      estimand_fun = estimand_fun,
+      margin = margin,
+      alpha = alpha,
+      call = call
+    ),
+    class = "postcard_power"
   )
 }
 
