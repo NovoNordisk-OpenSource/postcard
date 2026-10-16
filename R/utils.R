@@ -196,7 +196,7 @@ add_power_assumption_params_to_data <- function(
   # assumptions (they are the output/context) and `estimand_fun` cannot be
   # meaningfully added to a data frame column.
   assumptions_add_to_data <- dummy_power[
-    setdiff(names(dummy_power), c("power", "call", "estimand_fun"))
+    setdiff(names(dummy_power), c("power", "call", "estimand_fun", "std_error"))
   ]
   .data %>%
     dplyr::mutate(!!!c(assumptions_add_to_data, list(power_fun = power_fun)))

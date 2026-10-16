@@ -78,6 +78,23 @@ power_marginaleffect(
 )
 ```
 
+The result is an object of class `postcard_power`. Its `summary` method shows the assumptions used for the power estimation, including the estimand function, and its `plot` method shows the approximate distributions of the estimator under the null hypothesis (centered at the `margin`) and the alternative hypothesis (centered at the `target_effect`), with the area corresponding to the power shaded.
+
+```{r}
+pow_rr <- power_marginaleffect(
+  response = test_pois$Y,
+  predictions = preds,
+  var1 = function(var0) 1.1 * var0,
+  kappa1_squared = 2,
+  estimand_fun = "rate_ratio",
+  target_effect = 1.4,
+  exposure_prob = 1/2,
+  margin = 0.8
+)
+summary(pow_rr)
+plot(pow_rr)
+```
+
 The function `repeat_power_marginaleffect()` allows passing arguments along to `power_marginaleffect()`, so we are able to quickly create power curves for the above case.
 
 We define our models in a named list and define a function of a single parameter - the sample size `n` - that simulates the test data with the same structure as above but for different sample sizes. 

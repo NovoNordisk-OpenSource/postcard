@@ -105,6 +105,10 @@ estimand) or the character string \code{"coefficients"} (delegates to
 
 \item{evaluate}{for \code{update}, if \code{TRUE} (default) the updated call is
 evaluated; if \code{FALSE} the unevaluated call is returned.}
+
+\item{formula}{for \code{model.frame}, an object of class \code{rctglm}.}
+
+\item{k}{for \code{AIC}, the penalty per parameter. See \code{\link[stats:AIC]{stats::AIC()}}.}
 }
 \value{
 \code{estimand}/\code{est} return a \code{data.frame} with columns \code{Estimate} and

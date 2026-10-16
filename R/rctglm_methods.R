@@ -24,6 +24,8 @@
 #' `stats::update.formula`. See [stats::update()].
 #' @param evaluate for `update`, if `TRUE` (default) the updated call is
 #' evaluated; if `FALSE` the unevaluated call is returned.
+#' @param formula for `model.frame`, an object of class `rctglm`.
+#' @param k for `AIC`, the penalty per parameter. See [stats::AIC()].
 #' @param ... additional arguments passed to methods
 #'
 #' @details
@@ -190,7 +192,7 @@ summary.rctglm <- function(object, level = 0.95, ...) {
   null_stable <- isTRUE(all.equal(alt_null, null_value))
   if (!null_stable)
     cli::cli_warn(
-      "{.code estimand_fun(psi, psi)} depends on {.arg psi} — the Wald null value is not uniquely defined for this estimand."
+      "{.code estimand_fun(psi, psi)} depends on {.arg psi} - the Wald null value is not uniquely defined for this estimand."
     )
 
   se <- est_df[["Std. Error"]]
