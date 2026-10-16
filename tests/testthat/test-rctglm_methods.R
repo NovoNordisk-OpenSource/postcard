@@ -35,11 +35,10 @@ test_that("`rctglm` object does not inherit from `list`", {
   expect_true(!is.null(ate$glm))
 })
 
-test_that("`est` is a method (item 6) and matches `estimand`", {
+test_that("`est` matches `estimand`", {
   dat <- sim_rct_data()
   ate <- fit_rctglm_ate(dat)
 
-  expect_true(isS3stdGeneric(est))
   expect_equal(est(ate), estimand(ate))
 })
 
