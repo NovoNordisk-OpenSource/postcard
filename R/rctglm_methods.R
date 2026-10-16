@@ -213,7 +213,7 @@ summary.rctglm <- function(object, level = 0.95, ...) {
   tab[[ci_name_hi]] <- ci_hi
   rownames(tab) <- "Estimand"
 
-  cv_variance <- isTRUE(eval(object$call$cv_variance, envir = parent.frame()))
+  cv_variance <- isTRUE(object$cv_variance)
 
   structure(
     list(
@@ -287,9 +287,11 @@ plot.rctglm <- function(x, level = 0.95, ...) {
       linetype = "dashed",
       colour = "grey40"
     ) +
-    ggplot2::geom_errorbarh(
+    ggplot2::geom_errorbar(
       ggplot2::aes(xmin = .data$lower, xmax = .data$upper),
-      height = 0.15, linewidth = 0.8
+      orientation = "y",
+      width = 0.15,
+      linewidth = 0.8
     ) +
     ggplot2::geom_point(size = 3) +
     ggplot2::labs(
@@ -422,5 +424,11 @@ update.rctglm <- function(object, formula., ..., evaluate = TRUE) {
       call <- as.call(call)
     }
   }
-  if (evaluate) eval(call, parent.frame()) else call
+  if (evaluate) {
+    call_env <- object$call_env
+    if (is.null(call_env)) call_env <- parent.frame()
+    eval(call, envir = call_env)
+  } else {
+    call
+  }
 }
