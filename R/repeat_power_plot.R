@@ -168,7 +168,7 @@ iterate_n_power_marginaleffect <- function(
       exposure_prob = exposure_prob,
       verbose = 0,
       ...
-    )
+    )$power
   })
   data.frame(n = ns, power = pow)
 }
@@ -333,13 +333,13 @@ iterate_n_power_linear <- function(
   )
 
   extra_args_to_power_fun <- extra_args[names(extra_args) %in% names(formals(power_fun))]
-  power <- sapply(ns, FUN = function(n) {
+  pow <- sapply(ns, FUN = function(n) {
     do.call(
-      power_fun,
+      function(...) power_fun(...)$power,
       args = c(list(variance = var, ate = ate, n = n),
                extra_args_to_power_fun))
   })
-  data.frame(n = ns, power = power)
+  data.frame(n = ns, power = pow)
 }
 
 #############

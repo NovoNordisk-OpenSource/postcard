@@ -6,6 +6,9 @@
 #' `postcard_samplesize`. Both classes are lists holding the primary numeric
 #' output (`power` or `samplesize`) together with the assumptions used to
 #' compute it. `print` and `summary` methods for both classes are provided.
+#' A `plot` method is provided for `postcard_power` objects, showing the
+#' approximate sampling distributions of the estimator under the null and
+#' alternative hypotheses with the power shaded.
 #'
 #' @name postcard_power_methods
 #'
@@ -20,7 +23,8 @@
 #' object of class `summary.postcard_power` or `summary.postcard_samplesize`
 #' respectively, which extends the input class with additional information
 #' (currently just the deparsed estimand function) displayed by the
-#' corresponding `print` method.
+#' corresponding `print` method. `plot.postcard_power` returns a `ggplot2`
+#' object.
 #'
 #' @seealso [power_gs()], [power_nc()], [samplesize_gs()],
 #' [power_marginaleffect()].
@@ -90,6 +94,62 @@ print.summary.postcard_power <- function(x,
   cat("Estimand function:    ", deparse_fun_body(x$estimand_fun),
       "\n", sep = "")
   return(invisible(x))
+}
+
+#' @export
+#' @rdname postcard_power_methods
+plot.postcard_power <- function(x, ...) {
+  se <- x$std_error
+  margin <- x$margin
+  target <- x$target_effect
+
+  # power_nc uses (non-central) t-distributions; the others are normal-based
+  if (is.null(x$df)) {
+    crit <- stats::qnorm(1 - x$alpha / 2, mean = margin, sd = se)
+    dens0 <- function(q) stats::dnorm(q, mean = margin, sd = se)
+    dens1 <- function(q) stats::dnorm(q, mean = target, sd = se)
+  } else {
+    ncp <- (target - margin) / se
+    crit <- margin + se * stats::qt(1 - x$alpha / 2, df = x$df)
+    dens0 <- function(q) stats::dt((q - margin) / se, df = x$df) / se
+    dens1 <- function(q) stats::dt((q - margin) / se, df = x$df, ncp = ncp) / se
+  }
+
+  grid <- seq(min(margin, target) - 4 * se, max(margin, target) + 4 * se,
+              length.out = 500)
+  hyp_levels <- c("Null (H0)", "Alternative (H1)")
+  dens_df <- data.frame(
+    x = rep(grid, 2),
+    density = c(dens0(grid), dens1(grid)),
+    hypothesis = factor(rep(hyp_levels, each = length(grid)),
+                        levels = hyp_levels)
+  )
+  shade_df <- dens_df[dens_df$hypothesis == hyp_levels[2] & dens_df$x >= crit, ]
+
+  ggplot2::ggplot(
+    dens_df,
+    ggplot2::aes(x = .data$x, y = .data$density, colour = .data$hypothesis)
+  ) +
+    ggplot2::geom_area(
+      data = shade_df,
+      ggplot2::aes(fill = .data$hypothesis),
+      alpha = 0.3, colour = NA, show.legend = FALSE
+    ) +
+    ggplot2::geom_line(linewidth = 1) +
+    ggplot2::geom_vline(xintercept = crit, linetype = "dashed",
+                        colour = "grey40") +
+    ggplot2::labs(
+      x = "Estimand",
+      y = "Density",
+      colour = NULL,
+      title = paste0("Estimated power: ", format(x$power, digits = 3)),
+      subtitle = paste0("n = ", format(x$samplesize, digits = 3),
+                        "; dashed line = critical value ",
+                        format(crit, digits = 3),
+                        " (alpha = ", format(x$alpha), ")")
+    ) +
+    ggplot2::theme_minimal() +
+    ggplot2::theme(legend.position = "bottom")
 }
 
 # ----- postcard_samplesize ---------------------------------------------------

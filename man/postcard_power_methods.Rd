@@ -5,6 +5,7 @@
 \alias{print.postcard_power}
 \alias{summary.postcard_power}
 \alias{print.summary.postcard_power}
+\alias{plot.postcard_power}
 \alias{print.postcard_samplesize}
 \alias{summary.postcard_samplesize}
 \alias{print.summary.postcard_samplesize}
@@ -15,6 +16,8 @@
 \method{summary}{postcard_power}(object, ...)
 
 \method{print}{summary.postcard_power}(x, digits = max(3L, getOption("digits") - 3L), ...)
+
+\method{plot}{postcard_power}(x, ...)
 
 \method{print}{postcard_samplesize}(x, digits = max(3L, getOption("digits") - 3L), ...)
 
@@ -37,7 +40,8 @@ the corresponding \verb{summary.*} class).}
 object of class \code{summary.postcard_power} or \code{summary.postcard_samplesize}
 respectively, which extends the input class with additional information
 (currently just the deparsed estimand function) displayed by the
-corresponding \code{print} method.
+corresponding \code{print} method. \code{plot.postcard_power} returns a \code{ggplot2}
+object.
 }
 \description{
 \code{power_gs}, \code{power_nc}, and \code{\link[=power_marginaleffect]{power_marginaleffect()}} return objects of class
@@ -45,6 +49,9 @@ corresponding \code{print} method.
 \code{postcard_samplesize}. Both classes are lists holding the primary numeric
 output (\code{power} or \code{samplesize}) together with the assumptions used to
 compute it. \code{print} and \code{summary} methods for both classes are provided.
+A \code{plot} method is provided for \code{postcard_power} objects, showing the
+approximate sampling distributions of the estimator under the null and
+alternative hypotheses with the power shaded.
 }
 \seealso{
 \code{\link[=power_gs]{power_gs()}}, \code{\link[=power_nc]{power_nc()}}, \code{\link[=samplesize_gs]{samplesize_gs()}},

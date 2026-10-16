@@ -192,6 +192,8 @@ power_gs <- function(variance,
       estimand_fun = default_estimand_funs("ate"),
       margin = margin,
       alpha = alpha,
+      std_error = sqrt((1 + r)^2 / r * variance /
+                         (n - stats::qnorm(1 - alpha / 2)^2 / 2)),
       call = call
     ),
     class = "postcard_power"
@@ -303,6 +305,7 @@ power_nc <- function(variance,
       margin = margin,
       alpha = alpha,
       df = df,
+      std_error = sqrt((1 + r)^2 / (r * n) * variance),
       call = call
     ),
     class = "postcard_power"

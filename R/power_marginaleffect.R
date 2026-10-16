@@ -235,6 +235,7 @@ power_marginaleffect <- function(
       estimand_fun = estimand_fun,
       margin = margin,
       alpha = alpha,
+      std_error = sd,
       call = call
     ),
     class = "postcard_power"
