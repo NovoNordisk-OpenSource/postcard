@@ -263,10 +263,10 @@ lrnr1 <- fit_best_learner(preproc = list(mod = Y ~ X1 + X2 + A),
 #> • mod_lm
 #> i   No tuning parameters. `fit_resamples()` will be attempted
 #> i 1 of 2 resampling: mod_mars
-#> ✔ 1 of 2 resampling: mod_mars (160ms)
+#> ✔ 1 of 2 resampling: mod_mars (290ms)
 #> i   No tuning parameters. `fit_resamples()` will be attempted
 #> i 2 of 2 resampling: mod_lm
-#> ✔ 2 of 2 resampling: mod_lm (132ms)
+#> ✔ 2 of 2 resampling: mod_lm (254ms)
 #> ℹ Model with lowest RMSE: mod_mars
 lrnr2 <- fit_best_learner(preproc = list(mod = Y ~ X1 + X2 + A),
                           data = gaus2,
@@ -276,10 +276,10 @@ lrnr2 <- fit_best_learner(preproc = list(mod = Y ~ X1 + X2 + A),
 #> • mod_lm
 #> i   No tuning parameters. `fit_resamples()` will be attempted
 #> i 1 of 2 resampling: mod_mars
-#> ✔ 1 of 2 resampling: mod_mars (156ms)
+#> ✔ 1 of 2 resampling: mod_mars (286ms)
 #> i   No tuning parameters. `fit_resamples()` will be attempted
 #> i 2 of 2 resampling: mod_lm
-#> ✔ 2 of 2 resampling: mod_lm (141ms)
+#> ✔ 2 of 2 resampling: mod_lm (246ms)
 #> ℹ Model with lowest RMSE: mod_mars
 preds_lrnr1 <- dplyr::pull(predict(lrnr2, new_data = gaus1))
 preds_lrnr2 <- dplyr::pull(predict(lrnr1, new_data = gaus2))

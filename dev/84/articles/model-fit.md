@@ -101,12 +101,12 @@ ate_prog <- rctglm_with_prognosticscore(
 #> • mod_gbt
 #> i  No tuning parameters. `fit_resamples()` will be attempted
 #> i 1 of 3 resampling: mod_mars
-#> ✔ 1 of 3 resampling: mod_mars (223ms)
+#> ✔ 1 of 3 resampling: mod_mars (369ms)
 #> i  No tuning parameters. `fit_resamples()` will be attempted
 #> i 2 of 3 resampling: mod_lm
-#> ✔ 2 of 3 resampling: mod_lm (132ms)
+#> ✔ 2 of 3 resampling: mod_lm (252ms)
 #> i 3 of 3 tuning:     mod_gbt
-#> ✔ 3 of 3 tuning:     mod_gbt (955ms)
+#> ✔ 3 of 3 tuning:     mod_gbt (1.8s)
 #> ℹ Model with lowest RMSE: mod_mars
 #> ℹ Investigate trained learners and fitted model in `prognostic_info` list element
 #> 
@@ -233,18 +233,18 @@ rate_ratio$estimand_funs
 #> $f
 #> function (psi1, psi0) 
 #> psi1/psi0
-#> <bytecode: 0x5632eb874810>
-#> <environment: 0x5632f590d278>
+#> <bytecode: 0x563035ef41f0>
+#> <environment: 0x5630422b09c8>
 #> 
 #> $d0
 #> function (psi1, psi0) 
 #> -(psi1/psi0^2)
-#> <environment: 0x5632f590d278>
+#> <environment: 0x5630422b09c8>
 #> 
 #> $d1
 #> function (psi1, psi0) 
 #> 1/psi0
-#> <environment: 0x5632f590d278>
+#> <environment: 0x5630422b09c8>
 ```
 
 The `summary` and `plot` methods for `rctglm` objects use the null value
@@ -391,7 +391,7 @@ default_learners
 #>         grid = data.frame(trees = seq(from = 25, to = 500, by = 25), 
 #>             tree_depth = 3)))
 #> }
-#> <bytecode: 0x5632f03ef338>
+#> <bytecode: 0x56303aa6eab8>
 #> <environment: namespace:postcard>
 ```
 
