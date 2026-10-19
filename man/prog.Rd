@@ -3,23 +3,38 @@
 \name{prog}
 \alias{prog}
 \alias{prog.rctglm_prog}
+\alias{print.prognostic_info}
+\alias{summary.prognostic_info}
+\alias{print.summary.prognostic_info}
 \title{Extract information about the fitted prognostic model}
 \usage{
 prog(x)
 
 \method{prog}{rctglm_prog}(x)
+
+\method{print}{prognostic_info}(x, ...)
+
+\method{summary}{prognostic_info}(object, ...)
+
+\method{print}{summary.prognostic_info}(x, ...)
 }
 \arguments{
-\item{x}{an object of class \code{rctglm_prog} (returned by
-\link{rctglm_with_prognosticscore})}
+\item{x, object}{an object of class \code{rctglm_prog} (returned by
+\link{rctglm_with_prognosticscore}), or (for the \code{prognostic_info} methods)
+an object of class \code{prognostic_info} returned by \code{\link[=prog]{prog()}}.}
+
+\item{...}{additional arguments passed to methods (currently unused).}
 }
 \value{
-a list with the structure described of \code{prognostic_info} in the
-\code{Value} section of \link{rctglm_with_prognosticscore}.
+\code{prog} returns an object of class \code{prognostic_info}. The methods for
+\code{prognostic_info} return the object invisibly (\code{print}) or a
+\code{summary.prognostic_info} object (\code{summary}).
 }
 \description{
-Extracts the \code{prognostic_info} list element from an \code{rctglm_prog} object. See
-'Value' at \link{rctglm_with_prognosticscore} for more details.
+Extracts the \code{prognostic_info} element from an \code{rctglm_prog} object. The
+element is an object of class \code{prognostic_info} (a list) with the structure
+described in the \code{Value} section of \link{rctglm_with_prognosticscore}. \code{print}
+and \code{summary} methods are provided for \code{prognostic_info} objects.
 }
 \examples{
 # Generate some data

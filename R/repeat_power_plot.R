@@ -26,8 +26,11 @@
 #' of approximating power with the functions in [power_linear()]
 #'
 #' @returns `repeat_power_marginal` returns an object of class `postcard_rpm`, which is
-#' just a `data.frame` with a `plot` method defined. The `plot` method returns a
-#' `ggplot2` object.
+#' just a `data.frame` with `plot` and `summary` methods defined. The `plot` method
+#' returns a `ggplot2` object. The `summary` method returns an object of class
+#' `summary.postcard_rpm` holding the power assumptions and a `data.frame` with, for
+#' each model, the smallest sample size achieving the desired power (`NA` if not
+#' reached), the power at the largest sample size and the maximum power.
 #' @export
 #'
 #' @examples
@@ -129,6 +132,29 @@ plot.postcard_rpm <- function(x, cols = NULL, ...) {
   create_power_plot(x, cols = cols)
 }
 
+#' @export
+#'
+#' @param object an object of class `postcard_rpm` created by
+#' `repeat_power_marginaleffect()`
+#'
+#' @rdname repeat_power_marginaleffect
+summary.postcard_rpm <- function(object, ...) {
+  summarise_repeat_power(object, class = "summary.postcard_rpm")
+}
+
+#' @export
+#'
+#' @param digits a `numeric` with the number of digits to display when printing.
+#'
+#' @rdname repeat_power_marginaleffect
+print.summary.postcard_rpm <- function(x,
+                                       digits = max(3L, getOption("digits") - 3L),
+                                       ...) {
+  cat("\nSummary of power curves (class postcard_rpm)\n\n")
+  print_summary_repeat_power(x, digits = digits)
+  return(invisible(x))
+}
+
 #############
 # Define default list of models
 default_power_model_list <- function(n = 1e3) {
@@ -168,7 +194,7 @@ iterate_n_power_marginaleffect <- function(
       exposure_prob = exposure_prob,
       verbose = 0,
       ...
-    )
+    )$power
   })
   data.frame(n = ns, power = pow)
 }
@@ -253,8 +279,10 @@ mean_iters_marginaleffect <- function(
 #' @param ... Arguments passed to [variance_ancova()] and [power_gs()] or [power_nc()]
 #'
 #' @returns `repeat_power_linear` returns an object of class `postcard_rpl`, which is
-#' just a `data.frame` with a `plot` method defined. The `plot` method returns a
-#' `ggplot2` object.
+#' just a `data.frame` with `plot` and `summary` methods defined. The `plot` method
+#' returns a `ggplot2` object. The `summary` method returns an object of class
+#' `summary.postcard_rpl` with the same structure as described in
+#' [repeat_power_marginaleffect()].
 #' @export
 #'
 #' @seealso [repeat_power_marginaleffect()] for a similar implementation to iterate the
@@ -315,6 +343,74 @@ plot.postcard_rpl <- function(x, cols = NULL, ...) {
   create_power_plot(x, cols = cols)
 }
 
+#' @export
+#'
+#' @param object an object of class `postcard_rpl` created by `repeat_power_linear()`
+#'
+#' @rdname repeat_power_linear
+summary.postcard_rpl <- function(object, ...) {
+  summarise_repeat_power(object, class = "summary.postcard_rpl")
+}
+
+#' @export
+#'
+#' @param digits a `numeric` with the number of digits to display when printing.
+#'
+#' @rdname repeat_power_linear
+print.summary.postcard_rpl <- function(x,
+                                       digits = max(3L, getOption("digits") - 3L),
+                                       ...) {
+  cat("\nSummary of power curves (class postcard_rpl)\n\n")
+  print_summary_repeat_power(x, digits = digits)
+  return(invisible(x))
+}
+
+#####################
+# Summary utilities
+summarise_repeat_power <- function(object, class) {
+  power_table <- as.data.frame(object) %>%
+    dplyr::arrange(.data$n) %>%
+    dplyr::summarise(
+      n_achieve_power = .data$n[which(.data$flag_achieve_power)[1]],
+      power_at_max_n = .data$power[which.max(.data$n)],
+      max_power = max(.data$power),
+      .by = "model"
+    )
+  assumption_cols <- intersect(
+    c("power_fun", "target_effect", "margin", "exposure_prob", "alpha", "df"),
+    colnames(object)
+  )
+  structure(
+    list(
+      power_table = power_table,
+      desired_power = unique(object$desired_power),
+      ns = range(object$n),
+      assumptions = as.list(as.data.frame(object)[1, assumption_cols, drop = FALSE])
+    ),
+    class = class
+  )
+}
+
+print_summary_repeat_power <- function(x, digits) {
+  a <- x$assumptions
+  cat("Power approximation:  ", a$power_fun, "\n", sep = "")
+  cat("Sample sizes:         ", x$ns[1], " to ", x$ns[2], "\n", sep = "")
+  cat("Desired power:        ", format(x$desired_power, digits = digits),
+      "\n", sep = "")
+  cat("Target effect:        ", format(a$target_effect, digits = digits),
+      "\n", sep = "")
+  cat("Superiority margin:   ", format(a$margin, digits = digits),
+      "\n", sep = "")
+  cat("Exposure probability: ", format(a$exposure_prob, digits = digits),
+      "\n", sep = "")
+  cat("Significance level:   ", format(a$alpha, digits = digits),
+      "\n", sep = "")
+  if (!is.null(a$df))
+    cat("Degrees of freedom:   ", a$df, "\n", sep = "")
+  cat("\n")
+  print(x$power_table, digits = digits, row.names = FALSE)
+}
+
 #############
 # Simulate data and calculate power for a range of sample sizes
 iterate_n_power_linear <- function(
@@ -333,13 +429,13 @@ iterate_n_power_linear <- function(
   )
 
   extra_args_to_power_fun <- extra_args[names(extra_args) %in% names(formals(power_fun))]
-  power <- sapply(ns, FUN = function(n) {
+  pow <- sapply(ns, FUN = function(n) {
     do.call(
-      power_fun,
+      function(...) power_fun(...)$power,
       args = c(list(variance = var, ate = ate, n = n),
                extra_args_to_power_fun))
   })
-  data.frame(n = ns, power = power)
+  data.frame(n = ns, power = pow)
 }
 
 #############

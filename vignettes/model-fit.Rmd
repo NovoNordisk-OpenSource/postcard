@@ -133,6 +133,13 @@ rate_ratio <- rctglm(
 rate_ratio$estimand_funs
 ```
 
+The `summary` and `plot` methods for `rctglm` objects use the null value of the specified estimand, which is 1 for the rate ratio.
+
+```{r rate-ratio-summary-plot}
+summary(rate_ratio)
+plot(rate_ratio)
+```
+
 ### Specifying any estimand
 
 Below is an example showing the specification of a custom defined function with arguments `psi0` and `psi1`.

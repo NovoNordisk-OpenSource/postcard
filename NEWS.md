@@ -1,3 +1,14 @@
+# postcard (development version)
+
+* Added `estimand()` and `est()` accessors, plus summary, plotting, confidence
+  interval, variance-covariance, update, and GLM accessor methods for `rctglm`
+  objects.
+* Added `prog()` to extract prognostic model information from
+  `rctglm_with_prognosticscore()` results, with `print()` and `summary()` methods
+  for that information.
+* Power and sample-size calculations now return structured `postcard_power` and
+  `postcard_samplesize` objects, with `print()`, `summary()` and `plot()` methods.
+
 # postcard 1.1.0
 
 * Added functions `repeat_power_marginaleffect()` and `repeat_power_linear()` along with
@@ -48,9 +59,9 @@ Additionally, the package includes functionalities for
   to give the user full flexibility (previously a multivariate normal
   distribution was assumed)
 
-  * `sim.lm` which simulates data from a multivariate normal distribution and
-    models the outcome with a linear model is now a wrapper of
-    the new - more general - `simulate_collection`.
+* `sim.lm` which simulates data from a multivariate normal distribution and
+  models the outcome with a linear model is now a wrapper of
+  the new - more general - `simulate_collection`.
 
 # postcard 0.2.0
 

@@ -175,7 +175,7 @@ power_gs <- function(variance,
                      margin = 0,
                      alpha = 0.05,
                      ...) {
-
+  call <- match.call()
   power <- stats::pnorm(
     sqrt(
       r/(1 + r)^2 *
@@ -184,13 +184,19 @@ power_gs <- function(variance,
     ) - stats::qnorm(1 - alpha / 2)
   )
   out <- structure(
-    power,
-    samplesize = n,
-    target_effect = ate,
-    exposure_prob = r_to_exposure_prob(r),
-    estimand_fun = default_estimand_funs("ate"),
-    margin = margin,
-    alpha = alpha
+    list(
+      power = as.numeric(power),
+      samplesize = n,
+      target_effect = ate,
+      exposure_prob = r_to_exposure_prob(r),
+      estimand_fun = default_estimand_funs("ate"),
+      margin = margin,
+      alpha = alpha,
+      std_error = sqrt((1 + r)^2 / r * variance /
+                         (n - stats::qnorm(1 - alpha / 2)^2 / 2)),
+      call = call
+    ),
+    class = "postcard_power"
   )
   return(out)
 }
@@ -207,18 +213,23 @@ samplesize_gs <- function(variance,
                           power = 0.9,
                           alpha = 0.05,
                           ...) {
+  call <- match.call()
   samplesize <- (1 + r)^2 / r *
     (stats::qnorm(1 - alpha / 2) + stats::qnorm(power))^2 * variance /
     (ate - margin)^2 +
     stats::qnorm(1 - alpha / 2)^2/2
   out <- structure(
-    samplesize,
-    power = power,
-    target_effect = ate,
-    exposure_prob = r_to_exposure_prob(r),
-    estimand_fun = default_estimand_funs("ate"),
-    margin = margin,
-    alpha = alpha
+    list(
+      samplesize = as.numeric(samplesize),
+      power = power,
+      target_effect = ate,
+      exposure_prob = r_to_exposure_prob(r),
+      estimand_fun = default_estimand_funs("ate"),
+      margin = margin,
+      alpha = alpha,
+      call = call
+    ),
+    class = "postcard_samplesize"
   )
   return(out)
 }
@@ -281,18 +292,23 @@ power_nc <- function(variance,
                      margin = 0,
                      alpha = 0.05,
                      ...){
-
+  call <- match.call()
   nc <- sqrt(r/(1 + r)^2*(n)) * (ate - margin)/sqrt(variance)
   power <- 1 - stats::pt(q = stats::qt(1 - alpha / 2, df = df), df = df, ncp = nc)
   out <- structure(
-    power,
-    samplesize = n,
-    target_effect = ate,
-    exposure_prob = r_to_exposure_prob(r),
-    estimand_fun = default_estimand_funs("ate"),
-    margin = margin,
-    alpha = alpha,
-    df = df
+    list(
+      power = as.numeric(power),
+      samplesize = n,
+      target_effect = ate,
+      exposure_prob = r_to_exposure_prob(r),
+      estimand_fun = default_estimand_funs("ate"),
+      margin = margin,
+      alpha = alpha,
+      df = df,
+      std_error = sqrt((1 + r)^2 / (r * n) * variance),
+      call = call
+    ),
+    class = "postcard_power"
   )
   return(out)
 }

@@ -32,6 +32,9 @@ reference:
   contents:
   - power_marginaleffect
   - power_linear
+- subtitle: Methods for power and sample size objects
+  contents:
+  - postcard_power_methods
 - subtitle: Plotting power curves
   contents:
   - repeat_power_marginaleffect
