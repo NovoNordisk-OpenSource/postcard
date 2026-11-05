@@ -3,6 +3,8 @@
 \name{repeat_power_marginaleffect}
 \alias{repeat_power_marginaleffect}
 \alias{plot.postcard_rpm}
+\alias{summary.postcard_rpm}
+\alias{print.summary.postcard_rpm}
 \title{Create data and plot power curves calculated using \code{\link[=power_marginaleffect]{power_marginaleffect()}} for a list of models}
 \usage{
 repeat_power_marginaleffect(
@@ -20,6 +22,10 @@ repeat_power_marginaleffect(
 )
 
 \method{plot}{postcard_rpm}(x, cols = NULL, ...)
+
+\method{summary}{postcard_rpm}(object, ...)
+
+\method{print}{summary.postcard_rpm}(x, digits = max(3L, getOption("digits") - 3L), ...)
 }
 \arguments{
 \item{target_effect}{Passed to \code{\link[=power_marginaleffect]{power_marginaleffect()}}}
@@ -50,11 +56,19 @@ data used to fit the default models in \code{model_list}.}
 
 \item{cols}{a (potentially named) \code{character} vector of colors for the different models
 in \code{model_list}}
+
+\item{object}{an object of class \code{postcard_rpm} created by
+\code{repeat_power_marginaleffect()}}
+
+\item{digits}{a \code{numeric} with the number of digits to display when printing.}
 }
 \value{
 \code{repeat_power_marginal} returns an object of class \code{postcard_rpm}, which is
-just a \code{data.frame} with a \code{plot} method defined. The \code{plot} method returns a
-\code{ggplot2} object.
+just a \code{data.frame} with \code{plot} and \code{summary} methods defined. The \code{plot} method
+returns a \code{ggplot2} object. The \code{summary} method returns an object of class
+\code{summary.postcard_rpm} holding the power assumptions and a \code{data.frame} with, for
+each model, the smallest sample size achieving the desired power (\code{NA} if not
+reached), the power at the largest sample size and the maximum power.
 }
 \description{
 Iterate a process of simulating test data from \code{test_data_fun}, making predictions

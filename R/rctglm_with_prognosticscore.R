@@ -175,22 +175,25 @@ rctglm_with_prognosticscore <- function(
     ...
   )
 
-  prog_info <- list(
-    prognostic_info = list(
+  prog_info_object <- structure(
+    list(
       formula = prog_formula,
       model_fit = lrnr_fit,
       learners = learners,
       cv_folds = cv_prog_folds,
       data = data_hist
-    ))
+    ),
+    class = "prognostic_info"
+  )
+  prog_info <- list(prognostic_info = prog_info_object)
 
-  list_with_prognostic_info <- c(rctglm_with_prognosticscore, prog_info)
+  # Unclass the parent rctglm object before concatenating so we can rebuild
+  # the class vector cleanly (c() on a classed list drops the class attribute).
+  list_with_prognostic_info <- c(unclass(rctglm_with_prognosticscore), prog_info)
   list_with_prognostic_info$call <- call
 
   out <- structure(list_with_prognostic_info,
-                   class = c("rctglm_prog",
-                             class(rctglm_with_prognosticscore)
-                   )
+                   class = c("rctglm_prog", "rctglm")
   )
 
   return(out)
