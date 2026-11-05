@@ -17,6 +17,24 @@ estimation and estimating the variance using influence functions
   [`coef(`*`<rctglm>`*`)`](https://novonordisk-opensource.github.io/postcard/reference/rctglm_methods.md)
   [`predict(`*`<rctglm>`*`)`](https://novonordisk-opensource.github.io/postcard/reference/rctglm_methods.md)
   [`print(`*`<rctglm>`*`)`](https://novonordisk-opensource.github.io/postcard/reference/rctglm_methods.md)
+  [`summary(`*`<rctglm>`*`)`](https://novonordisk-opensource.github.io/postcard/reference/rctglm_methods.md)
+  [`print(`*`<summary.rctglm>`*`)`](https://novonordisk-opensource.github.io/postcard/reference/rctglm_methods.md)
+  [`plot(`*`<rctglm>`*`)`](https://novonordisk-opensource.github.io/postcard/reference/rctglm_methods.md)
+  [`formula(`*`<rctglm>`*`)`](https://novonordisk-opensource.github.io/postcard/reference/rctglm_methods.md)
+  [`family(`*`<rctglm>`*`)`](https://novonordisk-opensource.github.io/postcard/reference/rctglm_methods.md)
+  [`fitted(`*`<rctglm>`*`)`](https://novonordisk-opensource.github.io/postcard/reference/rctglm_methods.md)
+  [`model.frame(`*`<rctglm>`*`)`](https://novonordisk-opensource.github.io/postcard/reference/rctglm_methods.md)
+  [`model.matrix(`*`<rctglm>`*`)`](https://novonordisk-opensource.github.io/postcard/reference/rctglm_methods.md)
+  [`nobs(`*`<rctglm>`*`)`](https://novonordisk-opensource.github.io/postcard/reference/rctglm_methods.md)
+  [`residuals(`*`<rctglm>`*`)`](https://novonordisk-opensource.github.io/postcard/reference/rctglm_methods.md)
+  [`logLik(`*`<rctglm>`*`)`](https://novonordisk-opensource.github.io/postcard/reference/rctglm_methods.md)
+  [`deviance(`*`<rctglm>`*`)`](https://novonordisk-opensource.github.io/postcard/reference/rctglm_methods.md)
+  [`AIC(`*`<rctglm>`*`)`](https://novonordisk-opensource.github.io/postcard/reference/rctglm_methods.md)
+  [`terms(`*`<rctglm>`*`)`](https://novonordisk-opensource.github.io/postcard/reference/rctglm_methods.md)
+  [`weights(`*`<rctglm>`*`)`](https://novonordisk-opensource.github.io/postcard/reference/rctglm_methods.md)
+  [`vcov(`*`<rctglm>`*`)`](https://novonordisk-opensource.github.io/postcard/reference/rctglm_methods.md)
+  [`confint(`*`<rctglm>`*`)`](https://novonordisk-opensource.github.io/postcard/reference/rctglm_methods.md)
+  [`update(`*`<rctglm>`*`)`](https://novonordisk-opensource.github.io/postcard/reference/rctglm_methods.md)
   :
 
   Methods for objects of class `rctglm`
@@ -31,6 +49,9 @@ improve efficiency
 - [`rctglm_with_prognosticscore()`](https://novonordisk-opensource.github.io/postcard/reference/rctglm_with_prognosticscore.md)
   : Use prognostic covariate adjustment when fitting an rctglm
 - [`prog()`](https://novonordisk-opensource.github.io/postcard/reference/prog.md)
+  [`print(`*`<prognostic_info>`*`)`](https://novonordisk-opensource.github.io/postcard/reference/prog.md)
+  [`summary(`*`<prognostic_info>`*`)`](https://novonordisk-opensource.github.io/postcard/reference/prog.md)
+  [`print(`*`<summary.prognostic_info>`*`)`](https://novonordisk-opensource.github.io/postcard/reference/prog.md)
   : Extract information about the fitted prognostic model
 - [`fit_best_learner()`](https://novonordisk-opensource.github.io/postcard/reference/fit_best_learner.md)
   : Find the best learner in terms of RMSE among specified learners
@@ -53,10 +74,25 @@ size and assumed effect size together with other parameters.
   [`power_nc()`](https://novonordisk-opensource.github.io/postcard/reference/power_linear.md)
   : Power and sample size estimation for linear models
 
+### Methods for power and sample size objects
+
+- [`print(`*`<postcard_power>`*`)`](https://novonordisk-opensource.github.io/postcard/reference/postcard_power_methods.md)
+  [`summary(`*`<postcard_power>`*`)`](https://novonordisk-opensource.github.io/postcard/reference/postcard_power_methods.md)
+  [`print(`*`<summary.postcard_power>`*`)`](https://novonordisk-opensource.github.io/postcard/reference/postcard_power_methods.md)
+  [`plot(`*`<postcard_power>`*`)`](https://novonordisk-opensource.github.io/postcard/reference/postcard_power_methods.md)
+  [`print(`*`<postcard_samplesize>`*`)`](https://novonordisk-opensource.github.io/postcard/reference/postcard_power_methods.md)
+  [`summary(`*`<postcard_samplesize>`*`)`](https://novonordisk-opensource.github.io/postcard/reference/postcard_power_methods.md)
+  [`print(`*`<summary.postcard_samplesize>`*`)`](https://novonordisk-opensource.github.io/postcard/reference/postcard_power_methods.md)
+  :
+
+  Methods for `postcard_power` and `postcard_samplesize` objects
+
 ### Plotting power curves
 
 - [`repeat_power_marginaleffect()`](https://novonordisk-opensource.github.io/postcard/reference/repeat_power_marginaleffect.md)
   [`plot(`*`<postcard_rpm>`*`)`](https://novonordisk-opensource.github.io/postcard/reference/repeat_power_marginaleffect.md)
+  [`summary(`*`<postcard_rpm>`*`)`](https://novonordisk-opensource.github.io/postcard/reference/repeat_power_marginaleffect.md)
+  [`print(`*`<summary.postcard_rpm>`*`)`](https://novonordisk-opensource.github.io/postcard/reference/repeat_power_marginaleffect.md)
   :
 
   Create data and plot power curves calculated using
@@ -65,6 +101,8 @@ size and assumed effect size together with other parameters.
 
 - [`repeat_power_linear()`](https://novonordisk-opensource.github.io/postcard/reference/repeat_power_linear.md)
   [`plot(`*`<postcard_rpl>`*`)`](https://novonordisk-opensource.github.io/postcard/reference/repeat_power_linear.md)
+  [`summary(`*`<postcard_rpl>`*`)`](https://novonordisk-opensource.github.io/postcard/reference/repeat_power_linear.md)
+  [`print(`*`<summary.postcard_rpl>`*`)`](https://novonordisk-opensource.github.io/postcard/reference/repeat_power_linear.md)
   :
 
   Create data and plot power curves calculated using functions in

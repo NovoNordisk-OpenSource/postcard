@@ -1,5 +1,27 @@
 # Changelog
 
+## postcard (development version)
+
+- Added
+  [`estimand()`](https://novonordisk-opensource.github.io/postcard/reference/rctglm_methods.md)
+  and
+  [`est()`](https://novonordisk-opensource.github.io/postcard/reference/rctglm_methods.md)
+  accessors, plus summary, plotting, confidence interval,
+  variance-covariance, update, and GLM accessor methods for `rctglm`
+  objects.
+- Added
+  [`prog()`](https://novonordisk-opensource.github.io/postcard/reference/prog.md)
+  to extract prognostic model information from
+  [`rctglm_with_prognosticscore()`](https://novonordisk-opensource.github.io/postcard/reference/rctglm_with_prognosticscore.md)
+  results, with [`print()`](https://rdrr.io/r/base/print.html) and
+  [`summary()`](https://rdrr.io/r/base/summary.html) methods for that
+  information.
+- Power and sample-size calculations now return structured
+  `postcard_power` and `postcard_samplesize` objects, with
+  [`print()`](https://rdrr.io/r/base/print.html),
+  [`summary()`](https://rdrr.io/r/base/summary.html) and
+  [`plot()`](https://rdrr.io/r/graphics/plot.default.html) methods.
+
 ## postcard 1.1.0
 
 CRAN release: 2025-09-17
@@ -67,9 +89,9 @@ Additionally, the package includes functionalities for
   “current” data to give the user full flexibility (previously a
   multivariate normal distribution was assumed)
 
-  - `sim.lm` which simulates data from a multivariate normal
-    distribution and models the outcome with a linear model is now a
-    wrapper of the new - more general - `simulate_collection`.
+- `sim.lm` which simulates data from a multivariate normal distribution
+  and models the outcome with a linear model is now a wrapper of the
+  new - more general - `simulate_collection`.
 
 ## postcard 0.2.0
 

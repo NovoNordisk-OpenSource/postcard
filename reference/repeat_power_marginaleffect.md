@@ -26,6 +26,12 @@ repeat_power_marginaleffect(
 
 # S3 method for class 'postcard_rpm'
 plot(x, cols = NULL, ...)
+
+# S3 method for class 'postcard_rpm'
+summary(object, ...)
+
+# S3 method for class 'summary.postcard_rpm'
+print(x, digits = max(3L, getOption("digits") - 3L), ...)
 ```
 
 ## Arguments
@@ -89,11 +95,24 @@ plot(x, cols = NULL, ...)
   a (potentially named) `character` vector of colors for the different
   models in `model_list`
 
+- object:
+
+  an object of class `postcard_rpm` created by
+  `repeat_power_marginaleffect()`
+
+- digits:
+
+  a `numeric` with the number of digits to display when printing.
+
 ## Value
 
 `repeat_power_marginal` returns an object of class `postcard_rpm`, which
-is just a `data.frame` with a `plot` method defined. The `plot` method
-returns a `ggplot2` object.
+is just a `data.frame` with `plot` and `summary` methods defined. The
+`plot` method returns a `ggplot2` object. The `summary` method returns
+an object of class `summary.postcard_rpm` holding the power assumptions
+and a `data.frame` with, for each model, the smallest sample size
+achieving the desired power (`NA` if not reached), the power at the
+largest sample size and the maximum power.
 
 ## See also
 

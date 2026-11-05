@@ -130,6 +130,43 @@ est(ate)
 #> 1 1.931923 0.09478538
 ```
 
+A `summary` method gives a coefficient-style table for the estimand with
+its standard error, a Wald test against the null value of the estimand
+(0 for the ATE) and a confidence interval. The confidence level can be
+changed with the `level` argument.
+
+``` r
+
+summary(ate)
+#> 
+#> Summary of rctglm fit
+#> 
+#> Call:  rctglm(formula = Y ~ A * W, exposure_indicator = A, exposure_prob = 1/2, 
+#>     data = dat_treat, family = "gaussian")
+#> 
+#> Counterfactual control mean (psi_0=E[Y|X, A=0]): 12
+#> Counterfactual active  mean (psi_1=E[Y|X, A=1]): 13.93
+#> 
+#> Estimand function r: psi1 - psi0
+#> Null value (r(psi, psi)): 0
+#> 
+#>          Estimate Std. Error z value  Pr(>|z|) 2.5 % 97.5 %
+#> Estimand  1.93192    0.09479   20.38 2.412e-92 1.746   2.12
+#> 
+#> (Wald-type 95% CI; standard error computed from the full-model influence-function variance.)
+#> Access the underlying GLM summary via `<summary_object>$glm_summary`.
+```
+
+The `plot` method visualises the estimate and its confidence interval,
+with a dashed line marking the null value.
+
+``` r
+
+plot(ate)
+```
+
+![](postcard_files/figure-html/unnamed-chunk-4-1.png)
+
 See more info in the documentation page
 [`rctglm_methods()`](https://novonordisk-opensource.github.io/postcard/reference/rctglm_methods.md).
 
@@ -273,48 +310,72 @@ power_marginaleffect(
   target_effect = 0.3,
   exposure_prob = 1/2
 )
-#> [1] 0.471485
-#> attr(,"samplesize")
-#> [1] 1000
-#> attr(,"target_effect")
-#> [1] 0.3
-#> attr(,"exposure_prob")
-#> [1] 0.5
-#> attr(,"estimand_fun")
-#> function (psi1, psi0) 
-#> psi1 - psi0
-#> <bytecode: 0x55ef1ae16f58>
-#> <environment: 0x55ef22c9c868>
-#> attr(,"margin")
-#> [1] 0
-#> attr(,"alpha")
-#> [1] 0.05
+#> 
+#> Power approximation (class postcard_power)
+#> 
+#> Call:  power_marginaleffect(response = dat_notreat$Y, predictions = preds_anc, 
+#>     target_effect = 0.3, exposure_prob = 1/2)
+#> Estimated power:      0.4715
+#> Sample size:          1000
+#> Target effect:        0.3
+#> Superiority margin:   0
+#> Exposure probability: 0.5
+#> Significance level:   0.05
 power_marginaleffect(
   response = dat_notreat$Y,
   predictions = preds_dsl,
   target_effect = 0.3,
   exposure_prob = 1/2
 )
-#> [1] 0.5592126
-#> attr(,"samplesize")
-#> [1] 1000
-#> attr(,"target_effect")
-#> [1] 0.3
-#> attr(,"exposure_prob")
-#> [1] 0.5
-#> attr(,"estimand_fun")
-#> function (psi1, psi0) 
-#> psi1 - psi0
-#> <bytecode: 0x55ef1ae16f58>
-#> <environment: 0x55ef1cde4b50>
-#> attr(,"margin")
-#> [1] 0
-#> attr(,"alpha")
-#> [1] 0.05
+#> 
+#> Power approximation (class postcard_power)
+#> 
+#> Call:  power_marginaleffect(response = dat_notreat$Y, predictions = preds_dsl, 
+#>     target_effect = 0.3, exposure_prob = 1/2)
+#> Estimated power:      0.5592
+#> Sample size:          1000
+#> Target effect:        0.3
+#> Superiority margin:   0
+#> Exposure probability: 0.5
+#> Significance level:   0.05
 ```
 
 Note that the power is greater for the model that can account for the
 non-linear effect of the covariate on the response.
+
+The power functions return objects of class `postcard_power`, which hold
+the estimated power together with the assumptions used to calculate it
+(sample size, target effect, superiority margin, exposure probability
+and significance level). The `summary` method additionally shows the
+estimand function, and the `plot` method shows the approximate
+distributions of the estimator under the null and alternative
+hypotheses, with the area corresponding to the power shaded.
+
+``` r
+
+pow_dsl <- power_marginaleffect(
+  response = dat_notreat$Y,
+  predictions = preds_dsl,
+  target_effect = 0.3,
+  exposure_prob = 1/2
+)
+summary(pow_dsl)
+#> 
+#> Summary of power approximation (class postcard_power)
+#> 
+#> Call:  power_marginaleffect(response = dat_notreat$Y, predictions = preds_dsl, 
+#>     target_effect = 0.3, exposure_prob = 1/2)
+#> Estimated power:      0.5592
+#> Sample size:          1000
+#> Target effect:        0.3
+#> Superiority margin:   0
+#> Exposure probability: 0.5
+#> Significance level:   0.05
+#> Estimand function:    psi1 - psi0
+plot(pow_dsl)
+```
+
+![](postcard_files/figure-html/unnamed-chunk-6-1.png)
 
 ### For linear models
 
@@ -355,41 +416,40 @@ to estimate the sample size needed to obtain a certain `power`.
 
 samplesize_gs(variance = var_bound_ancova,
               power = 0.9, r = 1, ate = .8, margin = 0)
-#> [1] 148.6439
-#> attr(,"power")
-#> [1] 0.9
-#> attr(,"target_effect")
-#> [1] 0.8
-#> attr(,"exposure_prob")
-#> [1] 0.5
-#> attr(,"estimand_fun")
-#> function (psi1, psi0) 
-#> psi1 - psi0
-#> <bytecode: 0x55ef1ae16f58>
-#> <environment: 0x55ef20932a80>
-#> attr(,"margin")
-#> [1] 0
-#> attr(,"alpha")
-#> [1] 0.05
+#> 
+#> Sample size approximation (class postcard_samplesize)
+#> 
+#> Call:  samplesize_gs(variance = var_bound_ancova, ate = 0.8, r = 1, 
+#>     margin = 0, power = 0.9)
+#> Estimated sample size: 148.6
+#> Desired power:         0.9
+#> Target effect:         0.8
+#> Superiority margin:    0
+#> Exposure probability:  0.5
+#> Significance level:    0.05
 samplesize_gs(variance = var_bound_prog,
               power = 0.9, r = 1, ate = .8, margin = 0)
-#> [1] 66.3146
-#> attr(,"power")
-#> [1] 0.9
-#> attr(,"target_effect")
-#> [1] 0.8
-#> attr(,"exposure_prob")
-#> [1] 0.5
-#> attr(,"estimand_fun")
-#> function (psi1, psi0) 
-#> psi1 - psi0
-#> <bytecode: 0x55ef1ae16f58>
-#> <environment: 0x55ef20746110>
-#> attr(,"margin")
-#> [1] 0
-#> attr(,"alpha")
-#> [1] 0.05
+#> 
+#> Sample size approximation (class postcard_samplesize)
+#> 
+#> Call:  samplesize_gs(variance = var_bound_prog, ate = 0.8, r = 1, margin = 0, 
+#>     power = 0.9)
+#> Estimated sample size: 66.31
+#> Desired power:         0.9
+#> Target effect:         0.8
+#> Superiority margin:    0
+#> Exposure probability:  0.5
+#> Significance level:    0.05
 ```
+
+[`power_gs()`](https://novonordisk-opensource.github.io/postcard/reference/power_linear.md)
+and
+[`power_nc()`](https://novonordisk-opensource.github.io/postcard/reference/power_linear.md)
+also return `postcard_power` objects with the same methods as above,
+while
+[`samplesize_gs()`](https://novonordisk-opensource.github.io/postcard/reference/power_linear.md)
+returns an object of class `postcard_samplesize` with `print` and
+`summary` methods.
 
 ## Creating a plot of prospective power curves
 
@@ -447,7 +507,7 @@ rpm <- repeat_power_marginaleffect(
 #> Estimating power across sample sizes `n_iter` times ■■■■■■■■■■                 …
 #> Estimating power across sample sizes `n_iter` times ■■■■■■■■■■■■■              …
 #> Estimating power across sample sizes `n_iter` times ■■■■■■■■■■■■■■■■           …
-#> Estimating power across sample sizes `n_iter` times ■■■■■■■■■■■■■■■■■■■■■■     …
+#> Estimating power across sample sizes `n_iter` times ■■■■■■■■■■■■■■■■■■■        …
 #> Estimating power across sample sizes `n_iter` times ■■■■■■■■■■■■■■■■■■■■■■■■■  …
 #> Estimating power across sample sizes `n_iter` times ■■■■■■■■■■■■■■■■■■■■■■■■■■■…
 #> Estimating power across sample sizes `n_iter` times ■■■■■■■■■■■■■■■■■■■■■■■■■■■…
@@ -463,4 +523,4 @@ plot the results.
 plot(rpm)
 ```
 
-![](postcard_files/figure-html/unnamed-chunk-7-1.png)
+![](postcard_files/figure-html/unnamed-chunk-10-1.png)

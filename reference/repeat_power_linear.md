@@ -21,6 +21,12 @@ repeat_power_linear(
 
 # S3 method for class 'postcard_rpl'
 plot(x, cols = NULL, ...)
+
+# S3 method for class 'postcard_rpl'
+summary(object, ...)
+
+# S3 method for class 'summary.postcard_rpl'
+print(x, digits = max(3L, getOption("digits") - 3L), ...)
 ```
 
 ## Arguments
@@ -75,11 +81,22 @@ plot(x, cols = NULL, ...)
   a (potentially named) `character` vector of colors for the different
   models in `formula_list`
 
+- object:
+
+  an object of class `postcard_rpl` created by `repeat_power_linear()`
+
+- digits:
+
+  a `numeric` with the number of digits to display when printing.
+
 ## Value
 
 `repeat_power_linear` returns an object of class `postcard_rpl`, which
-is just a `data.frame` with a `plot` method defined. The `plot` method
-returns a `ggplot2` object.
+is just a `data.frame` with `plot` and `summary` methods defined. The
+`plot` method returns a `ggplot2` object. The `summary` method returns
+an object of class `summary.postcard_rpl` with the same structure as
+described in
+[`repeat_power_marginaleffect()`](https://novonordisk-opensource.github.io/postcard/reference/repeat_power_marginaleffect.md).
 
 ## See also
 

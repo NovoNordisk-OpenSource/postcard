@@ -224,22 +224,17 @@ power_marginaleffect(
 #> ℹ Symbolically deriving partial derivative of the function 'psi1 - psi0' with respect to 'psi1' as: '1'.
 #> • Alternatively, specify the derivative through the argument
 #> `estimand_fun_deriv1`
-#> [1] 0.8599756
-#> attr(,"samplesize")
-#> [1] 100
-#> attr(,"target_effect")
-#> [1] 2
-#> attr(,"exposure_prob")
-#> [1] 0.5
-#> attr(,"estimand_fun")
-#> function (psi1, psi0) 
-#> psi1 - psi0
-#> <bytecode: 0x55c578a47cd8>
-#> <environment: 0x55c57cd33730>
-#> attr(,"margin")
-#> [1] 0
-#> attr(,"alpha")
-#> [1] 0.05
+#> 
+#> Power approximation (class postcard_power)
+#> 
+#> Call:  power_marginaleffect(response = dat_gaus$Y, predictions = preds_glm, 
+#>     target_effect = 2, exposure_prob = exposure_prob)
+#> Estimated power:      0.86
+#> Sample size:          100
+#> Target effect:        2
+#> Superiority margin:   0
+#> Exposure probability: 0.5
+#> Significance level:   0.05
 
 # ---------------------------------------------------------------------------
 # Get OOS predictions using discrete super learner and adjust variance
@@ -268,10 +263,10 @@ lrnr1 <- fit_best_learner(preproc = list(mod = Y ~ X1 + X2 + A),
 #> • mod_lm
 #> i   No tuning parameters. `fit_resamples()` will be attempted
 #> i 1 of 2 resampling: mod_mars
-#> ✔ 1 of 2 resampling: mod_mars (291ms)
+#> ✔ 1 of 2 resampling: mod_mars (273ms)
 #> i   No tuning parameters. `fit_resamples()` will be attempted
 #> i 2 of 2 resampling: mod_lm
-#> ✔ 2 of 2 resampling: mod_lm (245ms)
+#> ✔ 2 of 2 resampling: mod_lm (238ms)
 #> ℹ Model with lowest RMSE: mod_mars
 lrnr2 <- fit_best_learner(preproc = list(mod = Y ~ X1 + X2 + A),
                           data = gaus2,
@@ -281,10 +276,10 @@ lrnr2 <- fit_best_learner(preproc = list(mod = Y ~ X1 + X2 + A),
 #> • mod_lm
 #> i   No tuning parameters. `fit_resamples()` will be attempted
 #> i 1 of 2 resampling: mod_mars
-#> ✔ 1 of 2 resampling: mod_mars (286ms)
+#> ✔ 1 of 2 resampling: mod_mars (272ms)
 #> i   No tuning parameters. `fit_resamples()` will be attempted
 #> i 2 of 2 resampling: mod_lm
-#> ✔ 2 of 2 resampling: mod_lm (242ms)
+#> ✔ 2 of 2 resampling: mod_lm (234ms)
 #> ℹ Model with lowest RMSE: mod_mars
 preds_lrnr1 <- dplyr::pull(predict(lrnr2, new_data = gaus1))
 preds_lrnr2 <- dplyr::pull(predict(lrnr1, new_data = gaus2))
@@ -308,20 +303,16 @@ power_marginaleffect(
 #> ℹ Symbolically deriving partial derivative of the function 'psi1 - psi0' with respect to 'psi1' as: '1'.
 #> • Alternatively, specify the derivative through the argument
 #> `estimand_fun_deriv1`
-#> [1] 0.8720903
-#> attr(,"samplesize")
-#> [1] 100
-#> attr(,"target_effect")
-#> [1] 2
-#> attr(,"exposure_prob")
-#> [1] 0.5
-#> attr(,"estimand_fun")
-#> function (psi1, psi0) 
-#> psi1 - psi0
-#> <bytecode: 0x55c578a47cd8>
-#> <environment: 0x55c576e679e8>
-#> attr(,"margin")
-#> [1] 0
-#> attr(,"alpha")
-#> [1] 0.05
+#> 
+#> Power approximation (class postcard_power)
+#> 
+#> Call:  power_marginaleffect(response = dat_gaus$Y, predictions = preds_lrnr, 
+#>     target_effect = 2, exposure_prob = exposure_prob, var1 = function(var0) 1.2 * 
+#>         var0)
+#> Estimated power:      0.8721
+#> Sample size:          100
+#> Target effect:        2
+#> Superiority margin:   0
+#> Exposure probability: 0.5
+#> Significance level:   0.05
 ```

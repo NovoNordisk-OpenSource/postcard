@@ -158,10 +158,10 @@ specifications of verbosity.</p>
 <span><span class="co">#&gt; • mod_gbt</span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB;">i</span>  <span style="color: #000000;">No tuning parameters. `fit_resamples()` will be attempted</span></span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">1 of 3 resampling: mod_mars</span></span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> <span style="color: #000000;">1 of 3 resampling: mod_mars (366ms)</span></span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> <span style="color: #000000;">1 of 3 resampling: mod_mars (351ms)</span></span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB;">i</span>  <span style="color: #000000;">No tuning parameters. `fit_resamples()` will be attempted</span></span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">2 of 3 resampling: mod_lm</span></span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> <span style="color: #000000;">2 of 3 resampling: mod_lm (247ms)</span></span></span>
+<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> <span style="color: #000000;">2 of 3 resampling: mod_lm (242ms)</span></span></span>
 <span><span class="co">#&gt; <span style="color: #0000BB;">i</span> <span style="color: #000000;">3 of 3 tuning:     mod_gbt</span></span></span>
 <span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> <span style="color: #000000;">3 of 3 tuning:     mod_gbt (1.8s)</span></span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Model with lowest RMSE: mod_mars</span></span>
@@ -287,25 +287,50 @@ to use the estimand function <code>psi1 / psi0</code> as seen below:</p>
 <span><span class="co">#&gt; $f</span></span>
 <span><span class="co">#&gt; function (psi1, psi0) </span></span>
 <span><span class="co">#&gt; psi1/psi0</span></span>
-<span><span class="co">#&gt; &lt;bytecode: 0x55c3a2e1e690&gt;</span></span>
-<span><span class="co">#&gt; &lt;environment: 0x55c3a92c1ba8&gt;</span></span>
+<span><span class="co">#&gt; &lt;bytecode: 0x559607c2c458&gt;</span></span>
+<span><span class="co">#&gt; &lt;environment: 0x5596160bbfd0&gt;</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $d0</span></span>
 <span><span class="co">#&gt; function (psi1, psi0) </span></span>
 <span><span class="co">#&gt; -(psi1/psi0^2)</span></span>
-<span><span class="co">#&gt; &lt;environment: 0x55c3a92c1ba8&gt;</span></span>
+<span><span class="co">#&gt; &lt;environment: 0x5596160bbfd0&gt;</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $d1</span></span>
 <span><span class="co">#&gt; function (psi1, psi0) </span></span>
 <span><span class="co">#&gt; 1/psi0</span></span>
-<span><span class="co">#&gt; &lt;environment: 0x55c3a92c1ba8&gt;</span></span></code></pre></div>
+<span><span class="co">#&gt; &lt;environment: 0x5596160bbfd0&gt;</span></span></code></pre></div>
+<p>The <code>summary</code> and <code>plot</code> methods for
+<code>rctglm</code> objects use the null value of the specified
+estimand, which is 1 for the rate ratio.</p>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">rate_ratio</span><span class="op">)</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Summary of rctglm fit</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Call:  rctglm(formula = Y ~ A + W, exposure_indicator = A, exposure_prob = 1/2, </span></span>
+<span><span class="co">#&gt;     data = dat_pois, family = "poisson", estimand_fun = "rate_ratio", </span></span>
+<span><span class="co">#&gt;     verbose = 1)</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Counterfactual control mean (psi_0=E[Y|X, A=0]): 761.8</span></span>
+<span><span class="co">#&gt; Counterfactual active  mean (psi_1=E[Y|X, A=1]): 5634</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Estimand function r: psi1/psi0</span></span>
+<span><span class="co">#&gt; Null value (r(psi, psi)): 1</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;          Estimate Std. Error z value Pr(&gt;|z|) 2.5 % 97.5 %</span></span>
+<span><span class="co">#&gt; Estimand  7.39587    0.07321   87.37        0 7.252   7.54</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; (Wald-type 95% CI; standard error computed from the full-model influence-function variance.)</span></span>
+<span><span class="co">#&gt; Access the underlying GLM summary via `&lt;summary_object&gt;$glm_summary`.</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">rate_ratio</span><span class="op">)</span></span></code></pre></div>
+<p><img src="model-fit_files/figure-html/rate-ratio-summary-plot-1.png" class="r-plt" alt="" width="700"></p>
 </div>
 <div class="section level3">
 <h3 id="specifying-any-estimand">Specifying any estimand<a class="anchor" aria-label="anchor" href="#specifying-any-estimand"></a>
 </h3>
 <p>Below is an example showing the specification of a custom defined
 function with arguments <code>psi0</code> and <code>psi1</code>.</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">est_fun</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">psi1</span>, <span class="va">psi0</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="va">psi1</span> <span class="op">/</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="va">psi0</span><span class="op">)</span> <span class="op">*</span> <span class="fl">2</span> <span class="op">-</span> <span class="fl">1</span></span>
 <span><span class="op">}</span></span>
@@ -395,7 +420,7 @@ which creates a list of default learners that are used in
 <p>The body of the function thus represents a valid way of specifying a
 list as the <code>learners</code> argument.</p>
 </blockquote>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">default_learners</span></span>
 <span><span class="co">#&gt; function () </span></span>
 <span><span class="co">#&gt; {</span></span>
@@ -407,7 +432,7 @@ list as the <code>learners</code> argument.</p>
 <span><span class="co">#&gt;         grid = data.frame(trees = seq(from = 25, to = 500, by = 25), </span></span>
 <span><span class="co">#&gt;             tree_depth = 3)))</span></span>
 <span><span class="co">#&gt; }</span></span>
-<span><span class="co">#&gt; &lt;bytecode: 0x55c3a5d02588&gt;</span></span>
+<span><span class="co">#&gt; &lt;bytecode: 0x55960c7af778&gt;</span></span>
 <span><span class="co">#&gt; &lt;environment: namespace:postcard&gt;</span></span></code></pre></div>
 </div>
 <div class="section level4">
@@ -419,7 +444,7 @@ the <code>learners</code> argument.</p>
 <p>Below is an example of fitting the prognostic model as a discrete
 super learner with the best RMSE among a <em>random forest</em> and
 <em>linear support vector machines</em> model.</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">learners</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
 <span>  rf <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
 <span>    model <span class="op">=</span> <span class="fu">parsnip</span><span class="fu">::</span><span class="fu"><a href="https://parsnip.tidymodels.org/reference/rand_forest.html" class="external-link">rand_forest</a></span><span class="op">(</span></span>
@@ -485,97 +510,18 @@ the prognostic model is fitted upon</li>
 <p>Note that we change the value of data to only show the first rows to
 not take up too much space when printing in the vignette.</p>
 </blockquote>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">prog_info</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/prog.html">prog</a></span><span class="op">(</span><span class="va">model_own_learners</span><span class="op">)</span></span>
 <span><span class="va">prog_info</span><span class="op">$</span><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">prog_info</span><span class="op">$</span><span class="va">data</span><span class="op">)</span></span>
 <span><span class="va">prog_info</span></span>
-<span><span class="co">#&gt; $formula</span></span>
-<span><span class="co">#&gt; Y ~ .</span></span>
-<span><span class="co">#&gt; &lt;environment: 0x55c3af18e610&gt;</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; $model_fit</span></span>
-<span><span class="co">#&gt; ══ Workflow [trained] ══════════════════════════════════════════════════════════</span></span>
-<span><span class="co">#&gt; <span style="font-style: italic;">Preprocessor:</span> Formula</span></span>
-<span><span class="co">#&gt; <span style="font-style: italic;">Model:</span> rand_forest()</span></span>
+<span><span class="co">#&gt; Object of class prognostic_info</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; ── Preprocessor ────────────────────────────────────────────────────────────────</span></span>
-<span><span class="co">#&gt; Y ~ .</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; ── Model ───────────────────────────────────────────────────────────────────────</span></span>
-<span><span class="co">#&gt; Ranger result</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Call:</span></span>
-<span><span class="co">#&gt;  ranger::ranger(x = maybe_data_frame(x), y = y, num.trees = ~500,      min.node.size = min_rows(~10L, x), num.threads = 1, verbose = FALSE,      seed = sample.int(10^5, 1)) </span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Type:                             Regression </span></span>
-<span><span class="co">#&gt; Number of trees:                  500 </span></span>
-<span><span class="co">#&gt; Sample size:                      1000 </span></span>
-<span><span class="co">#&gt; Number of independent variables:  1 </span></span>
-<span><span class="co">#&gt; Mtry:                             1 </span></span>
-<span><span class="co">#&gt; Target node size:                 10 </span></span>
-<span><span class="co">#&gt; Variable importance mode:         none </span></span>
-<span><span class="co">#&gt; Splitrule:                        variance </span></span>
-<span><span class="co">#&gt; OOB prediction error (MSE):       1.381527 </span></span>
-<span><span class="co">#&gt; R squared (OOB):                  0.6751407 </span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; $learners</span></span>
-<span><span class="co">#&gt; $learners$rf</span></span>
-<span><span class="co">#&gt; $learners$rf$model</span></span>
-<span><span class="co">#&gt; Random Forest Model Specification (regression)</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Main Arguments:</span></span>
-<span><span class="co">#&gt;   trees = 500</span></span>
-<span><span class="co">#&gt;   min_n = parsnip::tune("min_n")</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Computational engine: ranger </span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; $learners$rf$grid</span></span>
-<span><span class="co">#&gt;    min_n</span></span>
-<span><span class="co">#&gt; 1      1</span></span>
-<span><span class="co">#&gt; 2      2</span></span>
-<span><span class="co">#&gt; 3      3</span></span>
-<span><span class="co">#&gt; 4      4</span></span>
-<span><span class="co">#&gt; 5      5</span></span>
-<span><span class="co">#&gt; 6      6</span></span>
-<span><span class="co">#&gt; 7      7</span></span>
-<span><span class="co">#&gt; 8      8</span></span>
-<span><span class="co">#&gt; 9      9</span></span>
-<span><span class="co">#&gt; 10    10</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; $learners$svm.linear</span></span>
-<span><span class="co">#&gt; $learners$svm.linear$model</span></span>
-<span><span class="co">#&gt; Linear Support Vector Machine Model Specification (regression)</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Main Arguments:</span></span>
-<span><span class="co">#&gt;   cost = parsnip::tune("cost")</span></span>
-<span><span class="co">#&gt;   margin = parsnip::tune("margin")</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Computational engine: LiblineaR </span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; $learners$svm.linear$grid</span></span>
-<span><span class="co">#&gt;   cost margin</span></span>
-<span><span class="co">#&gt; 1    1    0.1</span></span>
-<span><span class="co">#&gt; 2    2    0.2</span></span>
-<span><span class="co">#&gt; 3    3    0.3</span></span>
-<span><span class="co">#&gt; 4    4    0.4</span></span>
-<span><span class="co">#&gt; 5    5    0.5</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; $cv_folds</span></span>
-<span><span class="co">#&gt; [1] 5</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; $data</span></span>
-<span><span class="co">#&gt;          Y        W</span></span>
-<span><span class="co">#&gt; 1 8.038754 9.625692</span></span>
-<span><span class="co">#&gt; 2 9.134305 9.608290</span></span>
-<span><span class="co">#&gt; 3 5.763027 3.165046</span></span>
-<span><span class="co">#&gt; 4 3.258947 2.021302</span></span>
-<span><span class="co">#&gt; 5 7.442597 6.177533</span></span>
-<span><span class="co">#&gt; 6 5.428690 6.740723</span></span></code></pre></div>
+<span><span class="co">#&gt; Formula: Y ~ .</span></span>
+<span><span class="co">#&gt; Number of candidate learners: 2</span></span>
+<span><span class="co">#&gt; Learner names: rf, svm.linear</span></span>
+<span><span class="co">#&gt; CV folds: 5</span></span>
+<span><span class="co">#&gt; Historical data: 6 rows, 2 columns</span></span></code></pre></div>
 </div>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

@@ -74,7 +74,13 @@ and used to create a plot of the resulting power curves.</p>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S3 method for class 'postcard_rpm'</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">x</span>, cols <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">x</span>, cols <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for class 'postcard_rpm'</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">object</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for class 'summary.postcard_rpm'</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">x</span>, digits <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="fl">3L</span>, <span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">getOption</a></span><span class="op">(</span><span class="st">"digits"</span><span class="op">)</span> <span class="op">-</span> <span class="fl">3L</span><span class="op">)</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -129,12 +135,24 @@ data used to fit the default models in <code>model_list</code>.</p></dd>
 <dd><p>a (potentially named) <code>character</code> vector of colors for the different models
 in <code>model_list</code></p></dd>
 
+
+<dt id="arg-object">object<a class="anchor" aria-label="anchor" href="#arg-object"></a></dt>
+<dd><p>an object of class <code>postcard_rpm</code> created by
+<code>repeat_power_marginaleffect()</code></p></dd>
+
+
+<dt id="arg-digits">digits<a class="anchor" aria-label="anchor" href="#arg-digits"></a></dt>
+<dd><p>a <code>numeric</code> with the number of digits to display when printing.</p></dd>
+
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     <p><code>repeat_power_marginal</code> returns an object of class <code>postcard_rpm</code>, which is
-just a <code>data.frame</code> with a <code>plot</code> method defined. The <code>plot</code> method returns a
-<code>ggplot2</code> object.</p>
+just a <code>data.frame</code> with <code>plot</code> and <code>summary</code> methods defined. The <code>plot</code> method
+returns a <code>ggplot2</code> object. The <code>summary</code> method returns an object of class
+<code>summary.postcard_rpm</code> holding the power assumptions and a <code>data.frame</code> with, for
+each model, the smallest sample size achieving the desired power (<code>NA</code> if not
+reached), the power at the largest sample size and the maximum power.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>

@@ -25,6 +25,8 @@ Useful links:
 
 Authors:
 
+- Mathias Lerbech Jeppesen <mathiasljeppesen@outlook.com>
+
 - Emilie Hojbjerre-Frandsen <ehfd@novonordisk.com>
 
 Other contributors:

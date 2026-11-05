@@ -244,22 +244,16 @@ dat_gaus <- glm_data(Y ~ 1+2*X1-X2+3*A,
 # Approximate the power using no adjustment covariates
 va_nocov <- var(dat_gaus$Y)
 power_gs(n = n_test, variance = va_nocov, ate = 1)
-#> [1] 0.3597079
-#> attr(,"samplesize")
-#> [1] 100
-#> attr(,"target_effect")
-#> [1] 1
-#> attr(,"exposure_prob")
-#> [1] 0.5
-#> attr(,"estimand_fun")
-#> function (psi1, psi0) 
-#> psi1 - psi0
-#> <bytecode: 0x55c578a47cd8>
-#> <environment: 0x55c578a48020>
-#> attr(,"margin")
-#> [1] 0
-#> attr(,"alpha")
-#> [1] 0.05
+#> 
+#> Power approximation (class postcard_power)
+#> 
+#> Call:  power_gs(variance = va_nocov, ate = 1, n = n_test)
+#> Estimated power:      0.3597
+#> Sample size:          100
+#> Target effect:        1
+#> Superiority margin:   0
+#> Exposure probability: 0.5
+#> Significance level:   0.05
 
 # Approximate the power with a model adjusting for both variables in the
 # data generating process
@@ -268,83 +262,59 @@ power_gs(n = n_test, variance = va_nocov, ate = 1)
 va_cov <- variance_ancova(Y ~ X1 + X2 + A, dat_gaus)
 ## Then estimate the power using this variance
 power_gs(n = n_test, variance = va_cov, ate = 1.8, margin = 1, r = 2)
-#> [1] 0.9536433
-#> attr(,"samplesize")
-#> [1] 100
-#> attr(,"target_effect")
-#> [1] 1.8
-#> attr(,"exposure_prob")
-#> [1] 0.6666667
-#> attr(,"estimand_fun")
-#> function (psi1, psi0) 
-#> psi1 - psi0
-#> <bytecode: 0x55c578a47cd8>
-#> <environment: 0x55c578967768>
-#> attr(,"margin")
-#> [1] 1
-#> attr(,"alpha")
-#> [1] 0.05
+#> 
+#> Power approximation (class postcard_power)
+#> 
+#> Call:  power_gs(variance = va_cov, ate = 1.8, n = n_test, r = 2, margin = 1)
+#> Estimated power:      0.9536
+#> Sample size:          100
+#> Target effect:        1.8
+#> Superiority margin:   1
+#> Exposure probability: 0.6667
+#> Significance level:   0.05
 
 # Approximate the sample size needed to obtain 90% power with same model as
 # above
 samplesize_gs(
   variance = va_cov, ate = 1.8, power = 0.9, margin = 1, r = 2
 )
-#> [1] 79.64914
-#> attr(,"power")
-#> [1] 0.9
-#> attr(,"target_effect")
-#> [1] 1.8
-#> attr(,"exposure_prob")
-#> [1] 0.6666667
-#> attr(,"estimand_fun")
-#> function (psi1, psi0) 
-#> psi1 - psi0
-#> <bytecode: 0x55c578a47cd8>
-#> <environment: 0x55c578915508>
-#> attr(,"margin")
-#> [1] 1
-#> attr(,"alpha")
-#> [1] 0.05
+#> 
+#> Sample size approximation (class postcard_samplesize)
+#> 
+#> Call:  samplesize_gs(variance = va_cov, ate = 1.8, r = 2, margin = 1, 
+#>     power = 0.9)
+#> Estimated sample size: 79.65
+#> Desired power:         0.9
+#> Target effect:         1.8
+#> Superiority margin:    1
+#> Exposure probability:  0.6667
+#> Significance level:    0.05
 
 # No adjustment covariates
 power_nc(n = n_test, variance = va_nocov, df = 199, ate = 1)
-#> [1] 0.3626287
-#> attr(,"samplesize")
-#> [1] 100
-#> attr(,"target_effect")
-#> [1] 1
-#> attr(,"exposure_prob")
-#> [1] 0.5
-#> attr(,"estimand_fun")
-#> function (psi1, psi0) 
-#> psi1 - psi0
-#> <bytecode: 0x55c578a47cd8>
-#> <environment: 0x55c5788cda00>
-#> attr(,"margin")
-#> [1] 0
-#> attr(,"alpha")
-#> [1] 0.05
-#> attr(,"df")
-#> [1] 199
+#> 
+#> Power approximation (class postcard_power)
+#> 
+#> Call:  power_nc(variance = va_nocov, df = 199, ate = 1, n = n_test)
+#> Estimated power:      0.3626
+#> Sample size:          100
+#> Target effect:        1
+#> Superiority margin:   0
+#> Exposure probability: 0.5
+#> Significance level:   0.05
+#> Degrees of freedom:   199
 # Adjusting for all covariates in data generating process
 power_nc(n = n_test, variance = va_cov, df = 196, ate = 1.8, margin = 1, r = 2)
-#> [1] 0.9553085
-#> attr(,"samplesize")
-#> [1] 100
-#> attr(,"target_effect")
-#> [1] 1.8
-#> attr(,"exposure_prob")
-#> [1] 0.6666667
-#> attr(,"estimand_fun")
-#> function (psi1, psi0) 
-#> psi1 - psi0
-#> <bytecode: 0x55c578a47cd8>
-#> <environment: 0x55c578894c50>
-#> attr(,"margin")
-#> [1] 1
-#> attr(,"alpha")
-#> [1] 0.05
-#> attr(,"df")
-#> [1] 196
+#> 
+#> Power approximation (class postcard_power)
+#> 
+#> Call:  power_nc(variance = va_cov, df = 196, ate = 1.8, n = n_test, 
+#>     r = 2, margin = 1)
+#> Estimated power:      0.9553
+#> Sample size:          100
+#> Target effect:        1.8
+#> Superiority margin:   1
+#> Exposure probability: 0.6667
+#> Significance level:   0.05
+#> Degrees of freedom:   196
 ```

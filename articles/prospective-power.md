@@ -92,23 +92,59 @@ power_marginaleffect(
   exposure_prob = 1/2,
   margin = 0.8
 )
-#> [1] 0.9871395
-#> attr(,"samplesize")
-#> [1] 200
-#> attr(,"target_effect")
-#> [1] 1.4
-#> attr(,"exposure_prob")
-#> [1] 0.5
-#> attr(,"estimand_fun")
-#> function (psi1, psi0) 
-#> psi1/psi0
-#> <bytecode: 0x55e9abe2f3a8>
-#> <environment: 0x55e9abe2f5a0>
-#> attr(,"margin")
-#> [1] 0.8
-#> attr(,"alpha")
-#> [1] 0.05
+#> 
+#> Power approximation (class postcard_power)
+#> 
+#> Call:  power_marginaleffect(response = test_pois$Y, predictions = preds, 
+#>     target_effect = 1.4, exposure_prob = 1/2, var1 = function(var0) 1.1 * 
+#>         var0, kappa1_squared = 2, estimand_fun = "rate_ratio", 
+#>     margin = 0.8)
+#> Estimated power:      0.9871
+#> Sample size:          200
+#> Target effect:        1.4
+#> Superiority margin:   0.8
+#> Exposure probability: 0.5
+#> Significance level:   0.05
 ```
+
+The result is an object of class `postcard_power`. Its `summary` method
+shows the assumptions used for the power estimation, including the
+estimand function, and its `plot` method shows the approximate
+distributions of the estimator under the null hypothesis (centered at
+the `margin`) and the alternative hypothesis (centered at the
+`target_effect`), with the area corresponding to the power shaded.
+
+``` r
+
+pow_rr <- power_marginaleffect(
+  response = test_pois$Y,
+  predictions = preds,
+  var1 = function(var0) 1.1 * var0,
+  kappa1_squared = 2,
+  estimand_fun = "rate_ratio",
+  target_effect = 1.4,
+  exposure_prob = 1/2,
+  margin = 0.8
+)
+summary(pow_rr)
+#> 
+#> Summary of power approximation (class postcard_power)
+#> 
+#> Call:  power_marginaleffect(response = test_pois$Y, predictions = preds, 
+#>     target_effect = 1.4, exposure_prob = 1/2, var1 = function(var0) 1.1 * 
+#>         var0, kappa1_squared = 2, estimand_fun = "rate_ratio", 
+#>     margin = 0.8)
+#> Estimated power:      0.9871
+#> Sample size:          200
+#> Target effect:        1.4
+#> Superiority margin:   0.8
+#> Exposure probability: 0.5
+#> Significance level:   0.05
+#> Estimand function:    psi1/psi0
+plot(pow_rr)
+```
+
+![](prospective-power_files/figure-html/unnamed-chunk-4-1.png)
 
 The function
 [`repeat_power_marginaleffect()`](https://novonordisk-opensource.github.io/postcard/reference/repeat_power_marginaleffect.md)
@@ -154,14 +190,13 @@ rpm <- repeat_power_marginaleffect(
   margin = 0.8
 )
 #> Estimating power across sample sizes `n_iter` times ■■■■                       …
-#> Estimating power across sample sizes `n_iter` times ■■■■■                      …
 #> Estimating power across sample sizes `n_iter` times ■■■■■■■■■■                 …
-#> Estimating power across sample sizes `n_iter` times ■■■■■■■■■■■■■■■■           …
+#> Estimating power across sample sizes `n_iter` times ■■■■■■■■■■■■■■■            …
 #> Estimating power across sample sizes `n_iter` times ■■■■■■■■■■■■■■■■■■■■■      …
-#> Estimating power across sample sizes `n_iter` times ■■■■■■■■■■■■■■■■■■■■■■■■■■■…
+#> Estimating power across sample sizes `n_iter` times ■■■■■■■■■■■■■■■■■■■■■■■■■  …
 #> Estimating power across sample sizes `n_iter` times ■■■■■■■■■■■■■■■■■■■■■■■■■■■…
 
 plot(rpm)
 ```
 
-![](prospective-power_files/figure-html/unnamed-chunk-5-1.png)
+![](prospective-power_files/figure-html/unnamed-chunk-6-1.png)

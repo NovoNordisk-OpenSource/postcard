@@ -257,22 +257,16 @@ class of models.</p></div>
 <span class="r-in"><span><span class="co"># Approximate the power using no adjustment covariates</span></span></span>
 <span class="r-in"><span><span class="va">va_nocov</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/cor.html" class="external-link">var</a></span><span class="op">(</span><span class="va">dat_gaus</span><span class="op">$</span><span class="va">Y</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">power_gs</span><span class="op">(</span>n <span class="op">=</span> <span class="va">n_test</span>, variance <span class="op">=</span> <span class="va">va_nocov</span>, ate <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.3597079</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"samplesize")</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 100</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"target_effect")</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"exposure_prob")</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.5</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"estimand_fun")</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> function (psi1, psi0) </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> psi1 - psi0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;bytecode: 0x55c578a47cd8&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;environment: 0x55c578a48020&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"margin")</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"alpha")</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.05</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Power approximation (class postcard_power)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Call:  power_gs(variance = va_nocov, ate = 1, n = n_test)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Estimated power:      0.3597</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Sample size:          100</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Target effect:        1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Superiority margin:   0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Exposure probability: 0.5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Significance level:   0.05</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Approximate the power with a model adjusting for both variables in the</span></span></span>
 <span class="r-in"><span><span class="co"># data generating process</span></span></span>
@@ -281,85 +275,61 @@ class of models.</p></div>
 <span class="r-in"><span><span class="va">va_cov</span> <span class="op">&lt;-</span> <span class="fu">variance_ancova</span><span class="op">(</span><span class="va">Y</span> <span class="op">~</span> <span class="va">X1</span> <span class="op">+</span> <span class="va">X2</span> <span class="op">+</span> <span class="va">A</span>, <span class="va">dat_gaus</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="co">## Then estimate the power using this variance</span></span></span>
 <span class="r-in"><span><span class="fu">power_gs</span><span class="op">(</span>n <span class="op">=</span> <span class="va">n_test</span>, variance <span class="op">=</span> <span class="va">va_cov</span>, ate <span class="op">=</span> <span class="fl">1.8</span>, margin <span class="op">=</span> <span class="fl">1</span>, r <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.9536433</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"samplesize")</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 100</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"target_effect")</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1.8</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"exposure_prob")</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.6666667</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"estimand_fun")</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> function (psi1, psi0) </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> psi1 - psi0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;bytecode: 0x55c578a47cd8&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;environment: 0x55c578967768&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"margin")</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"alpha")</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.05</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Power approximation (class postcard_power)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Call:  power_gs(variance = va_cov, ate = 1.8, n = n_test, r = 2, margin = 1)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Estimated power:      0.9536</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Sample size:          100</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Target effect:        1.8</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Superiority margin:   1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Exposure probability: 0.6667</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Significance level:   0.05</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Approximate the sample size needed to obtain 90% power with same model as</span></span></span>
 <span class="r-in"><span><span class="co"># above</span></span></span>
 <span class="r-in"><span><span class="fu">samplesize_gs</span><span class="op">(</span></span></span>
 <span class="r-in"><span>  variance <span class="op">=</span> <span class="va">va_cov</span>, ate <span class="op">=</span> <span class="fl">1.8</span>, power <span class="op">=</span> <span class="fl">0.9</span>, margin <span class="op">=</span> <span class="fl">1</span>, r <span class="op">=</span> <span class="fl">2</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 79.64914</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"power")</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.9</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"target_effect")</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1.8</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"exposure_prob")</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.6666667</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"estimand_fun")</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> function (psi1, psi0) </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> psi1 - psi0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;bytecode: 0x55c578a47cd8&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;environment: 0x55c578915508&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"margin")</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"alpha")</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.05</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Sample size approximation (class postcard_samplesize)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Call:  samplesize_gs(variance = va_cov, ate = 1.8, r = 2, margin = 1, </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     power = 0.9)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Estimated sample size: 79.65</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Desired power:         0.9</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Target effect:         1.8</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Superiority margin:    1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Exposure probability:  0.6667</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Significance level:    0.05</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># No adjustment covariates</span></span></span>
 <span class="r-in"><span><span class="fu">power_nc</span><span class="op">(</span>n <span class="op">=</span> <span class="va">n_test</span>, variance <span class="op">=</span> <span class="va">va_nocov</span>, df <span class="op">=</span> <span class="fl">199</span>, ate <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.3626287</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"samplesize")</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 100</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"target_effect")</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"exposure_prob")</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.5</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"estimand_fun")</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> function (psi1, psi0) </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> psi1 - psi0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;bytecode: 0x55c578a47cd8&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;environment: 0x55c5788cda00&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"margin")</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"alpha")</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.05</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"df")</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 199</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Power approximation (class postcard_power)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Call:  power_nc(variance = va_nocov, df = 199, ate = 1, n = n_test)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Estimated power:      0.3626</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Sample size:          100</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Target effect:        1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Superiority margin:   0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Exposure probability: 0.5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Significance level:   0.05</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Degrees of freedom:   199</span>
 <span class="r-in"><span><span class="co"># Adjusting for all covariates in data generating process</span></span></span>
 <span class="r-in"><span><span class="fu">power_nc</span><span class="op">(</span>n <span class="op">=</span> <span class="va">n_test</span>, variance <span class="op">=</span> <span class="va">va_cov</span>, df <span class="op">=</span> <span class="fl">196</span>, ate <span class="op">=</span> <span class="fl">1.8</span>, margin <span class="op">=</span> <span class="fl">1</span>, r <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.9553085</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"samplesize")</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 100</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"target_effect")</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1.8</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"exposure_prob")</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.6666667</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"estimand_fun")</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> function (psi1, psi0) </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> psi1 - psi0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;bytecode: 0x55c578a47cd8&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;environment: 0x55c578894c50&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"margin")</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"alpha")</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.05</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"df")</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 196</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Power approximation (class postcard_power)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Call:  power_nc(variance = va_cov, df = 196, ate = 1.8, n = n_test, </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     r = 2, margin = 1)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Estimated power:      0.9553</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Sample size:          100</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Target effect:        1.8</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Superiority margin:   1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Exposure probability: 0.6667</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Significance level:   0.05</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Degrees of freedom:   196</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

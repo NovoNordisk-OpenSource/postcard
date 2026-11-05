@@ -101,10 +101,10 @@ ate_prog <- rctglm_with_prognosticscore(
 #> • mod_gbt
 #> i  No tuning parameters. `fit_resamples()` will be attempted
 #> i 1 of 3 resampling: mod_mars
-#> ✔ 1 of 3 resampling: mod_mars (366ms)
+#> ✔ 1 of 3 resampling: mod_mars (351ms)
 #> i  No tuning parameters. `fit_resamples()` will be attempted
 #> i 2 of 3 resampling: mod_lm
-#> ✔ 2 of 3 resampling: mod_lm (247ms)
+#> ✔ 2 of 3 resampling: mod_lm (242ms)
 #> i 3 of 3 tuning:     mod_gbt
 #> ✔ 3 of 3 tuning:     mod_gbt (1.8s)
 #> ℹ Model with lowest RMSE: mod_mars
@@ -233,19 +233,48 @@ rate_ratio$estimand_funs
 #> $f
 #> function (psi1, psi0) 
 #> psi1/psi0
-#> <bytecode: 0x55c3a2e1e690>
-#> <environment: 0x55c3a92c1ba8>
+#> <bytecode: 0x559607c2c458>
+#> <environment: 0x5596160bbfd0>
 #> 
 #> $d0
 #> function (psi1, psi0) 
 #> -(psi1/psi0^2)
-#> <environment: 0x55c3a92c1ba8>
+#> <environment: 0x5596160bbfd0>
 #> 
 #> $d1
 #> function (psi1, psi0) 
 #> 1/psi0
-#> <environment: 0x55c3a92c1ba8>
+#> <environment: 0x5596160bbfd0>
 ```
+
+The `summary` and `plot` methods for `rctglm` objects use the null value
+of the specified estimand, which is 1 for the rate ratio.
+
+``` r
+
+summary(rate_ratio)
+#> 
+#> Summary of rctglm fit
+#> 
+#> Call:  rctglm(formula = Y ~ A + W, exposure_indicator = A, exposure_prob = 1/2, 
+#>     data = dat_pois, family = "poisson", estimand_fun = "rate_ratio", 
+#>     verbose = 1)
+#> 
+#> Counterfactual control mean (psi_0=E[Y|X, A=0]): 761.8
+#> Counterfactual active  mean (psi_1=E[Y|X, A=1]): 5634
+#> 
+#> Estimand function r: psi1/psi0
+#> Null value (r(psi, psi)): 1
+#> 
+#>          Estimate Std. Error z value Pr(>|z|) 2.5 % 97.5 %
+#> Estimand  7.39587    0.07321   87.37        0 7.252   7.54
+#> 
+#> (Wald-type 95% CI; standard error computed from the full-model influence-function variance.)
+#> Access the underlying GLM summary via `<summary_object>$glm_summary`.
+plot(rate_ratio)
+```
+
+![](model-fit_files/figure-html/rate-ratio-summary-plot-1.png)
 
 ### Specifying any estimand
 
@@ -362,7 +391,7 @@ default_learners
 #>         grid = data.frame(trees = seq(from = 25, to = 500, by = 25), 
 #>             tree_depth = 3)))
 #> }
-#> <bytecode: 0x55c3a5d02588>
+#> <bytecode: 0x55960c7af778>
 #> <environment: namespace:postcard>
 ```
 
@@ -440,91 +469,12 @@ Inside this list element are elements
 prog_info <- prog(model_own_learners)
 prog_info$data <- head(prog_info$data)
 prog_info
-#> $formula
-#> Y ~ .
-#> <environment: 0x55c3af18e610>
 #> 
-#> $model_fit
-#> ══ Workflow [trained] ══════════════════════════════════════════════════════════
-#> Preprocessor: Formula
-#> Model: rand_forest()
+#> Object of class prognostic_info
 #> 
-#> ── Preprocessor ────────────────────────────────────────────────────────────────
-#> Y ~ .
-#> 
-#> ── Model ───────────────────────────────────────────────────────────────────────
-#> Ranger result
-#> 
-#> Call:
-#>  ranger::ranger(x = maybe_data_frame(x), y = y, num.trees = ~500,      min.node.size = min_rows(~10L, x), num.threads = 1, verbose = FALSE,      seed = sample.int(10^5, 1)) 
-#> 
-#> Type:                             Regression 
-#> Number of trees:                  500 
-#> Sample size:                      1000 
-#> Number of independent variables:  1 
-#> Mtry:                             1 
-#> Target node size:                 10 
-#> Variable importance mode:         none 
-#> Splitrule:                        variance 
-#> OOB prediction error (MSE):       1.381527 
-#> R squared (OOB):                  0.6751407 
-#> 
-#> $learners
-#> $learners$rf
-#> $learners$rf$model
-#> Random Forest Model Specification (regression)
-#> 
-#> Main Arguments:
-#>   trees = 500
-#>   min_n = parsnip::tune("min_n")
-#> 
-#> Computational engine: ranger 
-#> 
-#> 
-#> $learners$rf$grid
-#>    min_n
-#> 1      1
-#> 2      2
-#> 3      3
-#> 4      4
-#> 5      5
-#> 6      6
-#> 7      7
-#> 8      8
-#> 9      9
-#> 10    10
-#> 
-#> 
-#> $learners$svm.linear
-#> $learners$svm.linear$model
-#> Linear Support Vector Machine Model Specification (regression)
-#> 
-#> Main Arguments:
-#>   cost = parsnip::tune("cost")
-#>   margin = parsnip::tune("margin")
-#> 
-#> Computational engine: LiblineaR 
-#> 
-#> 
-#> $learners$svm.linear$grid
-#>   cost margin
-#> 1    1    0.1
-#> 2    2    0.2
-#> 3    3    0.3
-#> 4    4    0.4
-#> 5    5    0.5
-#> 
-#> 
-#> 
-#> $cv_folds
-#> [1] 5
-#> 
-#> $data
-#>          Y        W
-#> 1 8.038754 9.625692
-#> 2 9.134305 9.608290
-#> 3 5.763027 3.165046
-#> 4 3.258947 2.021302
-#> 5 7.442597 6.177533
-#> 6 5.428690 6.740723
+#> Formula: Y ~ .
+#> Number of candidate learners: 2
+#> Learner names: rf, svm.linear
+#> CV folds: 5
+#> Historical data: 6 rows, 2 columns
 ```
