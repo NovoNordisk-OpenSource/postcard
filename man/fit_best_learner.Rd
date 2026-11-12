@@ -14,7 +14,7 @@ fit_best_learner(
 }
 \arguments{
 \item{preproc}{A list (preferably named) with preprocessing objects:
-formulas, recipes, or \code{\link[workflows:add_variables]{workflows::workflow_variables()}}. Passed to
+formulas, recipes, or \code{\link[workflows:workflow_variables]{workflows::workflow_variables()}}. Passed to
 \code{\link[workflowsets:workflow_set]{workflowsets::workflow_set()}}.}
 
 \item{data}{A data frame.}

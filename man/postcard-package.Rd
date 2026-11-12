@@ -6,7 +6,7 @@
 \alias{postcard-package}
 \title{postcard: Estimating Marginal Effects with Prognostic Covariate Adjustment}
 \description{
-\if{html}{\figure{logo.png}{options: style='float: right' alt='logo' width='120'}}
+\if{html}{\figure{logo.svg}{options: style='float: right' alt='logo' width='120'}}
 
 Conduct power analyses and inference of marginal effects. Uses plug-in estimation and influence functions to perform robust inference, optionally leveraging historical data to increase precision with prognostic covariate adjustment. The methods are described in Højbjerre-Frandsen et al. (2025) \doi{10.48550/arXiv.2503.22284}.
 }
@@ -24,6 +24,7 @@ Useful links:
 
 Authors:
 \itemize{
+  \item Mathias Lerbech Jeppesen \email{mathiasljeppesen@outlook.com}
   \item Emilie Hojbjerre-Frandsen \email{ehfd@novonordisk.com}
 }
 

@@ -20,7 +20,20 @@ test_that("`rctglm_with_prognosticscore` returns object of correct class", {
     cv_variance = FALSE)
 
   expect_equal(ate$prognostic_info, prog(ate))
+  expect_s3_class(prog(ate), "prognostic_info")
   expect_snapshot(prog(ate),
                   transform = function(x) gsub("^<environment:.*>$", "", x))
+
+  # rctglm_prog no longer inherits from list, but the parent rctglm class
+  # is still in the chain
+  expect_s3_class(ate, "rctglm_prog")
+  expect_s3_class(ate, "rctglm")
+  expect_false(inherits(ate, "list"))
+
+  # print.prognostic_info + summary.prognostic_info
+  expect_output(print(prog(ate)))
+  s <- summary(prog(ate))
+  expect_s3_class(s, "summary.prognostic_info")
+  expect_output(print(s))
 })
 

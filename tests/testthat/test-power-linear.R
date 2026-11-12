@@ -15,29 +15,31 @@ test_that("snapshot tests", {
   pgs <- power_gs(variance = 6, ate = 1, n = 200, r = 2, margin = 0.5, alpha = 0.05)
   # Extract the body of the estimand_fun to avoid the environment in the snapshot test
   # `transform` argument causes problems with CI
-  attr(pgs, "estimand_fun") <- body(attr(pgs, "estimand_fun"))
+  pgs$estimand_fun <- body(pgs$estimand_fun)
+  # Drop `call` from the snapshot (varies with CI/local paths)
+  pgs$call <- NULL
   expect_snapshot(pgs)
+  expect_s3_class(pgs, "postcard_power")
 
   ssgs2 <- samplesize_gs(variance = 27.3, ate = 2, r = 2/3, margin = -1, alpha = 0.05)
-  # Extract the body of the estimand_fun to avoid the environment in the snapshot test
-  # `transform` argument causes problems with CI
-  attr(ssgs2, "estimand_fun") <- body(attr(ssgs2, "estimand_fun"))
+  ssgs2$estimand_fun <- body(ssgs2$estimand_fun)
+  ssgs2$call <- NULL
   expect_snapshot(ssgs2)
+  expect_s3_class(ssgs2, "postcard_samplesize")
 
   pnc <- power_nc(variance = 6, ate = 1, n = 200, r = 2, margin = 0.5, alpha = 0.05, df = 97)
-  # Extract the body of the estimand_fun to avoid the environment in the snapshot test
-  # `transform` argument causes problems with CI
-  attr(pnc, "estimand_fun") <- body(attr(pnc, "estimand_fun"))
+  pnc$estimand_fun <- body(pnc$estimand_fun)
+  pnc$call <- NULL
   expect_snapshot(pnc)
-  expect_type(pnc, "double")
+  expect_s3_class(pnc, "postcard_power")
 })
 
 test_that("`power_gs` and `samplesize_gs` agree", {
   desired_power <- 0.9
   common_args <- list(variance = 6, ate = 0.7, margin = 0, alpha = 0.025)
   ssgs <- do.call(samplesize_gs, c(common_args, list(power = desired_power)))
-  pgs <- do.call(power_gs, c(common_args, list(n = ssgs)))
-  expect_equal(as.numeric(pgs), as.numeric(desired_power))
+  pgs <- do.call(power_gs, c(common_args, list(n = ssgs$samplesize)))
+  expect_equal(pgs$power, desired_power)
 })
 
 test_that("`variance_ancova` estimates consistently with marginal variance", {

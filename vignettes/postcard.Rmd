@@ -85,6 +85,16 @@ Methods available are `estimand` (or the shorthand `est`) which prints a `data.f
 est(ate)
 ```
 
+A `summary` method gives a coefficient-style table for the estimand with its standard error, a Wald test against the null value of the estimand (0 for the ATE) and a confidence interval. The confidence level can be changed with the `level` argument.
+```{r}
+summary(ate)
+```
+
+The `plot` method visualises the estimate and its confidence interval, with a dashed line marking the null value.
+```{r}
+plot(ate)
+```
+
 See more info in the documentation page `rctglm_methods()`.
 
 ## Using prognostic covariate adjustment
@@ -172,6 +182,19 @@ power_marginaleffect(
 
 Note that the power is greater for the model that can account for the non-linear effect of the covariate on the response.
 
+The power functions return objects of class `postcard_power`, which hold the estimated power together with the assumptions used to calculate it (sample size, target effect, superiority margin, exposure probability and significance level). The `summary` method additionally shows the estimand function, and the `plot` method shows the approximate distributions of the estimator under the null and alternative hypotheses, with the area corresponding to the power shaded.
+
+```{r}
+pow_dsl <- power_marginaleffect(
+  response = dat_notreat$Y,
+  predictions = preds_dsl,
+  target_effect = 0.3,
+  exposure_prob = 1/2
+)
+summary(pow_dsl)
+plot(pow_dsl)
+```
+
 ## For linear models
 
 The functions described in the help page `power_linear()` provide utilities for prospective power calculations using linear models. We conduct sample size calculations by constructing power curves using a **standard ANCOVA method** as described in (Guenther WC. Sample Size Formulas for Normal Theory T Tests. The American Statistician. 1981;35(4):243–244) and (Schouten HJA. Sample size formula with a continuous outcome for unequal group sizes and unequal variances. Statistics in Medicine. 1999;18(1):87–91).
@@ -193,6 +216,8 @@ samplesize_gs(variance = var_bound_ancova,
 samplesize_gs(variance = var_bound_prog,
               power = 0.9, r = 1, ate = .8, margin = 0)
 ```
+
+`power_gs()` and `power_nc()` also return `postcard_power` objects with the same methods as above, while `samplesize_gs()` returns an object of class `postcard_samplesize` with `print` and `summary` methods.
 
 # Creating a plot of prospective power curves
 

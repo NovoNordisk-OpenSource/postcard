@@ -150,6 +150,7 @@ rctglm <- function(formula,
   exposure_indicator <- rlang::enquo(exposure_indicator)
   args <- as.list(environment())
   cal <- match.call()
+  call_env <- parent.frame()
   formula <- check_formula(formula)
   family <- check_family(family)
   exposure_indicator_name <- get_indicator_name(exposure_indicator)
@@ -219,8 +220,10 @@ rctglm <- function(formula,
     means_counterfactual = full_model_means_counterfactual,
     fitted.values_counterfactual = full_model_fitted.values_counterfactual,
     glm = model,
-    call = cal
+    call = cal,
+    call_env = call_env,
+    cv_variance = cv_variance
   )
 
-  return(structure(out, class = c("rctglm", class(out))))
+  return(structure(out, class = "rctglm"))
 }

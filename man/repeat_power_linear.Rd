@@ -3,6 +3,8 @@
 \name{repeat_power_linear}
 \alias{repeat_power_linear}
 \alias{plot.postcard_rpl}
+\alias{summary.postcard_rpl}
+\alias{print.summary.postcard_rpl}
 \title{Create data and plot power curves calculated using functions in \code{\link[=power_linear]{power_linear()}} for a list of formulas/models}
 \usage{
 repeat_power_linear(
@@ -16,6 +18,10 @@ repeat_power_linear(
 )
 
 \method{plot}{postcard_rpl}(x, cols = NULL, ...)
+
+\method{summary}{postcard_rpl}(object, ...)
+
+\method{print}{summary.postcard_rpl}(x, digits = max(3L, getOption("digits") - 3L), ...)
 }
 \arguments{
 \item{ate}{Passed to \code{\link[=power_gs]{power_gs()}} or \code{\link[=power_nc]{power_nc()}}}
@@ -38,11 +44,17 @@ specifying what function in the \code{\link[=power_linear]{power_linear()}} topi
 
 \item{cols}{a (potentially named) \code{character} vector of colors for the different models
 in \code{formula_list}}
+
+\item{object}{an object of class \code{postcard_rpl} created by \code{repeat_power_linear()}}
+
+\item{digits}{a \code{numeric} with the number of digits to display when printing.}
 }
 \value{
 \code{repeat_power_linear} returns an object of class \code{postcard_rpl}, which is
-just a \code{data.frame} with a \code{plot} method defined. The \code{plot} method returns a
-\code{ggplot2} object.
+just a \code{data.frame} with \code{plot} and \code{summary} methods defined. The \code{plot} method
+returns a \code{ggplot2} object. The \code{summary} method returns an object of class
+\code{summary.postcard_rpl} with the same structure as described in
+\code{\link[=repeat_power_marginaleffect]{repeat_power_marginaleffect()}}.
 }
 \description{
 Estimate a variance for power approximation using \code{\link[=variance_ancova]{variance_ancova()}} for each formula
